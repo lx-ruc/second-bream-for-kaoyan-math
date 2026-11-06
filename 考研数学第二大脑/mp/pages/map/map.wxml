@@ -46,7 +46,7 @@
           <text wx:if="{{detail.hasStem < detail.qs.length}}" class="chip dim">{{detail.qs.length - detail.hasStem}} 条仅坐标</text>
         </view>
         <view class="qs">
-          <view wx:for="{{detail.qs}}" wx:key="y" class="q">
+          <view wx:for="{{detail.qs}}" wx:key="k" class="q">
             <text class="q-y">{{item.y}}</text>
             <text class="q-no">第{{item.no}}题</text>
             <text class="q-t">{{item.t}}</text>

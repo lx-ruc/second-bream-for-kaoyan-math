@@ -3,15 +3,16 @@
  * 跑法：node scripts/check.js
  *
  * 能抓到的真问题：
+ *  - JSON 合法性、页面文件缺失、app.json/tabBar 配置错误
  *  - WXML 标签不闭合、{{ }} 括号不配对
  *  - 模板里引用了 data 中不存在的根字段（这类笔误在真机上只会显示空白，很难发现）
  *  - 嵌套路径的叶子名在页面 JS 里完全找不到（如 ocr.stemm）
+ *  - 事件绑定指向不存在的函数
+ *  - require 断链；包名 require 必须能在 miniprogram_npm/ 下解析（缺了就是白屏事故）
+ *  - WXSS 花括号不配对
  *
  * 抓不到的：WXML 编译期语义、组件属性取值合法性、真机布局。
  * 这些只有微信开发者工具能验，别把这里的"全部通过"当成能跑。
- *  - 事件绑定指向不存在的函数
- *  - require 断链、页面文件缺失、app.json/tabBar 配置错误
- *  - WXSS 花括号不配对
  */
 const fs = require('fs');
 const path = require('path');
@@ -239,6 +240,39 @@ for (const name of ['kp', 'stem', 'prior']) {
     if (name === 'kp' && (!mod.nodes || !mod.nodes.length)) err('kp.js 没有 nodes');
   } catch (e) {
     err('data/' + name + '.js 加载失败: ' + e.message);
+  }
+}
+
+/* ---------- 8. WXML 静态类名 vs WXSS ---------- */
+console.log('8) 样式类覆盖');
+// WXML 里写死的 class 在 WXSS 找不到定义时，真机上是静默的布局破坏，必须拦。
+// 动态绑定（class="a {{b}}"）只检查写死部分之外的部分会被跳过——花括号整段放弃。
+function wxmlClasses(src) {
+  const out = new Set();
+  const re = /class="([^"]*)"/g;
+  let m;
+  while ((m = re.exec(src))) {
+    if (m[1].includes('{{')) continue;
+    m[1].trim().split(/\s+/).forEach((c) => { if (c) out.add(c); });
+  }
+  return out;
+}
+function wxssClasses(src) {
+  const out = new Set();
+  const re = /\.([A-Za-z_][\w-]*)/g;
+  let m;
+  while ((m = re.exec(src))) out.add(m[1]);
+  return out;
+}
+const appWxssSrc = fs.existsSync(path.join(ROOT, 'app.wxss')) ? fs.readFileSync(path.join(ROOT, 'app.wxss'), 'utf8') : '';
+for (const rel of byRel('.wxml')) {
+  const wxssRel = rel.replace(/\.wxml$/, '.wxss');
+  let defined = wxssClasses(appWxssSrc);
+  if (fs.existsSync(path.join(ROOT, wxssRel))) {
+    for (const c of wxssClasses(fs.readFileSync(path.join(ROOT, wxssRel), 'utf8'))) defined.add(c);
+  }
+  for (const c of wxmlClasses(fs.readFileSync(path.join(ROOT, rel), 'utf8'))) {
+    if (!defined.has(c)) err(rel + ' 用了未定义的样式类: ' + c);
   }
 }
 

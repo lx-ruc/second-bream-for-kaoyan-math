@@ -139,11 +139,9 @@ function matchStem(text) {
     return {
       kp: x.kp,
       name: n ? n.name : '',
-      scope: n ? n.scope : '',
       sim: Math.round(x.sim * 100),
       conf: i === 0 ? Math.round(conf * 100) : 0,
       sample: x.y + ' ' + VOL_NAME[x.vol] + ' 第' + x.o + '题',
-      inScope: n ? n.scope.indexOf('1') >= 0 || n.scope.indexOf('2') >= 0 || n.scope.indexOf('3') >= 0 : false,
     };
   });
 }
@@ -293,8 +291,9 @@ function diagnose(records) {
 
   const rows = Object.keys(groups).map(function (k) {
     const g = groups[k];
+    // 考点树换版后旧记录可能指向已不存在的考点：热度归零，别让诊断页整个挂掉
     const node = KP_BY_ID[g.kp];
-    const h = heat(node, g.vol);
+    const h = node ? heat(node, g.vol) : { total: 0, n6: 0 };
     let sum = 0, wsum = 0;
     g.list.forEach(function (r) {
       const w = decay(r.ts);

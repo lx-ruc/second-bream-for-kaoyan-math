@@ -73,7 +73,8 @@ Page({
     const qs = node.qs.filter(function (q) { return q[0] === vol; })
       .sort(function (a, b) { return b[1] - a[1] || a[2] - b[2]; })
       .map(function (q) {
-        return { y: q[1], no: q[2], t: q[3], sc: q[4], has: q[5] === 1 };
+        // 同一考点同年可能出两道题（选择+解答），key 必须带题号才唯一
+        return { k: q[1] + '-' + q[2], y: q[1], no: q[2], t: q[3], sc: q[4], has: q[5] === 1 };
       });
     const fams = (node.fam[vol] || []).map(function (f) { return { n: f.n, t: f.t }; });
     this.setData({

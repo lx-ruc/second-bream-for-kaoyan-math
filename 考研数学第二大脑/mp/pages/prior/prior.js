@@ -20,8 +20,10 @@ Page({
   },
 
   apply(kw) {
-    const list = E.priorRows(kw).map(function (r) {
+    const list = E.priorRows(kw).map(function (r, i) {
       return {
+        // 考点名偶有重名（数一/数三各一条），key 带序号才唯一
+        key: i + '-' + r.name,
         chap: r.chap,
         pt: r.pt,
         name: r.name,

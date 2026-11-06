@@ -64,6 +64,8 @@ Page({
       } : null,
       rows: d.rows.slice(0, 6).map(function (r) {
         return {
+          // 同一考点可能在两卷各记过题，key 要带卷号才唯一
+          key: r.kp + '-' + r.vol,
           kp: r.kp,
           name: r.name,
           n6: r.n6,

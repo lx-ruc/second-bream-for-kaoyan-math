@@ -12,3 +12,6 @@ node_modules/
 考研数学第二大脑/mp/node_modules/
 # 构建产物要入库：预览面板与开发者工具都按 miniprogram_npm 解析 require 包名，
 # 不入库会导致另一台机器 clone 下来整页加载失败（白屏）
+
+# Swift 点击器的编译产物（e2e 首跑时用 swiftc 现场构建）
+考研数学第二大脑/mp/scripts/click.bin

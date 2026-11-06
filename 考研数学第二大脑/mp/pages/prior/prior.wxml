@@ -15,7 +15,7 @@
     <text class="th">目标</text>
   </view>
 
-  <view wx:for="{{rows}}" wx:key="name" class="tr">
+  <view wx:for="{{rows}}" wx:key="key" class="tr">
     <view class="td name">
       <text class="tr-name">{{item.name}}</text>
       <text class="tr-pt">{{item.pt}}</text>

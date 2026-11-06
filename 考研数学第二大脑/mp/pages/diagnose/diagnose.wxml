@@ -19,7 +19,7 @@
 
     <!-- 优先级 -->
     <text class="sec">优先级 · 高频且没掌握的排前面</text>
-    <view wx:for="{{rows}}" wx:key="kp" class="prio" data-kp="{{item.kp}}" bindtap="goMap">
+    <view wx:for="{{rows}}" wx:key="key" class="prio" data-kp="{{item.kp}}" bindtap="goMap">
       <view class="prio-hd">
         <text class="prio-name">{{item.name}}</text>
         <text wx:if="{{item.gone}}" class="chip dim">近六年未考</text>
