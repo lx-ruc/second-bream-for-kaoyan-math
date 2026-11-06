@@ -10,7 +10,7 @@
  * 一是跟库里 475 道真题的文本形态同口径（同口径才能算相似度），
  * 二是模型少写一层 LaTeX，就少一层出错的面。
  */
-const { cloud } = require('./cloud.js');
+const CLOUD = require('./cloud.js');
 const IMG = require('./img.js');
 const TXT = require('./ocr-text.js');
 
@@ -44,7 +44,7 @@ async function pickModel() {
     _model = cached;
     return _model;
   }
-  const list = await cloud.llm.models.list();
+  const list = await CLOUD.getCloud().llm.models.list();
   const usable = (list || []).filter(function (m) { return m.disabled !== true; });
   if (!usable.length) {
     const err = new Error('NO_MODEL');
@@ -86,6 +86,7 @@ function bumpQuota() {
 
 function mapError(err) {
   const code = (err && err.error && err.error.code) || (err && err.code) || '';
+  if (code === 'cloud_init') return '识别服务没连上：检查网络，或用下面的手动选考点';
   if (code === 'no_model') return '没有可用的识别模型，稍后再试';
   if (code === 'image_too_large') return '图片太大了，重拍一张或换成截图';
   if (code === 'local_daily_limit') return '今天识别次数用完了，明天再来';
@@ -107,6 +108,8 @@ function mapError(err) {
  */
 async function recognize(filePath) {
   guardQuota();
+  // 云客户端拿不到就直接抛，带 cloud_init，页面会提示「识别服务没连上」
+  const cloud = CLOUD.getCloud();
   const model = await pickModel();
   const b64 = await IMG.toBase64(filePath);
   if (b64.length > 3 * 1024 * 1024) {

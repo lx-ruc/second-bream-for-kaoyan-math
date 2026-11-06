@@ -1,5 +1,5 @@
 {
-  "description": "WorkBuddy 原生微信小程序基础模板",
+  "description": "考研数学第二大脑 · 考点索引与纠偏",
   "packOptions": {
     "ignore": [
       {
@@ -14,10 +14,11 @@
     "es6": true,
     "minified": true,
     "postcss": true,
-    "urlCheck": true
+    "urlCheck": false,
+    "packNpmManually": false
   },
   "compileType": "miniprogram",
   "appid": "touristappid",
-  "projectname": "workbuddy-native-basic",
+  "projectname": "kaoyan-math-second-brain",
   "miniprogramRoot": "./"
 }

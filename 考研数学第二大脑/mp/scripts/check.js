@@ -185,12 +185,32 @@ for (const rel of byRel('.wxml')) {
 /* ---------- 5. require ---------- */
 console.log('5) 模块引用');
 for (const rel of byRel('.js')) {
+  // 校验脚本自己跑在 Node 里，require('fs') 属正常；只校验小程序源码的依赖
+  if (rel.split(path.sep)[0] === 'scripts') continue;
   const src = fs.readFileSync(path.join(ROOT, rel), 'utf8');
   const re = /require\(['"]([^'"]+)['"]\)/g;
   let m;
   while ((m = re.exec(src))) {
     const spec = m[1];
-    if (!spec.startsWith('.')) continue; // npm 包交给构建
+    if (!spec.startsWith('.')) {
+      // 包名：小程序只在 miniprogram_npm 下解析。构建产物缺失时编译期就报 module not found，
+      // 整页 JS 加载失败 —— 用户看到的是白屏，不是报错。所以这里必须拦住。
+      const parts = spec.split('/');
+      const pkg = spec.startsWith('@') ? parts.slice(0, 2).join('/') : parts[0];
+      const sub = spec.slice(pkg.length).replace(/^\//, '');
+      const base = path.join(ROOT, 'miniprogram_npm', pkg);
+      if (!fs.existsSync(base)) {
+        err(rel + ' 缺构建产物 miniprogram_npm/' + pkg + '（先构建 npm 再提交）');
+        continue;
+      }
+      if (sub) {
+        const t = path.join(base, sub);
+        if (!fs.existsSync(t) && !fs.existsSync(t + '.js')) {
+          err(rel + ' npm 包内路径不存在: ' + spec);
+        }
+      }
+      continue;
+    }
     const target = path.resolve(path.dirname(path.join(ROOT, rel)), spec);
     if (!fs.existsSync(target) && !fs.existsSync(target + '.js')) {
       err(rel + ' require 断链: ' + spec);

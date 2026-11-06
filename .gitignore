@@ -8,6 +8,7 @@ node_modules/
 .wbapp_*.genie
 .workbuddy/applications.yaml
 
-# 小程序 npm 依赖：由 package.json / package-lock.json 还原，不入库
+# 小程序 npm 依赖源码：由 package.json / package-lock.json 还原，不入库
 考研数学第二大脑/mp/node_modules/
-考研数学第二大脑/mp/miniprogram_npm/
+# 构建产物要入库：预览面板与开发者工具都按 miniprogram_npm 解析 require 包名，
+# 不入库会导致另一台机器 clone 下来整页加载失败（白屏）

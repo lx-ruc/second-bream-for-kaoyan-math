@@ -1,5 +1,5 @@
 App({
     globalData: {
-        appName: 'WorkBuddy 小程序',
+        appName: '考研数学第二大脑',
     },
 });
