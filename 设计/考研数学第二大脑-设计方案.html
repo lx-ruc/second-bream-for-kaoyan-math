@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>考研数学第二大脑 · 产品设计方案 v0.3</title>
+<style>
+  :root{
+    --bg:#FAFAF7; --card:#FFFFFF; --ink:#1E1E1C; --ink2:#5A5A56; --ink3:#8C8C86;
+    --line:#E4E2DA; --line2:#CFCCC2;
+    --blue:#185FA5; --blue-bg:#E9F1FA; --teal:#0F6E56; --teal-bg:#E4F2EC;
+    --amber:#8A5A0B; --amber-bg:#FAF0DC; --red:#A32D2D; --red-bg:#FBEAEA;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-font-smoothing:antialiased}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:15px; line-height:1.75;
+  }
+  .wrap{max-width:960px; margin:0 auto; padding:56px 32px 96px}
+  header{border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:8px}
+  .kicker{font-size:12px; letter-spacing:.14em; color:var(--ink3); text-transform:uppercase; margin-bottom:14px}
+  h1{font-size:32px; line-height:1.3; font-weight:600; margin:0 0 12px; letter-spacing:-.01em}
+  .lede{font-size:16px; color:var(--ink2); margin:0; max-width:660px}
+  .meta{display:flex; flex-wrap:wrap; gap:8px; margin-top:22px}
+  .chip{font-size:12px; color:var(--ink2); background:#F2F1EC; border:1px solid var(--line); border-radius:999px; padding:4px 11px}
+  .chip.new{background:var(--teal-bg); border-color:#BFDFD2; color:var(--teal)}
+  h2{font-size:20px; font-weight:600; margin:52px 0 6px; display:flex; align-items:baseline; gap:12px}
+  h2 .num{font-size:12px; color:var(--blue); font-weight:500; letter-spacing:.1em; font-variant-numeric:tabular-nums}
+  .sub{color:var(--ink2); font-size:14px; margin:0 0 20px; padding-left:34px}
+  h3{font-size:15px; font-weight:600; margin:26px 0 8px}
+  h4{font-size:13.5px; font-weight:600; margin:18px 0 6px; color:var(--ink2)}
+  p{margin:0 0 14px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:22px 24px; margin:18px 0}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:18px 0}
+  .grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:18px 0}
+  .mini{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px}
+  .mini .t{font-weight:600; font-size:14px; margin-bottom:4px}
+  .mini .d{font-size:13px; color:var(--ink2); line-height:1.65}
+  .callout{border-left:2px solid var(--blue); background:var(--blue-bg); border-radius:0 8px 8px 0; padding:14px 18px; margin:18px 0; font-size:14px; color:#123E6B}
+  .callout.teal{border-left-color:var(--teal); background:var(--teal-bg); color:#0A3F31}
+  .warn{border-left:2px solid var(--red); background:var(--red-bg); border-radius:0 8px 8px 0; padding:14px 18px; margin:18px 0; font-size:14px; color:#7A2020}
+  .flow{display:grid; grid-template-columns:repeat(5,1fr); gap:9px; margin:22px 0}
+  .step{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:13px 12px 15px}
+  .step b{display:block; font-size:13px; margin-bottom:2px}
+  .step span{font-size:11.5px; color:var(--ink2); line-height:1.5; display:block}
+  .step .idx{font-size:10.5px; color:var(--blue); letter-spacing:.1em; display:block; margin-bottom:7px}
+  .step.hl{border-color:#BFDFD2; background:#F6FBF9}
+  .step.hl .idx{color:var(--teal)}
+  table{width:100%; border-collapse:collapse; font-size:13.5px; margin:16px 0; background:var(--card)}
+  th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top}
+  th{font-weight:600; font-size:12px; color:var(--ink2); letter-spacing:.04em; background:#F5F4EF}
+  tr:last-child td{border-bottom:none}
+  code{font-family:"SFMono-Regular",ui-monospace,Menlo,monospace; font-size:12.5px; background:#F2F1EC; padding:1px 5px; border-radius:4px; color:#3D3D3A}
+  .formula{font-family:"SFMono-Regular",ui-monospace,Menlo,monospace; font-size:12.5px; background:#F7F6F1; border:1px solid var(--line); border-radius:8px; padding:12px 16px; color:#3D3D3A; overflow-x:auto; margin:12px 0; line-height:1.85}
+  .yes{color:var(--teal); font-weight:600}
+  .no{color:var(--ink3)}
+  .pool{font-size:11.5px; color:var(--teal); background:var(--teal-bg); padding:2px 8px; border-radius:99px; white-space:nowrap}
+  .pool.split{color:var(--ink2); background:#F2F1EC}
+  .phones{display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin:24px 0}
+  .phone{background:#EFEEE8; border-radius:22px; padding:9px; border:1px solid var(--line2)}
+  .screen{background:var(--card); border-radius:15px; overflow:hidden; height:452px; display:flex; flex-direction:column; font-size:11px}
+  .sbar{display:flex; justify-content:space-between; padding:7px 12px 4px; font-size:9px; color:var(--ink3)}
+  .shead{padding:4px 13px 10px; font-weight:600; font-size:13px; letter-spacing:-.01em}
+  .shead small{display:block; font-weight:400; font-size:10px; color:var(--ink3); margin-top:2px; letter-spacing:0}
+  .sbody{padding:0 11px; flex:1; overflow:hidden}
+  .blk{border:1px solid var(--line); border-radius:8px; padding:8px 9px; margin-bottom:8px; background:#FCFCFA}
+  .blk .bt{font-weight:600; font-size:10.5px; margin-bottom:2px}
+  .blk .bd{font-size:9.5px; color:var(--ink2); line-height:1.5}
+  .thumb{height:58px; border-radius:6px; background:#F0EFE9; border:1px dashed var(--line2); margin-bottom:7px; display:flex; align-items:center; justify-content:center; font-size:9px; color:var(--ink3)}
+  .row{display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #F0EFE9; font-size:10px}
+  .row:last-child{border-bottom:none}
+  .tag{font-size:8.5px; padding:1px 6px; border-radius:99px; background:var(--blue-bg); color:var(--blue)}
+  .tag.t2{background:var(--teal-bg); color:var(--teal)}
+  .tag.t3{background:var(--amber-bg); color:var(--amber)}
+  .tag.t4{background:var(--red-bg); color:var(--red)}
+  .bar{height:5px; border-radius:99px; background:#EFEEE8; overflow:hidden; margin-top:4px}
+  .bar i{display:block; height:100%; background:var(--teal)}
+  .bar i.hot{background:#C2554A}
+  .bar i.mid{background:#C99A3E}
+  .tabbar{display:flex; border-top:1px solid var(--line); padding:7px 0 8px; background:#FCFCFA}
+  .tabbar div{flex:1; text-align:center; font-size:8.5px; color:var(--ink3)}
+  .tabbar div.on{color:var(--blue); font-weight:600}
+  .cap{font-size:12px; color:var(--ink3); text-align:center; margin-top:8px}
+  ul{margin:0 0 14px; padding-left:20px}
+  li{margin-bottom:7px}
+  .kv{display:grid; grid-template-columns:96px 1fr; gap:4px 12px; font-size:13.5px; margin:10px 0}
+  .kv dt{color:var(--ink3); font-size:12.5px}
+  .kv dd{margin:0}
+  .timeline{border-left:1px solid var(--line2); margin:20px 0 20px 6px; padding-left:22px}
+  .tl{position:relative; padding-bottom:18px}
+  .tl::before{content:""; position:absolute; left:-27px; top:7px; width:9px; height:9px; border-radius:50%; background:var(--card); border:2px solid var(--blue)}
+  .tl b{font-size:13.5px}
+  .tl span{display:block; font-size:13px; color:var(--ink2)}
+  .script{display:grid; gap:0; margin:18px 0; border:1px solid var(--line); border-radius:10px; overflow:hidden; background:var(--card)}
+  .sc{display:grid; grid-template-columns:88px 1fr; border-bottom:1px solid var(--line)}
+  .sc:last-child{border-bottom:none}
+  .sc .t{font-family:ui-monospace,Menlo,monospace; font-size:11.5px; color:var(--blue); padding:11px 14px; background:#F7F6F1}
+  .sc.hl .t{color:var(--teal)}
+  .sc.hl .c{background:#F7FBF9}
+  .sc .c{padding:11px 16px; font-size:13px; color:var(--ink2)}
+  .devcard{background:var(--card); border:1px solid var(--line2); border-radius:12px; overflow:hidden; margin:20px 0}
+  .devcard .top{display:flex; justify-content:space-between; align-items:flex-start; gap:16px; padding:18px 22px; background:#FCFCFA; border-bottom:1px solid var(--line)}
+  .devcard .top .q{font-size:13px; color:var(--ink2); max-width:520px}
+  .devcard .top .q b{display:block; color:var(--ink); font-size:14px; margin-bottom:4px}
+  .score{text-align:center; min-width:96px}
+  .score .n{font-size:38px; font-weight:600; line-height:1; color:var(--amber); font-variant-numeric:tabular-nums}
+  .score .l{font-size:11px; color:var(--ink3); margin-top:5px; letter-spacing:.05em}
+  .dims{padding:16px 22px}
+  .dim{display:grid; grid-template-columns:74px 1fr 34px; gap:10px; align-items:center; font-size:12.5px; margin-bottom:9px}
+  .dim .bar{margin-top:0; height:6px}
+  .dim .v{text-align:right; color:var(--ink2); font-variant-numeric:tabular-nums; font-size:12px}
+  .verdict{padding:14px 22px; background:var(--amber-bg); border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-size:13.5px; color:#4A3208}
+  .verdict b{color:var(--amber)}
+  .evid{padding:14px 22px 18px}
+  .evid .h{font-size:11px; color:var(--ink3); letter-spacing:.06em; margin-bottom:8px}
+  .evid .e{font-size:12.5px; color:var(--ink2); padding:7px 11px; background:#F7F6F1; border-radius:6px; margin-bottom:6px; display:flex; justify-content:space-between; gap:12px}
+  .evid .e span:first-child{color:var(--blue); white-space:nowrap}
+  footer{margin-top:72px; padding-top:22px; border-top:1px solid var(--line); font-size:12px; color:var(--ink3); display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px}
+  @media (max-width:760px){
+    .wrap{padding:32px 18px 60px}
+    .grid2,.grid3,.flow,.phones{grid-template-columns:1fr}
+    h1{font-size:26px}
+    .devcard .top{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="kicker">产品设计方案 · v0.3</div>
+  <h1>考研数学第二大脑</h1>
+  <p class="lede">把刷过的每一道题，变成一张可检索、可诊断的薄弱点地图——并且告诉你，哪一道根本不用做。数一、数二、数三通用。</p>
+  <div class="meta">
+    <span class="chip">来源：ima《考研数学第二大脑》</span>
+    <span class="chip">B站 AI 创造公开赛 · 考研小工具</span>
+    <span class="chip">截稿 2027-01-06</span>
+    <span class="chip new">v0.3 · 数一 / 数二 / 数三 全覆盖</span>
+    <span class="chip new">真题纠偏</span>
+  </div>
+</header>
+
+<h2><span class="num">01</span>四条判断</h2>
+<p class="sub">原设想里没有明说、但决定成败的四件事。</p>
+
+<div class="grid2">
+  <div class="mini">
+    <div class="t">错题本是点，这是图</div>
+    <div class="d">痛点从来不是"这道题我错了"，而是"我在极限存在性上系统性不行"。产品的价值单位是<b>考点</b>，不是题目。</div>
+  </div>
+  <div class="mini">
+    <div class="t">记录成本决定留存</div>
+    <div class="d">手打一道题的公式要 3 分钟，拍照识别要 8 秒。OCR 不是附属功能，是这个产品能不能被用起来的<b>命门</b>。</div>
+  </div>
+  <div class="mini" style="border-color:#BFDFD2;background:#F7FBF9">
+    <div class="t">最大的浪费不是做错，是做了一堆不考的</div>
+    <div class="d">考研数学有明确的命题惯性：<b>重基础、重计算、反技巧</b>。市面资料里大量偏题、怪题、竞赛技巧题，学生花在上面的时间，真题一分都不会考。</div>
+  </div>
+  <div class="mini">
+    <div class="t">不做自动解题</div>
+    <div class="d">拍照搜题已经有人做了，且会诱导抄答案。我们只做<b>归档 + 归因 + 纠偏</b>，这是 OCR 可靠性的安全区，也正好对应"省时间"。</div>
+  </div>
+</div>
+
+<div class="callout">
+  <b>一句话定位：</b>错题本记录"我错了哪道"，第二大脑回答"我弱在哪、下一步练什么、哪道不该练"。
+</div>
+
+<h2><span class="num">02</span>核心闭环</h2>
+<p class="sub">五步。第三步是 v0.2 插进去的，位置很关键——在入库之前判定，垃圾题就不进库。</p>
+
+<div class="flow">
+  <div class="step"><span class="idx">STEP 1</span><b>拍照录入</b><span>连拍 / 相册批量导入，单题 8 秒</span></div>
+  <div class="step"><span class="idx">STEP 2</span><b>结构化解析</b><span>题干 LaTeX、考点候选、卡点</span></div>
+  <div class="step hl"><span class="idx">STEP 3</span><b>真题纠偏</b><span>贴合度判定 + 四象限定位</span></div>
+  <div class="step"><span class="idx">STEP 4</span><b>审核入库</b><span>低置信度强制确认</span></div>
+  <div class="step"><span class="idx">STEP 5</span><b>薄弱点诊断</b><span>考点热力 + 时间分配</span></div>
+</div>
+
+<h2><span class="num">03</span>四个关键决策</h2>
+<p class="sub">每条都写了取舍，方便你推翻我。</p>
+
+<h3>决策一：熟练度不靠自评，靠行为信号</h3>
+<p>用户自评"我大概会了"必然虚高。录入时只问一个动作性问题：</p>
+<table>
+  <tr><th style="width:40%">作答结果（四选一）</th><th style="width:16%">得分</th><th>含义</th></tr>
+  <tr><td>独立做出</td><td><code>1.0</code></td><td>思路自己走通，无需提示</td></tr>
+  <tr><td>提示后做出</td><td><code>0.6</code></td><td>卡在某一步，看提示后自己走完</td></tr>
+  <tr><td>看答案才懂</td><td><code>0.2</code></td><td>解法看得懂但想不到</td></tr>
+  <tr><td>看完仍不会</td><td><code>0.0</code></td><td>知识点缺口，不是技巧问题</td></tr>
+</table>
+<div class="formula">单题熟练度 = 近 3 次作答加权均值 × 0.9^(距今天数 / 14)
+考点熟练度 = 该考点下所有题熟练度的「中位数」（不是均值，避免单题极值拉偏）</div>
+<p>中位数这个选择值得说明：一个考点下常有 20 道题，其中 3 道压轴题永远做不出。用均值会让"其实已经掌握"的考点显示得很低，用户会失去信任。</p>
+
+<h3>决策二：考点树只建一棵超集，绝不建三棵</h3>
+<p>如果让模型自由生成标签，你会得到"极限的计算""求极限""极限求解"三个语义相同、无法聚合的标签，整个索引就废了。三卷同理——<b>三棵树 = 三套考点 ID = 三份画像无法复用</b>，用户二战换卷，历史数据也搬不过去。</p>
+<ul>
+  <li>建<b>一棵超集树</b>：三卷考点的并集，叶子约 380 个（线代 60 / 概率 70 / 高数 250），一份 ID 体系。</li>
+  <li>用 <code>syllabus</code> 表标每个考点在三卷的 in_scope，即"一树 + 三张覆盖层"，不做三棵树。</li>
+  <li>模型输出 <code>top3 候选考点 + 置信度</code>，只能从树里选，不能造新词；置信度 &lt; 0.75 强制人工确认。</li>
+</ul>
+
+<h3>决策三：容量上限是产品机制，不是限制</h3>
+<p>原设想写了"有容量上限"，但没定义上限带来什么行为。我的设计是把它变成维护熟练度的动力：</p>
+<ul>
+  <li>免费 300 题。超限时不是粗暴拦截，而是给两个出口：<b>已掌握归档</b>（熟练度 ≥ 85 且 30 天未错）和 <b>偏题一键清理</b>（贴合度 &lt; 35）。归档后都不占容量，但仍可搜索。</li>
+  <li>这样用户会主动关注"哪些考点我已经拿下了"，而不是无脑囤题。</li>
+</ul>
+
+<h3>决策四：双端分工，不是双端对等</h3>
+<div class="grid2">
+  <div class="mini"><div class="t">小程序 = 采集 + 复习</div><div class="d">拍照、确认、纠偏、今日清单。场景在书桌前、在通勤路上，单手可完成。</div></div>
+  <div class="mini"><div class="t">Web = 批量体检 + 诊断</div><div class="d">大屏热力图、批量拖拽上传、题库表格化体检、导出。场景在电脑前做周复盘。</div></div>
+</div>
+<div class="warn">纠偏进来后，八周内做两套完整功能<b>已经不可能</b>。Web 端整体推迟到赛后，仅保留一个只读诊断页用于录视频。取舍见第 08 节。</div>
+
+<h2><span class="num">04</span>纠偏：以 15 年真题为准</h2>
+<p class="sub">核心不是"AI 觉得这题好不好"，是"这道题在你的考卷上出现过吗、以这种方式出现过吗"。</p>
+
+<h3>4.1 基准从哪来：真题库 → 命题画像</h3>
+<p>先把 15 年真题做成一份结构化语料。三卷全覆盖后，总量仍在这个量级——这是好消息。</p>
+<div class="kv">
+  <dt>规模</dt><dd>2011–2025 共 15 年 × 数一/数二/数三 共 45 套 × 每卷约 22–23 题 ≈ <b>1,000 道</b></dd>
+  <dt>每道题的标注</dt><dd>考点（挂超集树 ID）、考法类型、思路族、难度 1–5、计算量、年份卷种</dd>
+  <dt>产出</dt><dd>按「考点 × 画像池」聚合的<b>命题画像</b>：考法分布、思路族分布、难度区间、最近考查年份、考频趋势</dd>
+</div>
+
+<h4>三卷怎么组织：一棵超集树 + 三个画像池</h4>
+<p>三卷的大纲差异很不均匀：高数差异最大，线代几乎一致，概率只有数一数三考。所以画像不能简单地"按卷存三份"，要按<b>样本可合并性</b>分池。</p>
+
+<table>
+  <tr><th style="width:34%">内容块</th><th style="width:10%">数一</th><th style="width:10%">数二</th><th style="width:10%">数三</th><th>画像池</th></tr>
+  <tr><td>极限与连续</td><td class="yes">考</td><td class="yes">考</td><td class="yes">考</td><td><span class="pool split">分卷</span> 深度不同</td></tr>
+  <tr><td>一元函数微分学</td><td class="yes">考</td><td class="yes">考</td><td class="yes">考</td><td><span class="pool split">分卷</span></td></tr>
+  <tr><td>一元函数积分学</td><td class="yes">考</td><td class="yes">考</td><td class="yes">考</td><td><span class="pool split">分卷</span> 数三含经济应用</td></tr>
+  <tr><td>多元函数微分学</td><td class="yes">考</td><td class="yes">考</td><td class="yes">考</td><td><span class="pool split">分卷</span></td></tr>
+  <tr><td>重积分 · 曲线曲面 · 场论</td><td class="yes">考</td><td class="no">不考</td><td class="no">不考</td><td><span class="pool">数一独有</span></td></tr>
+  <tr><td>无穷级数</td><td class="yes">考（含傅里叶）</td><td class="no">不考</td><td class="yes">考</td><td><span class="pool">一三分卷</span></td></tr>
+  <tr><td>常微分方程</td><td class="yes">考</td><td class="yes">考（范围窄）</td><td class="yes">考</td><td><span class="pool split">分卷</span></td></tr>
+  <tr><td>线性代数</td><td class="yes">考</td><td class="yes">考</td><td class="yes">考</td><td><span class="pool">三卷合并 · 样本最足</span></td></tr>
+  <tr><td>概率论与数理统计</td><td class="yes">考</td><td class="no">不考</td><td class="yes">考</td><td><span class="pool">一三合并</span></td></tr>
+</table>
+
+<div class="callout teal">
+  <b>这个合并不是偷懒，是为了让冷考点有统计意义。</b>"二次型正定性"在高数分卷下每年只出 1–2 道，单卷 15 年攒不到 10 个样本；但线代三卷合并后，同一个考点一年有 4–6 道，15 年就是 60+ 个样本，考法分布才站得住。
+</div>
+
+<h4>两个标注维度要定义清楚，否则聚合不出来</h4>
+<table>
+  <tr><th style="width:16%">维度</th><th style="width:44%">枚举（固定，不许自由发挥）</th><th>例子</th></tr>
+  <tr>
+    <td><b>考法类型</b></td>
+    <td>概念辨析 / 直接计算 / 证明（存在性·不等式·等式） / 应用题 / 反例构造 / 跨章节综合</td>
+    <td>"极限存在性判定"这个考点，15 年 9 次考查里 8 次是直接计算，0 次是证明</td>
+  </tr>
+  <tr>
+    <td><b>思路族</b></td>
+    <td>每个考点预设 3–5 个标准思路，如极限计算 = 等价无穷小 / 泰勒展开 / 洛必达 / 夹逼 / 定积分定义</td>
+    <td>真题标准路径是"先判型→等价替换→泰勒"，如果唯一解法是竞赛级放缩，属族外</td>
+  </tr>
+</table>
+
+<div class="callout teal">
+  <b>这一节最要紧的一句：</b>模型不判断"这题重不重要"，模型只做标注；"重要性"由真题统计算出来。任何让模型直接输出"建议跳过"的设计，都会退化成模型的好恶，学生会立刻不信任。
+</div>
+
+<h3>4.2 两层判定：先查真相近邻，再让模型标注</h3>
+<p>纠偏的准确率不能押在模型的自由发挥上。我把它拆成两层，能用检索解决的绝不用模型：</p>
+
+<div class="grid2">
+  <div class="mini" style="border-color:#BFDFD2;background:#F7FBF9">
+    <div class="t">A 层 · 真题最近邻（主力，高可信）</div>
+    <div class="d">同考点内做题干向量检索，相似度 ≥ 0.85 时判定为"真题同源变式"，<b>直接继承那道真题的考法/思路标签</b>，并告诉用户"这是 2019 数一第 15 题的变式"。这一层不需要模型判断，结论可核对。</div>
+  </div>
+  <div class="mini">
+    <div class="t">B 层 · 模型标注（兜底，需证据）</div>
+    <div class="d">匹配不上真题时，模型按固定枚举打「考法类型 + 思路族 + 难度」，且必须给出<b>判定依据句</b>。置信度低于阈值时标注"判定不确定"，不做强结论。</div>
+  </div>
+</div>
+
+<p>这样设计的好处是：产品里最有说服力的那部分结论（"你就是 2019 那道题的变式"）来自检索，可复现；模型只负责长尾。</p>
+
+<h3>4.3 一票否决 + 四个维度</h3>
+<table>
+  <tr><th style="width:15%">维度</th><th style="width:30%">问什么</th><th style="width:30%">判据</th><th>典型处置</th></tr>
+  <tr>
+    <td><b>超纲</b><br><span style="font-size:11px;color:#A32D2D">一票否决</span></td>
+    <td>这个考点在你的科目大纲里吗</td>
+    <td>syllabus 三卷白名单</td>
+    <td>数二刷到二重积分换序、数三刷到曲线积分 → 直接标红，贴合度置 0</td>
+  </tr>
+  <tr><td>考点热度</td><td>这个考点 15 年考过几次</td><td>时间衰减加权出现频次</td><td>考过 0–1 次 → 标"冷考点，别优先"</td></tr>
+  <tr><td>考法匹配</td><td>这个考点下，真题考过这种题型吗</td><td>该考点考法分布中的占比</td><td>占比 &lt; 10% → 标"同考点异考法，看思路不刷同类"</td></tr>
+  <tr><td>思路匹配</td><td>最优解法在真题的标准思路族里吗</td><td>思路族命中（主族 1.0 / 次族 0.6 / 族外 0.2）</td><td>族外 → 标"技巧性解法，考研不这么考"</td></tr>
+  <tr><td>难度匹配</td><td>难度超出真题上限了吗</td><td>与该考点真题难度区间的偏离度</td><td>高 2 档 → 标"高于真题上限，别自我怀疑"</td></tr>
+</table>
+
+<h3>4.4 贴合度公式与分档</h3>
+<div class="formula">贴合度 = 100 × (0.30 × 考点热度 + 0.30 × 考法匹配 + 0.25 × 思路匹配 + 0.15 × 难度匹配)
+超纲 → 直接置 0，不参与加权
+
+权重理由：考点热度与考法匹配各占三成，因为它们回答"考不考"；思路匹配占 2.5 成，
+回答"思路正不正"；难度只占 1.5 成，因为难度偏离的代价最小（做难题只是费时间，不误导）</div>
+
+<table>
+  <tr><th style="width:16%">区间</th><th style="width:26%">判定</th><th>给用户的话</th></tr>
+  <tr><td>85–100</td><td><b>真题同源</b></td><td>优先做，这是命题人偏好的考法</td></tr>
+  <tr><td>65–84</td><td>常规练习</td><td>放心做</td></tr>
+  <tr><td>45–64</td><td><b>轻微偏离</b></td><td>可以做，但别把它的套路当标准解法记住</td></tr>
+  <tr><td>25–44</td><td><b>考法偏离</b></td><td>看思路就行，不必刷同类</td></tr>
+  <tr><td>&lt; 25</td><td><b>偏题</b></td><td>建议跳过，省下的时间做真题</td></tr>
+  <tr><td>0</td><td><b>超纲</b></td><td>你的科目不考，直接跳过</td></tr>
+</table>
+
+<h4>时间衰减：不是 15 年等权</h4>
+<div class="formula">近 5 年（2021–2025）× 1.5　|　6–10 年（2016–2020）× 1.0　|　11–15 年（2011–2015）× 0.7</div>
+<p>2021 年考研数学题型结构调整后（客观题分值上升、解答题数量减少），命题的考法重心明显往"计算准确 + 概念辨析"偏。把 2012 年的考法和 2024 年等权，会让画像失真。</p>
+
+<h3>4.5 判定卡片长什么样</h3>
+<p>这是整个产品最有说服力的一屏。结论必须能展开成真题证据，否则就是模型在说教。</p>
+
+<div class="devcard">
+  <div class="top">
+    <div class="q">
+      <b>数列极限的放缩证明</b>
+      「设 a₁=1，aₙ₊₁ = aₙ + 1/aₙ，证明 {aₙ} 发散」——来源：某习题册 P74-12 · 当前科目 数一
+    </div>
+    <div class="score">
+      <div class="n">38</div>
+      <div class="l">考研贴合度</div>
+    </div>
+  </div>
+  <div class="dims">
+    <div class="dim"><span>考点热度</span><span class="bar"><i class="mid" style="width:60%"></i></span><span class="v">60</span></div>
+    <div class="dim"><span>考法匹配</span><span class="bar"><i class="hot" style="width:10%"></i></span><span class="v">10</span></div>
+    <div class="dim"><span>思路匹配</span><span class="bar"><i class="hot" style="width:40%"></i></span><span class="v">40</span></div>
+    <div class="dim"><span>难度匹配</span><span class="bar"><i class="mid" style="width:50%"></i></span><span class="v">50</span></div>
+  </div>
+  <div class="verdict">
+    <b>考法偏离。</b>该考点 15 年考过 9 次，其中 8 次是直接计算，<b>0 次</b>要求放缩证明；本题唯一解法属竞赛技巧族，不在考研标准思路内。建议看一眼放缩思路即可，不必刷同类题。
+  </div>
+  <div class="evid">
+    <div class="h">判定依据 · 3 条真题证据（可点开对照）</div>
+    <div class="e"><span>2016 数一 15</span><span>极限计算 · 直接计算 · 难度 3</span></div>
+    <div class="e"><span>2019 数一 15</span><span>极限计算 · 直接计算 · 难度 3</span></div>
+    <div class="e"><span>2023 数一 19</span><span>数列极限 · 证明（单调有界）· 难度 4</span></div>
+  </div>
+</div>
+
+<p>注意最后一条证据：2023 年确实考了数列极限的证明。但那考的是<b>单调有界准则</b>，不是放缩——这恰恰说明结论是"考法不对"，而不是"这个考点不考"。这种颗粒度才是纠偏的意义。</p>
+
+<div class="callout">
+  <b>三卷差异在这个卡片上直接可见。</b>同一条三重积分题：数一用户看到「同源 88，现在就做」，数二用户看到「超纲 · 直接跳过」。这不是两个功能，是同一套 syllabus 白名单在起作用——也是视频里最好演示的一下。
+</div>
+
+<h3>4.6 三个入口，别只做成一个弹窗</h3>
+<div class="grid3">
+  <div class="mini"><div class="t">① 录入时</div><div class="d">确认页即时显示贴合度，超纲题标红。作用：<b>不让垃圾进库</b>，减少后续清理成本。</div></div>
+  <div class="mini"><div class="t">② 题库体检</div><div class="d">一键扫描历史全部题目，输出偏离清单，支持批量归档。作用：<b>清存量</b>，也是老用户回家的理由。</div></div>
+  <div class="mini"><div class="t">③ 诊断页</div><div class="d">练习时间分配统计——"本月 62 题里 14 题偏离，占练习时间 31%"。作用：<b>给结论，不只给标签</b>。</div></div>
+</div>
+
+<p>第 ③ 个入口是我最看重的。「你 31% 的练习时间花在真题不会考的题上」——这一句话的说服力，比任何热力图都强，也是视频里最该给特写的一屏。</p>
+
+<h3>4.7 诚实边界</h3>
+<ul>
+  <li><b>每条结论必须挂 2–3 道真题做证据</b>，不能只有分数。用户点开能对照，才叫纠偏；点不开，就是我说的算。</li>
+  <li><b>用户可否决。</b>点"这题我觉得该做"，进 corrections 表，并把该考点从后续推荐里放宽一档。老师指定的题永远优先于算法。</li>
+  <li><b>冷门考点的判定要降置信度。</b>合并池里样本仍 &lt; 5 时，只输出"数据不足"，不硬下结论。</li>
+  <li><b>定位是时间分配建议，不是"这题是错的"。</b>文案上永远不否定用户的资料和老师，只说"性价比"。</li>
+  <li><b>真题标注本身有主观性。</b>精标集双人独立标注，算一次一致性系数；不可接受就回到标注手册改定义，别急着上模型。</li>
+</ul>
+
+<h2><span class="num">05</span>界面设计</h2>
+<p class="sub">三屏定生死：录入确认页决定留存，诊断页决定说服力。</p>
+
+<div class="phones">
+
+  <div class="phone">
+    <div class="screen">
+      <div class="sbar"><span>9:41</span><span>●●●</span></div>
+      <div class="shead">早上好，距离考试 47 天<small>数一 · 今天有 12 道待重练</small></div>
+      <div class="sbody">
+        <div class="blk" style="border-color:#C9DCEF;background:#EEF5FC">
+          <div class="bt" style="color:#185FA5">＋ 拍一题</div>
+          <div class="bd">支持连拍，自动裁边纠偏</div>
+        </div>
+        <div class="blk">
+          <div class="bt">最该补的三个考点</div>
+          <div class="bd" style="margin-top:5px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px"><span>极限存在性判定</span><span style="color:#A32D2D">42%</span></div>
+            <div class="bar"><i class="hot" style="width:42%"></i></div>
+            <div style="display:flex;justify-content:space-between;margin:6px 0 3px"><span>二次型正定性</span><span style="color:#8A5A0B">58%</span></div>
+            <div class="bar"><i class="mid" style="width:58%"></i></div>
+            <div style="display:flex;justify-content:space-between;margin:6px 0 3px"><span>条件概率与全概率</span><span style="color:#0F6E56">71%</span></div>
+            <div class="bar"><i style="width:71%"></i></div>
+          </div>
+        </div>
+        <div class="blk">
+          <div class="bt">最近入库</div>
+          <div class="row"><span>2023 数一 第 15 题</span><span class="tag t2">同源 92</span></div>
+          <div class="row"><span>1800 题 P92-14</span><span class="tag t3">偏离 51</span></div>
+          <div class="row"><span>某习题册 P74-12</span><span class="tag t4">偏题 38</span></div>
+        </div>
+      </div>
+      <div class="tabbar"><div class="on">首页</div><div>题库</div><div>诊断</div><div>我的</div></div>
+    </div>
+    <div class="cap">首页：今天该做什么</div>
+  </div>
+
+  <div class="phone">
+    <div class="screen">
+      <div class="sbar"><span>9:41</span><span>●●●</span></div>
+      <div class="shead">确认这道题<small>数一 · 已比对 1,032 道真题</small></div>
+      <div class="sbody">
+        <div class="thumb">原图缩略 · 可放大对位</div>
+        <div class="blk">
+          <div class="bt">题干（已识别 LaTeX）</div>
+          <div class="bd" style="font-family:ui-monospace,Menlo,monospace;font-size:9px">设 a₁=1，aₙ₊₁=aₙ+1/aₙ，证明 {aₙ} 发散</div>
+        </div>
+        <div class="blk" style="border-color:#E8D3B8;background:#FDF9F2">
+          <div class="bt" style="color:#8A5A0B">考研贴合度 38 · 考法偏离</div>
+          <div class="bar" style="margin-top:5px"><i class="mid" style="width:38%"></i></div>
+          <div class="bd" style="margin-top:5px">该考点 9 考 0 次考放缩证明<br><span style="color:#185FA5">查看 3 条真题证据 ↗</span></div>
+        </div>
+        <div class="blk">
+          <div class="bt">考点 · 置信度 0.86</div>
+          <div class="bd" style="margin-top:4px">
+            <span class="tag">数列极限</span>
+            <span class="tag" style="background:#F2F1EC;color:#5A5A56">单调有界</span>
+          </div>
+        </div>
+        <div class="blk">
+          <div class="bt">我这题卡在哪</div>
+          <div class="bd">独立做出 · 提示后做出 · 看答案 · 仍不会</div>
+        </div>
+      </div>
+      <div class="tabbar"><div>首页</div><div class="on">题库</div><div>诊断</div><div>我的</div></div>
+    </div>
+    <div class="cap">确认页：8 秒录入 + 即时纠偏</div>
+  </div>
+
+  <div class="phone">
+    <div class="screen">
+      <div class="sbar"><span>9:41</span><span>●●●</span></div>
+      <div class="shead">薄弱点诊断<small>数一 · 累计 412 题 · 96 个考点</small></div>
+      <div class="sbody">
+        <div class="blk" style="border-color:#E8C9C9;background:#FDF4F4">
+          <div class="bt" style="color:#A32D2D">练习时间分配</div>
+          <div class="bd" style="margin-top:4px;font-size:10px"><b style="font-size:15px;color:#A32D2D">31%</b> 花在偏离考研考法的题上</div>
+          <div class="bd">本月 62 题中 14 题偏离 · <span style="color:#185FA5">查看清单 ↗</span></div>
+        </div>
+        <div class="blk">
+          <div class="bt">章节掌握度</div>
+          <div class="bd" style="margin-top:5px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px"><span>极限与连续</span><span>42%</span></div>
+            <div class="bar"><i class="hot" style="width:42%"></i></div>
+            <div style="display:flex;justify-content:space-between;margin:6px 0 3px"><span>一元微分学</span><span>55%</span></div>
+            <div class="bar"><i class="mid" style="width:55%"></i></div>
+            <div style="display:flex;justify-content:space-between;margin:6px 0 3px"><span>无穷级数</span><span>34%</span></div>
+            <div class="bar"><i class="hot" style="width:34%"></i></div>
+          </div>
+        </div>
+        <div class="blk">
+          <div class="bt">反复卡点（跨题共现）</div>
+          <div class="row"><span>不会构造辅助函数</span><span class="tag t3">9 题</span></div>
+          <div class="row"><span>左右极限未分讨论</span><span class="tag t3">7 题</span></div>
+        </div>
+        <div class="blk" style="border-color:#BFDFD2;background:#F1F9F6">
+          <div class="bt" style="color:#0F6E56">生成今日清单 →</div>
+          <div class="bd">12 题 · 全部贴合度 ≥ 82</div>
+        </div>
+      </div>
+      <div class="tabbar"><div>首页</div><div>题库</div><div class="on">诊断</div><div>我的</div></div>
+    </div>
+    <div class="cap">诊断页：说服评委的那一屏</div>
+  </div>
+
+</div>
+
+<div class="callout">
+  <b>科目是可切换的状态，不是一次性选项。</b>二战同学从数三转数二很常见，换完科目大纲白名单就变了，历史题库里的超纲题要重新标红。所以「我的 → 切换科目 → 重算纠偏」这个入口必须有，而且要提示"将有 23 道题变为超纲"。
+</div>
+
+<div class="callout">
+  <b>「反复卡点」是这个产品真正的护城河。</b>单题错因没价值，但如果 9 道不同章节的题都卡在"不会构造辅助函数"，这就是可行动的结论——它不是靠模型聪明，是靠结构化字段攒出来的。纠偏的"时间分配"统计同理，都是同一套结构化字段的下游产物。
+</div>
+
+<h2><span class="num">06</span>数据模型</h2>
+<p class="sub">核心是把「题」和「做」拆开。纠偏是在「题」这一侧再加一层外部基准。</p>
+
+<h4>用户侧</h4>
+<table>
+  <tr><th style="width:20%">表</th><th>关键字段</th><th style="width:30%">说明</th></tr>
+  <tr><td><code>users</code></td><td>id, openid, exam_subject(数一/二/三), exam_year, created_at</td><td>exam_subject 可中途切换，切换后触发纠偏重算</td></tr>
+  <tr><td><code>kb</code></td><td>id, user_id, quota, used, archived_count</td><td>一人一库，quota 默认 300，跨科目共用</td></tr>
+  <tr><td><code>questions</code></td><td>id, kb_id, stem_latex, source, year, chapter_id, stuck_point, mastery, archived_at</td><td>stem_latex 为唯一正文来源</td></tr>
+  <tr><td><code>attempts</code></td><td>id, question_id, result(0/0.2/0.6/1.0), duration_sec, stuck_step, created_at</td><td>熟练度唯一数据来源</td></tr>
+  <tr><td><code>question_kp</code></td><td>question_id, kp_id, confidence, is_primary</td><td>主考点唯一，可挂 0–2 个次考点</td></tr>
+  <tr><td><code>reviews</code></td><td>question_id, due_at, interval_days, ease, last_result</td><td>SM-2 简化版，间隔 1/3/7/14/30 天</td></tr>
+</table>
+
+<h4>纠偏侧</h4>
+<table>
+  <tr><th style="width:20%">表</th><th>关键字段</th><th style="width:34%">说明</th></tr>
+  <tr><td><code>kp</code></td><td>id, parent_id, block(高数/线代/概率), name, level</td><td>一棵超集树，约 380 叶子，三卷共用 ID</td></tr>
+  <tr><td><code>syllabus</code></td><td>kp_id, subject, in_scope, note</td><td>三卷 × 380 行的覆盖层，超纲一票否决用</td></tr>
+  <tr><td><code>real_exams</code></td><td>id, year, subject, no, kp_id, stem_latex, method_type, thinking_family, difficulty, calc_load</td><td>约 1,000 道真题，纠偏的唯一基准</td></tr>
+  <tr><td><code>exam_profile</code></td><td>kp_id, pool(高数一/高数二/高数三/线代共用/概率共用), appearance_weight, method_dist, family_dist, difficulty_range, last_year, trend</td><td>按「考点 × 画像池」聚合，离线计算</td></tr>
+  <tr><td><code>question_style</code></td><td>question_id, method_type, thinking_family, difficulty, calc_load, match_mode(A层/B层), nearest_exam_id, similarity</td><td>A 层命中则 nearest_exam_id 直接继承标签</td></tr>
+  <tr><td><code>deviation</code></td><td>question_id, subject_at_judge, score, dims(json), verdict, evidence_ids(json), confidence</td><td>存判定时的科目，换科目后可重算</td></tr>
+  <tr><td><code>corrections</code></td><td>id, question_id, field, before, after, user_prompt, user_override</td><td>含用户对纠偏结论的否决，用于调权重</td></tr>
+</table>
+
+<h3>索引策略</h3>
+<ul>
+  <li><b>标签索引</b>：<code>question_kp</code> 支撑考点聚合（熟练度、热力、时间分配）。</li>
+  <li><b>向量索引</b>：题干 embedding 用于两件事——题内去重（"这题你 3 个月前做过"）、真题最近邻（纠偏 A 层）。三卷共用同一索引，科目只影响白名单与画像池。</li>
+  <li><b>画像预计算</b>：<code>exam_profile</code> 离线跑批，不进实时链路；实时只做最后一步加权。</li>
+  <li><b>不做全量重算</b>：熟练度在 attempts 写入时增量更新，看板读缓存。</li>
+</ul>
+
+<h2><span class="num">07</span>AI 流水线</h2>
+<p class="sub">目标不是"识别得准"，是"识别不准时用户不烦，判定不准时用户能查证"。</p>
+
+<div class="flow">
+  <div class="step"><span class="idx">1</span><b>预处理</b><span>裁边纠偏、去阴影、二值增强</span></div>
+  <div class="step"><span class="idx">2</span><b>多模态解析</b><span>输出结构化 JSON</span></div>
+  <div class="step hl"><span class="idx">3</span><b>真题检索</b><span>最近邻 ≥0.85 直接继承</span></div>
+  <div class="step hl"><span class="idx">4</span><b>风格标注</b><span>考法 / 思路族 / 难度</span></div>
+  <div class="step"><span class="idx">5</span><b>加权判定</b><span>白名单 → 贴合度 → 证据</span></div>
+</div>
+
+<p>模型输出的 JSON 结构固定，不允许自由发挥：</p>
+<div class="formula">{
+  "stem_latex": "…",                      // 题干，唯一正文
+  "answer_latex": "…",                    // 标准答案（可选）
+  "kp_candidates": [                      // 必须来自超集树，三卷同一个 ID
+    {"kp_id": "H1-03-02", "confidence": 0.86}
+  ],
+  "style": {                              // 只允许固定枚举
+    "method_type": "证明",                // 概念辨析|直接计算|证明|应用题|反例构造|综合
+    "thinking_family": "族外",            // 主族|次族|族外
+    "difficulty": 4,
+    "calc_load": 3
+  },
+  "stuck_options": ["需构造辅助函数", "需分左右极限讨论"],
+  "quality_flags": ["handwriting_detected"]
+}</div>
+
+<div class="warn">
+  <b>必须诚实的两条：</b>① MVP 只承诺识别<b>印刷体题干</b>，手写解题过程的公式识别远不到可用水平，手写卡点让用户用语音或一句话补充；② 纠偏给的是<b>建议</b>，不给"你错了"的断言，所有结论必须可展开到真题证据。
+</div>
+
+<h3>成本控制</h3>
+<div class="kv">
+  <dt>免费额度</dt><dd>300 题（与容量上限一致，用户心智只有一个数字）</dd>
+  <dt>单题成本</dt><dd>多模态单次调用控制在 ¥0.02 内；纠偏的 A 层是向量检索，几乎零成本</dd>
+  <dt>真题库</dt><dd>1,000 题 × 一次标注 = 一次性成本，远低于每用户每题都跑模型</dd>
+  <dt>降级策略</dt><dd>解析失败重试 1 次；仍失败则保留原图 + 手动填三字段入库，不让用户卡在门外</dd>
+</div>
+
+<h2><span class="num">08</span>八周排期</h2>
+<p class="sub">2026-11-06 → 2027-01-06。三卷全覆盖后，产品结构几乎不变，真正的增量在真题标注。</p>
+
+<div class="timeline">
+  <div class="tl"><b>W1 · 双基线并行</b><span>超集考点树 v1（高数 200 叶子 + 线代 60）+ 精标 Tier 1 启动（2021–2025 三卷约 340 题）</span></div>
+  <div class="tl"><b>W2 · 画像与链路</b><span>五个画像池跑通 + 三卷大纲覆盖表 + 拍照识别 pipeline</span></div>
+  <div class="tl"><b>W3 · 主链路</b><span>确认页（含纠偏卡片 + 科目白名单）+ 入库 + 容量与归档</span></div>
+  <div class="tl"><b>W4 · 题库</b><span>题库列表 + 详情 + 按卷筛选 + 按贴合度排序</span></div>
+  <div class="tl"><b>W5 · 纠偏全量</b><span>Tier 2/3 预标与抽检 + 题库体检 + 批量归档 + 换科目重算</span></div>
+  <div class="tl"><b>W6 · 诊断</b><span>章节热力 + 反复卡点 + 分卷练习时间分配</span></div>
+  <div class="tl"><b>W7 · 复习与补齐</b><span>今日清单（按贴合度优先）+ 概率考点树 + 冷考点置信度降级</span></div>
+  <div class="tl"><b>W8 · 收尾</b><span>性能、录视频、投稿</span></div>
+</div>
+
+<div class="callout teal">
+  <b>1,000 道真题的标注，靠分层而不是硬啃：</b><br>
+  Tier 1 精标 —— 2021–2025 × 3 卷 ≈ 340 题，逐题人工复核，约 6 小时（撑起 A 层最近邻和高权重判定）<br>
+  Tier 2 半标 —— 2016–2020 ≈ 340 题，模型预标 + 10% 抽检，约 1 小时<br>
+  Tier 3 粗标 —— 2011–2015 ≈ 320 题，模型预标 + 只抽检高频考点，约 40 分钟<br>
+  理由：时间衰减后 2011–2015 的权重只有 0.7，误差影响最小，不值得花同等力气。
+</div>
+
+<div class="warn">
+  <b>被砍掉的：</b>Web 端（只保留一个只读诊断页用于录屏）、SM-2 自动排程（降级为手动标记待复习）、同考点变式推荐。<b>理由：</b>纠偏是差异化命门，宁可少一个端，也要把真题标注质量做上去——这一块做虚了，整个功能就变成模型随口给分。
+</div>
+
+<h2><span class="num">09</span>视频脚本</h2>
+<p class="sub">横版，90 秒。评委只看前 20 秒决定要不要看完，所以纠偏提前到 18 秒出场。</p>
+
+<div class="script">
+  <div class="sc"><div class="t">0–8s</div><div class="c">桌上三本翻烂的错题本。「我记了 800 道错题，还是不知道自己弱在哪。」</div></div>
+  <div class="sc"><div class="t">8–18s</div><div class="c">手机对准真题，快门。6 秒出结构化卡片：题干、考点、卡点。</div></div>
+  <div class="sc hl"><div class="t">18–38s</div><div class="c">翻到一道习题册的怪题，贴合度跳出 <b>38 · 考法偏离</b>。展开证据：该考点 15 年 9 考，0 次考放缩证明。「你花在这类题上的时间，真题一分都不会考。」</div></div>
+  <div class="sc hl"><div class="t">38–52s</div><div class="c">同一条三重积分题，切到数二 → 立刻变成「<b>超纲 · 直接跳过</b>」，切回数一 → 「同源 88」。一键清理全部偏题，容量条回落。</div></div>
+  <div class="sc"><div class="t">52–58s</div><div class="c">连拍 5 张批量入库，进度条扫过。</div></div>
+  <div class="sc"><div class="t">58–74s</div><div class="c">诊断页：「本月练习时间 31% 花在偏离题上」。切章节热力：极限存在性 42%。点进去 7 题，4 题卡在"左右极限未分讨论"。</div></div>
+  <div class="sc"><div class="t">74–86s</div><div class="c">生成今日清单：12 题，全部贴合度 ≥ 82。开始重练。</div></div>
+  <div class="sc"><div class="t">86–90s</div><div class="c">收尾字幕：「错题本记住你错了哪道，第二大脑记住你弱在哪，还告诉你哪道根本不用做。」</div></div>
+</div>
+
+<h2><span class="num">10</span>风险清单</h2>
+<p class="sub">按严重度排。前三条会直接决定这个功能是资产还是负债。</p>
+
+<table>
+  <tr><th style="width:26%">风险</th><th style="width:12%">严重度</th><th>处置</th></tr>
+  <tr><td>真题标注质量不过关，画像失真</td><td><b>高</b></td><td>先定标注手册再标；精标集双人独立标 + 一致性检验；不合格就改定义，不上模型</td></tr>
+  <tr><td>1,000 道三卷标注量压垮排期</td><td><b>高</b></td><td>Tier 1/2/3 分层；时间衰减让低权重年份可以粗标；先保近 5 年三卷</td></tr>
+  <tr><td>三卷差异只做"考/不考"，忽略深度差</td><td><b>高</b></td><td>syllabus 只判在不在范围；深度与考法差异交给分卷画像表达，两者别混在一张表</td></tr>
+  <tr><td>冷考点样本太少，判定没有统计意义</td><td>中</td><td>线代三卷合并、概率一三合并；合并后仍 &lt; 5 时只输出"数据不足"</td></tr>
+  <tr><td>用户认为算法在否定自己的老师</td><td>中</td><td>文案只用"性价比"表述；用户可否决；老师指定的题权重最高</td></tr>
+  <tr><td>手写公式识别不准</td><td>中</td><td>明确不承诺，只认印刷体；手写卡点用语音补一句</td></tr>
+  <tr><td>八周做双端 + 三卷 + 纠偏</td><td>中</td><td>Web 端推迟到赛后，只留只读诊断页</td></tr>
+  <tr><td>录入仍是负担，拍两张就弃</td><td>中</td><td>把「8 秒一题」当硬指标做性能预算，超时就砍功能</td></tr>
+</table>
+
+<footer>
+  <span>考研数学第二大脑 · 产品设计方案 v0.3</span>
+  <span>基于 ima 笔记《考研数学第二大脑》与 B站 AI 创造公开赛规则整理 · 2026-11-06</span>
+</footer>
+
+</div>
+</body>
+</html>

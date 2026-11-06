@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>考研数学第二大脑 · 纠偏原型 v0.1</title>
+<style>
+  :root{
+    --bg:#FAFAF7; --card:#FFF; --ink:#1E1E1C; --ink2:#5A5A56; --ink3:#8C8C86;
+    --line:#E4E2DA; --line2:#CFCCC2; --soft:#F2F1EC;
+    --teal:#0F6E56; --teal-bg:#E4F2EC; --amber:#8A5A0B; --amber-bg:#FAF0DC;
+    --red:#A32D2D; --red-bg:#FBEAEA; --blue:#185FA5; --blue-bg:#E9F1FA; --gray-bg:#F2F1EC;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    font-size:14px; line-height:1.65; -webkit-font-smoothing:antialiased;
+  }
+  .app{max-width:1080px; margin:0 auto; padding:28px 22px 60px}
+  header{display:flex; justify-content:space-between; align-items:flex-start; gap:20px; flex-wrap:wrap; padding-bottom:18px; border-bottom:1px solid var(--line)}
+  .ttl{font-size:20px; font-weight:600; letter-spacing:-.01em}
+  .ttl .ver{font-size:11px; font-weight:400; color:var(--ink3); margin-left:10px; letter-spacing:.06em}
+  .sub{font-size:13px; color:var(--ink2); margin-top:3px}
+  .ctrl{display:flex; align-items:center; gap:10px}
+  .seg{display:flex; background:var(--soft); border:1px solid var(--line); border-radius:9px; padding:3px}
+  .seg button{border:0; background:transparent; padding:5px 14px; font-size:13px; border-radius:6px; cursor:pointer; color:var(--ink2); font-family:inherit}
+  .seg button.on{background:#fff; color:var(--ink); font-weight:600; box-shadow:0 1px 2px rgba(0,0,0,.06)}
+  .seed{font-size:11px; color:var(--amber); background:var(--amber-bg); border:1px solid #E8D3B8; border-radius:99px; padding:3px 10px; white-space:nowrap}
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:10px; overflow:hidden; margin:18px 0}
+  .stat{background:var(--card); padding:13px 16px}
+  .stat .k{font-size:11.5px; color:var(--ink3)}
+  .stat .v{font-size:22px; font-weight:600; font-variant-numeric:tabular-nums; line-height:1.3}
+  .stat .v small{font-size:12px; font-weight:400; color:var(--ink3); margin-left:2px}
+  .tabs{display:flex; gap:2px; border-bottom:1px solid var(--line); margin-bottom:20px}
+  .tabs button{border:0; background:transparent; padding:9px 16px; font-size:13.5px; color:var(--ink3); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-1px; font-family:inherit}
+  .tabs button.on{color:var(--ink); border-bottom-color:var(--ink); font-weight:600}
+  .split{display:grid; grid-template-columns:322px 1fr; gap:18px; align-items:start}
+  .list{background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden}
+  .item{padding:11px 14px; border-bottom:1px solid var(--line); cursor:pointer; display:flex; gap:10px; align-items:flex-start}
+  .item:last-child{border-bottom:none}
+  .item:hover{background:#FCFCFA}
+  .item.on{background:var(--blue-bg)}
+  .item .n{flex:1; min-width:0}
+  .item .s{font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .item .m{font-size:11px; color:var(--ink3); margin-top:2px}
+  .badge{font-size:11px; font-weight:600; padding:1px 7px; border-radius:99px; white-space:nowrap; font-variant-numeric:tabular-nums}
+  .b-teal{background:var(--teal-bg); color:var(--teal)}
+  .b-amber{background:var(--amber-bg); color:var(--amber)}
+  .b-red{background:var(--red-bg); color:var(--red)}
+  .b-gray{background:var(--soft); color:var(--ink3)}
+  .card{background:var(--card); border:1px solid var(--line2); border-radius:12px; overflow:hidden}
+  .card .top{display:flex; justify-content:space-between; gap:16px; padding:18px 22px; background:#FCFCFA; border-bottom:1px solid var(--line)}
+  .card .top .q b{display:block; font-size:15px; margin-bottom:4px; line-height:1.5}
+  .card .top .q .meta{font-size:12px; color:var(--ink3)}
+  .score{text-align:center; min-width:100px}
+  .score .n{font-size:40px; font-weight:600; line-height:1; font-variant-numeric:tabular-nums}
+  .score .n.na{font-size:20px; padding-top:10px; color:var(--ink3)}
+  .score .l{font-size:11px; color:var(--ink3); margin-top:6px}
+  .dims{padding:16px 22px 6px}
+  .dim{display:grid; grid-template-columns:76px 1fr 44px; gap:10px; align-items:center; font-size:12.5px; margin-bottom:10px; color:var(--ink2)}
+  .track{height:6px; background:#F0EFE9; border-radius:99px; overflow:hidden}
+  .track i{display:block; height:100%; border-radius:99px}
+  .dim .v{text-align:right; font-variant-numeric:tabular-nums; font-size:12px}
+  .verdict{padding:14px 22px; font-size:13px; line-height:1.75; border-top:1px solid var(--line); border-bottom:1px solid var(--line)}
+  .verdict b{font-weight:600}
+  .verdict .lead{display:inline-block; font-size:12px; font-weight:600; padding:1px 8px; border-radius:99px; margin-right:8px}
+  .evid{padding:14px 22px 18px}
+  .evid .h{font-size:11px; color:var(--ink3); letter-spacing:.05em; margin-bottom:8px}
+  .evid .e{font-size:12.5px; color:var(--ink2); background:#F7F6F1; border-radius:6px; padding:7px 11px; margin-bottom:6px; display:flex; justify-content:space-between; gap:12px}
+  .evid .e i{font-style:normal; color:var(--blue); white-space:nowrap}
+  .note{padding:11px 22px 16px; font-size:12px; color:var(--ink3); border-top:1px dashed var(--line)}
+  table{width:100%; border-collapse:collapse; font-size:13px; background:var(--card); border:1px solid var(--line); border-radius:10px; overflow:hidden}
+  th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--line)}
+  th{font-size:11.5px; color:var(--ink2); background:#F5F4EF; font-weight:600; white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  tbody tr{cursor:pointer}
+  tbody tr:hover{background:#FCFCFA}
+  .diag{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  .panel{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px 20px}
+  .panel h3{margin:0 0 12px; font-size:13px; font-weight:600}
+  .big{font-size:34px; font-weight:600; line-height:1.1; font-variant-numeric:tabular-nums}
+  .big.red{color:var(--red)}
+  .big em{font-style:normal; font-size:13px; color:var(--ink3); font-weight:400}
+  .ch{margin-bottom:11px}
+  .ch .r{display:flex; justify-content:space-between; font-size:12px; color:var(--ink2); margin-bottom:3px}
+  .empty{padding:40px; text-align:center; color:var(--ink3); font-size:13px; background:var(--card); border:1px dashed var(--line2); border-radius:12px}
+  .toast{font-size:12px; color:var(--blue); background:var(--blue-bg); border:1px solid #C9DCEF; border-radius:8px; padding:8px 12px; margin-bottom:14px}
+  footer{margin-top:34px; padding-top:16px; border-top:1px solid var(--line); font-size:11.5px; color:var(--ink3); display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px}
+  @media (max-width:820px){
+    .split,.diag{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr 1fr}
+    .app{padding:20px 14px 40px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div>
+      <div class="ttl">考研数学第二大脑<span class="ver">纠偏原型 v0.1</span></div>
+      <div class="sub">以 15 年真题的考法与思路为基准，判断这道题值不值得做</div>
+    </div>
+    <div class="ctrl">
+      <div class="seg" id="seg">
+        <button data-s="1">数一</button><button data-s="2">数二</button><button data-s="3">数三</button>
+      </div>
+      <span class="seed" title="仅用于验证判定链路，非经核对的真题库">SEED 示例语料</span>
+    </div>
+  </header>
+
+  <div id="toast"></div>
+  <div class="stats" id="stats"></div>
+  <nav class="tabs" id="tabs">
+    <button data-v="enter" class="on">录入确认</button>
+    <button data-v="bank">题库体检</button>
+    <button data-v="diag">诊断</button>
+  </nav>
+  <main id="view"></main>
+
+  <footer>
+    <span>考点树 110 叶子 · 真题语料 70 条 · 画像 35 个（考点 × 池）</span>
+    <span>数据结构与判定逻辑为正式版骨架，语料待替换</span>
+  </footer>
+</div>
+
+<script>const DATA = {"kp":[{"id":"GS","name":"高等数学","parent":null,"level":0,"block":"GS","scope":"123"},{"id":"GS01","name":"函数、极限与连续","parent":"GS","level":1,"block":"GS","scope":"123"},{"id":"GS01-01","name":"函数与数列极限","parent":"GS01","level":2,"block":"GS","scope":"123"},{"id":"GS01-01-01","name":"极限的定义与性质","parent":"GS01-01","level":3,"block":"GS","scope":"123"},{"id":"GS01-01-02","name":"数列极限存在性判定（单调有界）","parent":"GS01-01","level":3,"block":"GS","scope":"123"},{"id":"GS01-01-03","name":"夹逼准则","parent":"GS01-01","level":3,"block":"GS","scope":"123"},{"id":"GS01-01-04","name":"递推数列极限","parent":"GS01-01","level":3,"block":"GS","scope":"123"},{"id":"GS01-02","name":"函数极限与连续","parent":"GS01","level":2,"block":"GS","scope":"123"},{"id":"GS01-02-01","name":"等价无穷小替换","parent":"GS01-02","level":3,"block":"GS","scope":"123"},{"id":"GS01-02-02","name":"泰勒展开求极限","parent":"GS01-02","level":3,"block":"GS","scope":"123"},{"id":"GS01-02-03","name":"洛必达法则","parent":"GS01-02","level":3,"block":"GS","scope":"123"},{"id":"GS01-02-04","name":"无穷小阶的比较","parent":"GS01-02","level":3,"block":"GS","scope":"123"},{"id":"GS01-02-05","name":"连续性与间断点分类","parent":"GS01-02","level":3,"block":"GS","scope":"123"},{"id":"GS01-02-06","name":"闭区间连续函数性质","parent":"GS01-02","level":3,"block":"GS","scope":"123"},{"id":"GS02","name":"一元函数微分学","parent":"GS","level":1,"block":"GS","scope":"123"},{"id":"GS02-01","name":"导数与微分","parent":"GS02","level":2,"block":"GS","scope":"123"},{"id":"GS02-01-01","name":"导数定义与可导性判定","parent":"GS02-01","level":3,"block":"GS","scope":"123"},{"id":"GS02-01-02","name":"复合函数与隐函数求导","parent":"GS02-01","level":3,"block":"GS","scope":"123"},{"id":"GS02-01-03","name":"高阶导数","parent":"GS02-01","level":3,"block":"GS","scope":"123"},{"id":"GS02-01-04","name":"参数方程求导","parent":"GS02-01","level":3,"block":"GS","scope":"123"},{"id":"GS02-02","name":"中值定理与导数应用","parent":"GS02","level":2,"block":"GS","scope":"123"},{"id":"GS02-02-01","name":"罗尔定理","parent":"GS02-02","level":3,"block":"GS","scope":"123"},{"id":"GS02-02-02","name":"拉格朗日中值定理","parent":"GS02-02","level":3,"block":"GS","scope":"123"},{"id":"GS02-02-03","name":"柯西中值定理","parent":"GS02-02","level":3,"block":"GS","scope":"123"},{"id":"GS02-02-04","name":"泰勒中值定理","parent":"GS02-02","level":3,"block":"GS","scope":"123"},{"id":"GS02-02-05","name":"构造辅助函数证明","parent":"GS02-02","level":3,"block":"GS","scope":"123"},{"id":"GS02-02-06","name":"单调性与极值","parent":"GS02-02","level":3,"block":"GS","scope":"123"},{"id":"GS02-02-07","name":"凹凸性与拐点","parent":"GS02-02","level":3,"block":"GS","scope":"123"},{"id":"GS02-02-08","name":"渐近线","parent":"GS02-02","level":3,"block":"GS","scope":"123"},{"id":"GS02-02-09","name":"方程根的个数","parent":"GS02-02","level":3,"block":"GS","scope":"123"},{"id":"GS03","name":"一元函数积分学","parent":"GS","level":1,"block":"GS","scope":"123"},{"id":"GS03-01","name":"不定积分","parent":"GS03","level":2,"block":"GS","scope":"123"},{"id":"GS03-01-01","name":"换元积分法","parent":"GS03-01","level":3,"block":"GS","scope":"123"},{"id":"GS03-01-02","name":"分部积分法","parent":"GS03-01","level":3,"block":"GS","scope":"123"},{"id":"GS03-01-03","name":"有理函数积分","parent":"GS03-01","level":3,"block":"GS","scope":"123"},{"id":"GS03-02","name":"定积分","parent":"GS03","level":2,"block":"GS","scope":"123"},{"id":"GS03-02-01","name":"定积分性质与计算","parent":"GS03-02","level":3,"block":"GS","scope":"123"},{"id":"GS03-02-02","name":"变限积分求导","parent":"GS03-02","level":3,"block":"GS","scope":"123"},{"id":"GS03-02-03","name":"定积分几何应用","parent":"GS03-02","level":3,"block":"GS","scope":"123"},{"id":"GS03-02-04","name":"定积分物理应用","parent":"GS03-02","level":3,"block":"GS","scope":"12"},{"id":"GS03-02-05","name":"定积分经济应用","parent":"GS03-02","level":3,"block":"GS","scope":"3"},{"id":"GS03-02-06","name":"反常积分敛散性","parent":"GS03-02","level":3,"block":"GS","scope":"123"},{"id":"GS03-02-07","name":"定积分不等式证明","parent":"GS03-02","level":3,"block":"GS","scope":"123"},{"id":"GS04","name":"多元函数微分学","parent":"GS","level":1,"block":"GS","scope":"123"},{"id":"GS04-01","name":"偏导数与全微分","parent":"GS04","level":2,"block":"GS","scope":"123"},{"id":"GS04-01-01","name":"偏导数与全微分","parent":"GS04-01","level":3,"block":"GS","scope":"123"},{"id":"GS04-01-02","name":"多元复合与隐函数求导","parent":"GS04-01","level":3,"block":"GS","scope":"123"},{"id":"GS04-02","name":"多元函数极值","parent":"GS04","level":2,"block":"GS","scope":"123"},{"id":"GS04-02-01","name":"无条件极值","parent":"GS04-02","level":3,"block":"GS","scope":"123"},{"id":"GS04-02-02","name":"条件极值与拉格朗日乘数法","parent":"GS04-02","level":3,"block":"GS","scope":"123"},{"id":"GS04-02-03","name":"最值应用","parent":"GS04-02","level":3,"block":"GS","scope":"123"},{"id":"GS04-03","name":"方向导数与几何应用","parent":"GS04","level":2,"block":"GS","scope":"1"},{"id":"GS04-03-01","name":"方向导数与梯度","parent":"GS04-03","level":3,"block":"GS","scope":"1"},{"id":"GS04-03-02","name":"空间曲线曲面的切线与法平面","parent":"GS04-03","level":3,"block":"GS","scope":"1"},{"id":"GS05","name":"多元函数积分学","parent":"GS","level":1,"block":"GS","scope":"123"},{"id":"GS05-01","name":"二重积分","parent":"GS05","level":2,"block":"GS","scope":"123"},{"id":"GS05-01-01","name":"二重积分计算（直角坐标）","parent":"GS05-01","level":3,"block":"GS","scope":"123"},{"id":"GS05-01-02","name":"二重积分计算（极坐标）","parent":"GS05-01","level":3,"block":"GS","scope":"123"},{"id":"GS05-01-03","name":"交换积分次序","parent":"GS05-01","level":3,"block":"GS","scope":"123"},{"id":"GS05-01-04","name":"二重积分对称性","parent":"GS05-01","level":3,"block":"GS","scope":"123"},{"id":"GS05-02","name":"三重积分与曲线曲面积分","parent":"GS05","level":2,"block":"GS","scope":"1"},{"id":"GS05-02-01","name":"三重积分计算","parent":"GS05-02","level":3,"block":"GS","scope":"1"},{"id":"GS05-02-02","name":"曲线积分","parent":"GS05-02","level":3,"block":"GS","scope":"1"},{"id":"GS05-02-03","name":"曲面积分","parent":"GS05-02","level":3,"block":"GS","scope":"1"},{"id":"GS05-02-04","name":"高斯公式与斯托克斯公式","parent":"GS05-02","level":3,"block":"GS","scope":"1"},{"id":"GS05-02-05","name":"散度与旋度","parent":"GS05-02","level":3,"block":"GS","scope":"1"},{"id":"GS06","name":"无穷级数","parent":"GS","level":1,"block":"GS","scope":"13"},{"id":"GS06-01","name":"常数项级数","parent":"GS06","level":2,"block":"GS","scope":"13"},{"id":"GS06-01-01","name":"级数敛散性判定","parent":"GS06-01","level":3,"block":"GS","scope":"13"},{"id":"GS06-01-02","name":"正项级数判敛","parent":"GS06-01","level":3,"block":"GS","scope":"13"},{"id":"GS06-01-03","name":"交错级数与绝对收敛","parent":"GS06-01","level":3,"block":"GS","scope":"13"},{"id":"GS06-02","name":"幂级数","parent":"GS06","level":2,"block":"GS","scope":"13"},{"id":"GS06-02-01","name":"收敛半径与收敛域","parent":"GS06-02","level":3,"block":"GS","scope":"13"},{"id":"GS06-02-02","name":"幂级数求和函数","parent":"GS06-02","level":3,"block":"GS","scope":"13"},{"id":"GS06-02-03","name":"函数展开成幂级数","parent":"GS06-02","level":3,"block":"GS","scope":"13"},{"id":"GS06-03","name":"傅里叶级数","parent":"GS06","level":2,"block":"GS","scope":"1"},{"id":"GS06-03-01","name":"傅里叶级数展开","parent":"GS06-03","level":3,"block":"GS","scope":"1"},{"id":"GS07","name":"常微分方程","parent":"GS","level":1,"block":"GS","scope":"123"},{"id":"GS07-01","name":"一阶微分方程","parent":"GS07","level":2,"block":"GS","scope":"123"},{"id":"GS07-01-01","name":"可分离变量方程","parent":"GS07-01","level":3,"block":"GS","scope":"123"},{"id":"GS07-01-02","name":"一阶线性微分方程","parent":"GS07-01","level":3,"block":"GS","scope":"123"},{"id":"GS07-01-03","name":"齐次方程","parent":"GS07-01","level":3,"block":"GS","scope":"123"},{"id":"GS07-02","name":"高阶线性微分方程","parent":"GS07","level":2,"block":"GS","scope":"123"},{"id":"GS07-02-01","name":"二阶常系数齐次线性","parent":"GS07-02","level":3,"block":"GS","scope":"123"},{"id":"GS07-02-02","name":"二阶常系数非齐次","parent":"GS07-02","level":3,"block":"GS","scope":"123"},{"id":"GS07-02-03","name":"欧拉方程","parent":"GS07-02","level":3,"block":"GS","scope":"1"},{"id":"GS07-03","name":"微分方程应用","parent":"GS07","level":2,"block":"GS","scope":"123"},{"id":"GS07-03-01","name":"几何与物理应用","parent":"GS07-03","level":3,"block":"GS","scope":"123"},{"id":"GS08","name":"向量代数与空间解析几何","parent":"GS","level":1,"block":"GS","scope":"1"},{"id":"GS08-01","name":"向量与平面直线","parent":"GS08","level":2,"block":"GS","scope":"1"},{"id":"GS08-01-01","name":"向量运算与数量积向量积","parent":"GS08-01","level":3,"block":"GS","scope":"1"},{"id":"GS08-01-02","name":"平面与直线方程","parent":"GS08-01","level":3,"block":"GS","scope":"1"},{"id":"GS08-02","name":"曲面与空间曲线","parent":"GS08","level":2,"block":"GS","scope":"1"},{"id":"GS08-02-01","name":"常见曲面方程","parent":"GS08-02","level":3,"block":"GS","scope":"1"},{"id":"GS08-02-02","name":"空间曲线投影","parent":"GS08-02","level":3,"block":"GS","scope":"1"},{"id":"XD","name":"线性代数","parent":null,"level":0,"block":"XD","scope":"123"},{"id":"XD01","name":"行列式","parent":"XD","level":1,"block":"XD","scope":"123"},{"id":"XD01-01","name":"行列式性质与计算","parent":"XD01","level":2,"block":"XD","scope":"123"},{"id":"XD01-02","name":"代数余子式与展开","parent":"XD01","level":2,"block":"XD","scope":"123"},{"id":"XD01-03","name":"特殊行列式（范德蒙德）","parent":"XD01","level":2,"block":"XD","scope":"123"},{"id":"XD02","name":"矩阵","parent":"XD","level":1,"block":"XD","scope":"123"},{"id":"XD02-01","name":"矩阵运算","parent":"XD02","level":2,"block":"XD","scope":"123"},{"id":"XD02-02","name":"逆矩阵","parent":"XD02","level":2,"block":"XD","scope":"123"},{"id":"XD02-03","name":"伴随矩阵","parent":"XD02","level":2,"block":"XD","scope":"123"},{"id":"XD02-04","name":"矩阵的秩","parent":"XD02","level":2,"block":"XD","scope":"123"},{"id":"XD02-05","name":"初等变换与初等矩阵","parent":"XD02","level":2,"block":"XD","scope":"123"},{"id":"XD02-06","name":"分块矩阵","parent":"XD02","level":2,"block":"XD","scope":"123"},{"id":"XD03","name":"向量","parent":"XD","level":1,"block":"XD","scope":"123"},{"id":"XD03-01","name":"线性相关与线性无关","parent":"XD03","level":2,"block":"XD","scope":"123"},{"id":"XD03-02","name":"极大线性无关组与向量组秩","parent":"XD03","level":2,"block":"XD","scope":"123"},{"id":"XD03-03","name":"内积与正交规范化","parent":"XD03","level":2,"block":"XD","scope":"123"},{"id":"XD04","name":"线性方程组","parent":"XD","level":1,"block":"XD","scope":"123"},{"id":"XD04-01","name":"解的判定","parent":"XD04","level":2,"block":"XD","scope":"123"},{"id":"XD04-02","name":"齐次方程组解的结构","parent":"XD04","level":2,"block":"XD","scope":"123"},{"id":"XD04-03","name":"非齐次方程组解的结构","parent":"XD04","level":2,"block":"XD","scope":"123"},{"id":"XD05","name":"特征值与特征向量","parent":"XD","level":1,"block":"XD","scope":"123"},{"id":"XD05-01","name":"特征值与特征向量计算","parent":"XD05","level":2,"block":"XD","scope":"123"},{"id":"XD05-02","name":"相似对角化","parent":"XD05","level":2,"block":"XD","scope":"123"},{"id":"XD05-03","name":"实对称矩阵正交对角化","parent":"XD05","level":2,"block":"XD","scope":"123"},{"id":"XD06","name":"二次型","parent":"XD","level":1,"block":"XD","scope":"123"},{"id":"XD06-01","name":"二次型标准形","parent":"XD06","level":2,"block":"XD","scope":"123"},{"id":"XD06-02","name":"正定性判定","parent":"XD06","level":2,"block":"XD","scope":"123"},{"id":"XD06-03","name":"合同变换与惯性定理","parent":"XD06","level":2,"block":"XD","scope":"123"},{"id":"GL","name":"概率论与数理统计","parent":null,"level":0,"block":"GL","scope":"13"},{"id":"GL01","name":"随机事件与概率","parent":"GL","level":1,"block":"GL","scope":"13"},{"id":"GL01-01","name":"古典概型与几何概型","parent":"GL01","level":2,"block":"GL","scope":"13"},{"id":"GL01-02","name":"条件概率与乘法公式","parent":"GL01","level":2,"block":"GL","scope":"13"},{"id":"GL01-03","name":"全概率公式与贝叶斯","parent":"GL01","level":2,"block":"GL","scope":"13"},{"id":"GL01-04","name":"事件独立性","parent":"GL01","level":2,"block":"GL","scope":"13"},{"id":"GL02","name":"随机变量及其分布","parent":"GL","level":1,"block":"GL","scope":"13"},{"id":"GL02-01","name":"分布函数","parent":"GL02","level":2,"block":"GL","scope":"13"},{"id":"GL02-02","name":"离散型分布","parent":"GL02","level":2,"block":"GL","scope":"13"},{"id":"GL02-03","name":"连续型分布","parent":"GL02","level":2,"block":"GL","scope":"13"},{"id":"GL02-04","name":"随机变量函数的分布","parent":"GL02","level":2,"block":"GL","scope":"13"},{"id":"GL03","name":"多维随机变量","parent":"GL","level":1,"block":"GL","scope":"13"},{"id":"GL03-01","name":"联合分布与边缘分布","parent":"GL03","level":2,"block":"GL","scope":"13"},{"id":"GL03-02","name":"独立性判定","parent":"GL03","level":2,"block":"GL","scope":"13"},{"id":"GL03-03","name":"二维随机变量函数的分布","parent":"GL03","level":2,"block":"GL","scope":"13"},{"id":"GL03-04","name":"条件分布","parent":"GL03","level":2,"block":"GL","scope":"13"},{"id":"GL04","name":"数字特征","parent":"GL","level":1,"block":"GL","scope":"13"},{"id":"GL04-01","name":"期望与方差","parent":"GL04","level":2,"block":"GL","scope":"13"},{"id":"GL04-02","name":"协方差与相关系数","parent":"GL04","level":2,"block":"GL","scope":"13"},{"id":"GL04-03","name":"矩与切比雪夫不等式","parent":"GL04","level":2,"block":"GL","scope":"13"},{"id":"GL05","name":"大数定律与中心极限定理","parent":"GL","level":1,"block":"GL","scope":"13"},{"id":"GL05-01","name":"大数定律","parent":"GL05","level":2,"block":"GL","scope":"13"},{"id":"GL05-02","name":"中心极限定理","parent":"GL05","level":2,"block":"GL","scope":"13"},{"id":"GL06","name":"数理统计","parent":"GL","level":1,"block":"GL","scope":"13"},{"id":"GL06-01","name":"总体样本与统计量","parent":"GL06","level":2,"block":"GL","scope":"13"},{"id":"GL06-02","name":"三大抽样分布","parent":"GL06","level":2,"block":"GL","scope":"13"},{"id":"GL06-03","name":"矩估计","parent":"GL06","level":2,"block":"GL","scope":"13"},{"id":"GL06-04","name":"最大似然估计","parent":"GL06","level":2,"block":"GL","scope":"13"},{"id":"GL06-05","name":"估计量评价","parent":"GL06","level":2,"block":"GL","scope":"13"}],"syllabus":{"GS01-01-01":{"1":true,"2":true,"3":true},"GS01-01-02":{"1":true,"2":true,"3":true},"GS01-01-03":{"1":true,"2":true,"3":true},"GS01-01-04":{"1":true,"2":true,"3":true},"GS01-02-01":{"1":true,"2":true,"3":true},"GS01-02-02":{"1":true,"2":true,"3":true},"GS01-02-03":{"1":true,"2":true,"3":true},"GS01-02-04":{"1":true,"2":true,"3":true},"GS01-02-05":{"1":true,"2":true,"3":true},"GS01-02-06":{"1":true,"2":true,"3":true},"GS02-01-01":{"1":true,"2":true,"3":true},"GS02-01-02":{"1":true,"2":true,"3":true},"GS02-01-03":{"1":true,"2":true,"3":true},"GS02-01-04":{"1":true,"2":true,"3":true},"GS02-02-01":{"1":true,"2":true,"3":true},"GS02-02-02":{"1":true,"2":true,"3":true},"GS02-02-03":{"1":true,"2":true,"3":true},"GS02-02-04":{"1":true,"2":true,"3":true},"GS02-02-05":{"1":true,"2":true,"3":true},"GS02-02-06":{"1":true,"2":true,"3":true},"GS02-02-07":{"1":true,"2":true,"3":true},"GS02-02-08":{"1":true,"2":true,"3":true},"GS02-02-09":{"1":true,"2":true,"3":true},"GS03-01-01":{"1":true,"2":true,"3":true},"GS03-01-02":{"1":true,"2":true,"3":true},"GS03-01-03":{"1":true,"2":true,"3":true},"GS03-02-01":{"1":true,"2":true,"3":true},"GS03-02-02":{"1":true,"2":true,"3":true},"GS03-02-03":{"1":true,"2":true,"3":true},"GS03-02-04":{"1":true,"2":true,"3":false},"GS03-02-05":{"1":false,"2":false,"3":true},"GS03-02-06":{"1":true,"2":true,"3":true},"GS03-02-07":{"1":true,"2":true,"3":true},"GS04-01-01":{"1":true,"2":true,"3":true},"GS04-01-02":{"1":true,"2":true,"3":true},"GS04-02-01":{"1":true,"2":true,"3":true},"GS04-02-02":{"1":true,"2":true,"3":true},"GS04-02-03":{"1":true,"2":true,"3":true},"GS04-03-01":{"1":true,"2":false,"3":false},"GS04-03-02":{"1":true,"2":false,"3":false},"GS05-01-01":{"1":true,"2":true,"3":true},"GS05-01-02":{"1":true,"2":true,"3":true},"GS05-01-03":{"1":true,"2":true,"3":true},"GS05-01-04":{"1":true,"2":true,"3":true},"GS05-02-01":{"1":true,"2":false,"3":false},"GS05-02-02":{"1":true,"2":false,"3":false},"GS05-02-03":{"1":true,"2":false,"3":false},"GS05-02-04":{"1":true,"2":false,"3":false},"GS05-02-05":{"1":true,"2":false,"3":false},"GS06-01-01":{"1":true,"2":false,"3":true},"GS06-01-02":{"1":true,"2":false,"3":true},"GS06-01-03":{"1":true,"2":false,"3":true},"GS06-02-01":{"1":true,"2":false,"3":true},"GS06-02-02":{"1":true,"2":false,"3":true},"GS06-02-03":{"1":true,"2":false,"3":true},"GS06-03-01":{"1":true,"2":false,"3":false},"GS07-01-01":{"1":true,"2":true,"3":true},"GS07-01-02":{"1":true,"2":true,"3":true},"GS07-01-03":{"1":true,"2":true,"3":true},"GS07-02-01":{"1":true,"2":true,"3":true},"GS07-02-02":{"1":true,"2":true,"3":true},"GS07-02-03":{"1":true,"2":false,"3":false},"GS07-03-01":{"1":true,"2":true,"3":true},"GS08-01-01":{"1":true,"2":false,"3":false},"GS08-01-02":{"1":true,"2":false,"3":false},"GS08-02-01":{"1":true,"2":false,"3":false},"GS08-02-02":{"1":true,"2":false,"3":false},"XD01-01":{"1":true,"2":true,"3":true},"XD01-02":{"1":true,"2":true,"3":true},"XD01-03":{"1":true,"2":true,"3":true},"XD02-01":{"1":true,"2":true,"3":true},"XD02-02":{"1":true,"2":true,"3":true},"XD02-03":{"1":true,"2":true,"3":true},"XD02-04":{"1":true,"2":true,"3":true},"XD02-05":{"1":true,"2":true,"3":true},"XD02-06":{"1":true,"2":true,"3":true},"XD03-01":{"1":true,"2":true,"3":true},"XD03-02":{"1":true,"2":true,"3":true},"XD03-03":{"1":true,"2":true,"3":true},"XD04-01":{"1":true,"2":true,"3":true},"XD04-02":{"1":true,"2":true,"3":true},"XD04-03":{"1":true,"2":true,"3":true},"XD05-01":{"1":true,"2":true,"3":true},"XD05-02":{"1":true,"2":true,"3":true},"XD05-03":{"1":true,"2":true,"3":true},"XD06-01":{"1":true,"2":true,"3":true},"XD06-02":{"1":true,"2":true,"3":true},"XD06-03":{"1":true,"2":true,"3":true},"GL01-01":{"1":true,"2":false,"3":true},"GL01-02":{"1":true,"2":false,"3":true},"GL01-03":{"1":true,"2":false,"3":true},"GL01-04":{"1":true,"2":false,"3":true},"GL02-01":{"1":true,"2":false,"3":true},"GL02-02":{"1":true,"2":false,"3":true},"GL02-03":{"1":true,"2":false,"3":true},"GL02-04":{"1":true,"2":false,"3":true},"GL03-01":{"1":true,"2":false,"3":true},"GL03-02":{"1":true,"2":false,"3":true},"GL03-03":{"1":true,"2":false,"3":true},"GL03-04":{"1":true,"2":false,"3":true},"GL04-01":{"1":true,"2":false,"3":true},"GL04-02":{"1":true,"2":false,"3":true},"GL04-03":{"1":true,"2":false,"3":true},"GL05-01":{"1":true,"2":false,"3":true},"GL05-02":{"1":true,"2":false,"3":true},"GL06-01":{"1":true,"2":false,"3":true},"GL06-02":{"1":true,"2":false,"3":true},"GL06-03":{"1":true,"2":false,"3":true},"GL06-04":{"1":true,"2":false,"3":true},"GL06-05":{"1":true,"2":false,"3":true},"GS01":{"1":false,"2":false,"3":false},"GS02":{"1":false,"2":false,"3":false},"GS03":{"1":false,"2":false,"3":false},"GS04":{"1":false,"2":false,"3":false},"GS05":{"1":false,"2":false,"3":false},"GS06":{"1":false,"2":false,"3":false},"GS07":{"1":false,"2":false,"3":false},"GS08":{"1":false,"2":false,"3":false},"GS":{"1":false,"2":false,"3":false},"GS01-01":{},"GS01-02":{},"GS02-01":{},"GS02-02":{},"GS03-01":{},"GS03-02":{},"GS04-01":{},"GS04-02":{},"GS04-03":{},"GS05-01":{},"GS05-02":{},"GS06-01":{},"GS06-02":{},"GS06-03":{},"GS07-01":{},"GS07-02":{},"GS07-03":{},"GS08-01":{},"GS08-02":{},"XD01":{"1":true,"2":true,"3":true},"XD02":{"1":true,"2":true,"3":true},"XD03":{"1":true,"2":true,"3":true},"XD04":{"1":true,"2":true,"3":true},"XD05":{"1":true,"2":true,"3":true},"XD06":{"1":true,"2":true,"3":true},"XD":{"1":false,"2":false,"3":false},"GL01":{"1":true,"2":false,"3":true},"GL02":{"1":true,"2":false,"3":true},"GL03":{"1":true,"2":false,"3":true},"GL04":{"1":true,"2":false,"3":true},"GL05":{"1":true,"2":false,"3":true},"GL06":{"1":true,"2":false,"3":true},"GL":{"1":false,"2":false,"3":false}},"exams":[{"id":"E001","y":2011,"s":1,"no":"19","kp":"GS01-01-02","m":"直接计算","f":"主族","d":2,"c":2,"stem":"数列极限的计算"},{"id":"E002","y":2014,"s":3,"no":"15","kp":"GS01-01-02","m":"直接计算","f":"主族","d":2,"c":2,"stem":"数列极限的计算"},{"id":"E003","y":2016,"s":1,"no":"15","kp":"GS01-01-02","m":"直接计算","f":"主族","d":3,"c":3,"stem":"数列极限的计算"},{"id":"E004","y":2017,"s":2,"no":"17","kp":"GS01-01-02","m":"直接计算","f":"主族","d":3,"c":3,"stem":"数列极限的计算"},{"id":"E005","y":2019,"s":1,"no":"15","kp":"GS01-01-02","m":"直接计算","f":"主族","d":3,"c":3,"stem":"数列极限的计算"},{"id":"E006","y":2020,"s":3,"no":"19","kp":"GS01-01-02","m":"直接计算","f":"主族","d":3,"c":3,"stem":"数列极限的计算"},{"id":"E007","y":2022,"s":1,"no":"19","kp":"GS01-01-02","m":"直接计算","f":"主族","d":3,"c":3,"stem":"数列极限的计算"},{"id":"E008","y":2023,"s":1,"no":"19","kp":"GS01-01-02","m":"证明","f":"次族","d":4,"c":3,"stem":"用单调有界准则证明数列收敛"},{"id":"E009","y":2025,"s":1,"no":"18","kp":"GS01-01-02","m":"直接计算","f":"主族","d":3,"c":3,"stem":"数列极限的计算"},{"id":"E010","y":2013,"s":1,"no":"18","kp":"GS05-02-01","m":"直接计算","f":"主族","d":4,"c":4,"stem":"三重积分化为累次积分计算"},{"id":"E011","y":2016,"s":1,"no":"16","kp":"GS05-02-01","m":"直接计算","f":"主族","d":3,"c":4,"stem":"三重积分计算"},{"id":"E012","y":2018,"s":1,"no":"17","kp":"GS05-02-01","m":"直接计算","f":"主族","d":4,"c":4,"stem":"三重积分柱坐标计算"},{"id":"E013","y":2019,"s":1,"no":"20","kp":"GS05-02-01","m":"直接计算","f":"主族","d":4,"c":4,"stem":"三重积分计算"},{"id":"E014","y":2021,"s":1,"no":"15","kp":"GS05-02-01","m":"直接计算","f":"主族","d":3,"c":3,"stem":"三重积分计算"},{"id":"E015","y":2022,"s":1,"no":"19","kp":"GS05-02-01","m":"直接计算","f":"主族","d":4,"c":4,"stem":"三重积分计算"},{"id":"E016","y":2015,"s":1,"no":"17","kp":"GS04-02-02","m":"应用","f":"主族","d":3,"c":3,"stem":"条件极值应用（拉格朗日乘数法）"},{"id":"E017","y":2018,"s":2,"no":"18","kp":"GS04-02-02","m":"应用","f":"主族","d":4,"c":4,"stem":"条件极值应用"},{"id":"E018","y":2020,"s":1,"no":"18","kp":"GS04-02-02","m":"应用","f":"主族","d":4,"c":4,"stem":"条件极值应用"},{"id":"E019","y":2023,"s":3,"no":"18","kp":"GS04-02-02","m":"应用","f":"主族","d":4,"c":4,"stem":"条件极值应用"},{"id":"E020","y":2016,"s":1,"no":"19","kp":"GS06-03-01","m":"直接计算","f":"主族","d":4,"c":3,"stem":"函数展开成傅里叶级数"},{"id":"E021","y":2020,"s":1,"no":"19","kp":"GS06-03-01","m":"直接计算","f":"主族","d":4,"c":4,"stem":"傅里叶级数收敛性"},{"id":"E022","y":2024,"s":1,"no":"19","kp":"GS06-03-01","m":"直接计算","f":"主族","d":4,"c":4,"stem":"傅里叶级数展开"},{"id":"E023","y":2012,"s":1,"no":"18","kp":"GS02-02-05","m":"证明","f":"主族","d":4,"c":2,"stem":"构造辅助函数证明不等式"},{"id":"E024","y":2015,"s":3,"no":"18","kp":"GS02-02-05","m":"证明","f":"主族","d":4,"c":2,"stem":"构造辅助函数证明等式"},{"id":"E025","y":2019,"s":3,"no":"19","kp":"GS02-02-05","m":"证明","f":"主族","d":5,"c":3,"stem":"构造辅助函数证明"},{"id":"E026","y":2021,"s":2,"no":"20","kp":"GS02-02-05","m":"证明","f":"主族","d":5,"c":3,"stem":"构造辅助函数证明"},{"id":"E027","y":2024,"s":2,"no":"20","kp":"GS02-02-05","m":"证明","f":"主族","d":5,"c":3,"stem":"构造辅助函数证明"},{"id":"E028","y":2013,"s":3,"no":"16","kp":"GS03-02-02","m":"直接计算","f":"主族","d":3,"c":2,"stem":"变限积分求导"},{"id":"E029","y":2017,"s":1,"no":"15","kp":"GS03-02-02","m":"直接计算","f":"主族","d":3,"c":2,"stem":"变限积分求导"},{"id":"E030","y":2020,"s":3,"no":"16","kp":"GS03-02-02","m":"直接计算","f":"主族","d":3,"c":2,"stem":"变限积分求导"},{"id":"E031","y":2023,"s":2,"no":"15","kp":"GS03-02-02","m":"直接计算","f":"主族","d":3,"c":2,"stem":"变限积分求导"},{"id":"E032","y":2012,"s":1,"no":"20","kp":"XD06-02","m":"概念辨析","f":"主族","d":3,"c":2,"stem":"判定二次型正定性"},{"id":"E033","y":2015,"s":2,"no":"21","kp":"XD06-02","m":"概念辨析","f":"主族","d":4,"c":2,"stem":"正定性判定与参数范围"},{"id":"E034","y":2018,"s":3,"no":"20","kp":"XD06-02","m":"概念辨析","f":"主族","d":3,"c":2,"stem":"正定性判定"},{"id":"E035","y":2021,"s":1,"no":"20","kp":"XD06-02","m":"概念辨析","f":"主族","d":4,"c":2,"stem":"正定性判定"},{"id":"E036","y":2023,"s":3,"no":"20","kp":"XD06-02","m":"概念辨析","f":"主族","d":4,"c":2,"stem":"正定性判定"},{"id":"E037","y":2025,"s":2,"no":"21","kp":"XD06-02","m":"证明","f":"次族","d":5,"c":3,"stem":"正定性的证明"},{"id":"E038","y":2014,"s":1,"no":"22","kp":"GL04-01","m":"直接计算","f":"主族","d":3,"c":3,"stem":"期望与方差计算"},{"id":"E039","y":2017,"s":3,"no":"22","kp":"GL04-01","m":"直接计算","f":"主族","d":3,"c":3,"stem":"期望与方差计算"},{"id":"E040","y":2020,"s":1,"no":"22","kp":"GL04-01","m":"直接计算","f":"主族","d":3,"c":3,"stem":"随机变量函数的期望"},{"id":"E041","y":2022,"s":3,"no":"22","kp":"GL04-01","m":"直接计算","f":"主族","d":4,"c":4,"stem":"期望与方差计算"},{"id":"E042","y":2025,"s":1,"no":"22","kp":"GL04-01","m":"直接计算","f":"主族","d":4,"c":4,"stem":"二维随机变量的数字特征"},{"id":"E043","y":2014,"s":2,"no":"19","kp":"GS05-01-02","m":"直接计算","f":"主族","d":3,"c":3,"stem":"二重积分极坐标计算"},{"id":"E044","y":2018,"s":3,"no":"17","kp":"GS05-01-02","m":"直接计算","f":"主族","d":3,"c":3,"stem":"二重积分极坐标计算"},{"id":"E045","y":2021,"s":2,"no":"18","kp":"GS05-01-02","m":"直接计算","f":"主族","d":4,"c":4,"stem":"二重积分极坐标计算"},{"id":"E046","y":2024,"s":1,"no":"18","kp":"GS05-01-02","m":"直接计算","f":"主族","d":3,"c":3,"stem":"二重积分计算"},{"id":"E047","y":2015,"s":1,"no":"16","kp":"GS06-01-02","m":"概念辨析","f":"主族","d":3,"c":2,"stem":"正项级数判敛"},{"id":"E048","y":2019,"s":3,"no":"16","kp":"GS06-01-02","m":"概念辨析","f":"主族","d":3,"c":2,"stem":"正项级数判敛"},{"id":"E049","y":2022,"s":3,"no":"16","kp":"GS06-01-02","m":"概念辨析","f":"主族","d":3,"c":2,"stem":"正项级数判敛"},{"id":"E050","y":2025,"s":3,"no":"17","kp":"GS06-01-02","m":"概念辨析","f":"次族","d":4,"c":2,"stem":"级数敛散性辨析"},{"id":"E051","y":2015,"s":2,"no":"16","kp":"GS03-02-02","m":"直接计算","f":"主族","d":3,"c":2,"stem":"变限积分求导"},{"id":"E052","y":2025,"s":1,"no":"15","kp":"GS03-02-02","m":"直接计算","f":"主族","d":3,"c":2,"stem":"变限积分与极限"},{"id":"E053","y":2013,"s":1,"no":"16","kp":"GS06-01-02","m":"概念辨析","f":"主族","d":3,"c":2,"stem":"正项级数判敛"},{"id":"E054","y":2024,"s":3,"no":"16","kp":"GS06-01-02","m":"概念辨析","f":"主族","d":3,"c":2,"stem":"正项级数判敛"},{"id":"E055","y":2012,"s":2,"no":"18","kp":"GS04-02-02","m":"应用","f":"主族","d":3,"c":3,"stem":"条件极值应用"},{"id":"E056","y":2025,"s":3,"no":"19","kp":"GS04-02-02","m":"应用","f":"主族","d":4,"c":4,"stem":"条件极值应用"},{"id":"E057","y":2012,"s":3,"no":"18","kp":"GS05-01-02","m":"直接计算","f":"主族","d":3,"c":3,"stem":"二重积分极坐标计算"},{"id":"E058","y":2025,"s":2,"no":"19","kp":"GS05-01-02","m":"直接计算","f":"主族","d":4,"c":4,"stem":"二重积分计算"},{"id":"E059","y":2013,"s":1,"no":"15","kp":"GS01-01-03","m":"直接计算","f":"主族","d":3,"c":2,"stem":"用夹逼准则求极限"},{"id":"E060","y":2016,"s":3,"no":"15","kp":"GS01-01-03","m":"直接计算","f":"主族","d":3,"c":2,"stem":"用夹逼准则求极限"},{"id":"E061","y":2018,"s":2,"no":"15","kp":"GS01-01-03","m":"直接计算","f":"主族","d":3,"c":2,"stem":"用夹逼准则求极限"},{"id":"E062","y":2021,"s":1,"no":"17","kp":"GS01-01-03","m":"直接计算","f":"主族","d":3,"c":3,"stem":"夹逼与定积分定义求极限"},{"id":"E063","y":2024,"s":2,"no":"16","kp":"GS01-01-03","m":"直接计算","f":"主族","d":3,"c":2,"stem":"用夹逼准则求极限"},{"id":"E064","y":2012,"s":1,"no":"17","kp":"GS05-02-02","m":"直接计算","f":"主族","d":4,"c":4,"stem":"第二类曲线积分计算"},{"id":"E065","y":2015,"s":1,"no":"19","kp":"GS05-02-02","m":"直接计算","f":"主族","d":4,"c":4,"stem":"格林公式计算曲线积分"},{"id":"E066","y":2018,"s":1,"no":"19","kp":"GS05-02-02","m":"直接计算","f":"主族","d":4,"c":4,"stem":"曲线积分与路径无关"},{"id":"E067","y":2020,"s":1,"no":"17","kp":"GS05-02-02","m":"直接计算","f":"主族","d":4,"c":4,"stem":"第二类曲线积分计算"},{"id":"E068","y":2024,"s":1,"no":"17","kp":"GS05-02-02","m":"直接计算","f":"主族","d":4,"c":4,"stem":"曲线积分计算"},{"id":"E069","y":2012,"s":1,"no":"19","kp":"GS06-03-01","m":"直接计算","f":"主族","d":4,"c":3,"stem":"函数展开成傅里叶级数"},{"id":"E070","y":2018,"s":1,"no":"19","kp":"GS06-03-01","m":"直接计算","f":"主族","d":4,"c":4,"stem":"傅里叶级数与级数求和"}],"profile":{"GS01-01-02|GS_1":{"n":6,"wc":7.2,"method":{"直接计算":0.7917,"证明":0.2083},"family":{"主族":0.7917,"次族":0.2083},"dmin":2,"dmax":4,"last":2025},"GS01-01-02|GS_ALL":{"n":9,"wc":9.9,"method":{"直接计算":0.8485,"证明":0.1515},"family":{"主族":0.8485,"次族":0.1515},"dmin":2,"dmax":4,"last":2025},"GS01-01-02|GS_3":{"n":2,"wc":1.7,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":2,"dmax":3,"last":2020},"GS01-01-02|GS_2":{"n":1,"wc":1.0,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":3,"last":2017},"GS05-02-01|GS_1":{"n":6,"wc":6.7,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":4,"last":2022},"GS05-02-01|GS_ALL":{"n":6,"wc":6.7,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":4,"last":2022},"GS04-02-02|GS_1":{"n":2,"wc":1.7,"method":{"应用":1.0},"family":{"主族":1.0},"dmin":3,"dmax":4,"last":2020},"GS04-02-02|GS_ALL":{"n":6,"wc":6.4,"method":{"应用":1.0},"family":{"主族":1.0},"dmin":3,"dmax":4,"last":2025},"GS04-02-02|GS_2":{"n":2,"wc":1.7,"method":{"应用":1.0},"family":{"主族":1.0},"dmin":3,"dmax":4,"last":2018},"GS04-02-02|GS_3":{"n":2,"wc":3.0,"method":{"应用":1.0},"family":{"主族":1.0},"dmin":4,"dmax":4,"last":2025},"GS06-03-01|GS_1":{"n":5,"wc":5.2,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":4,"dmax":4,"last":2024},"GS06-03-01|GS_ALL":{"n":5,"wc":5.2,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":4,"dmax":4,"last":2024},"GS02-02-05|GS_1":{"n":1,"wc":0.7,"method":{"证明":1.0},"family":{"主族":1.0},"dmin":4,"dmax":4,"last":2012},"GS02-02-05|GS_ALL":{"n":5,"wc":5.4,"method":{"证明":1.0},"family":{"主族":1.0},"dmin":4,"dmax":5,"last":2024},"GS02-02-05|GS_3":{"n":2,"wc":1.7,"method":{"证明":1.0},"family":{"主族":1.0},"dmin":4,"dmax":5,"last":2019},"GS02-02-05|GS_2":{"n":2,"wc":3.0,"method":{"证明":1.0},"family":{"主族":1.0},"dmin":5,"dmax":5,"last":2024},"GS03-02-02|GS_3":{"n":2,"wc":1.7,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":3,"last":2020},"GS03-02-02|GS_ALL":{"n":6,"wc":6.4,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":3,"last":2025},"GS03-02-02|GS_1":{"n":2,"wc":2.5,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":3,"last":2025},"GS03-02-02|GS_2":{"n":2,"wc":2.2,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":3,"last":2023},"XD06-02|XD_ALL":{"n":6,"wc":6.9,"method":{"概念辨析":0.7826,"证明":0.2174},"family":{"主族":0.7826,"次族":0.2174},"dmin":3,"dmax":5,"last":2025},"GL04-01|GL_13":{"n":5,"wc":5.7,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":4,"last":2025},"GS05-01-02|GS_2":{"n":3,"wc":3.7,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":4,"last":2025},"GS05-01-02|GS_ALL":{"n":6,"wc":6.9,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":4,"last":2025},"GS05-01-02|GS_3":{"n":2,"wc":1.7,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":3,"last":2018},"GS05-01-02|GS_1":{"n":1,"wc":1.5,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":3,"last":2024},"GS06-01-02|GS_1":{"n":2,"wc":1.4,"method":{"概念辨析":1.0},"family":{"主族":1.0},"dmin":3,"dmax":3,"last":2015},"GS06-01-02|GS_ALL":{"n":6,"wc":6.9,"method":{"概念辨析":1.0},"family":{"主族":0.7826,"次族":0.2174},"dmin":3,"dmax":4,"last":2025},"GS06-01-02|GS_3":{"n":4,"wc":5.5,"method":{"概念辨析":1.0},"family":{"主族":0.7273,"次族":0.2727},"dmin":3,"dmax":4,"last":2025},"GS01-01-03|GS_1":{"n":2,"wc":2.2,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":3,"last":2021},"GS01-01-03|GS_ALL":{"n":5,"wc":5.7,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":3,"last":2024},"GS01-01-03|GS_3":{"n":1,"wc":1.0,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":3,"last":2016},"GS01-01-03|GS_2":{"n":2,"wc":2.5,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":3,"dmax":3,"last":2024},"GS05-02-02|GS_1":{"n":5,"wc":4.9,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":4,"dmax":4,"last":2024},"GS05-02-02|GS_ALL":{"n":5,"wc":4.9,"method":{"直接计算":1.0},"family":{"主族":1.0},"dmin":4,"dmax":4,"last":2024}},"questions":[{"id":"Q01","stem":"计算三重积分，区域由锥面与球面围成","source":"习题册 P118-07","kp":"GS05-02-01","m":"直接计算","f":"主族","d":4,"c":4,"mastery":0.58,"minutes":18,"date":"2026-11-02"},{"id":"Q02","stem":"设 a₁=1，aₙ₊₁=aₙ+1/aₙ，证明 {aₙ} 发散","source":"习题册 P74-12","kp":"GS01-01-02","m":"证明","f":"族外","d":4,"c":2,"mastery":0.2,"minutes":25,"date":"2026-11-03"},{"id":"Q03","stem":"求椭球面上一点到平面距离的最大值","source":"2024 模拟卷 18","kp":"GS04-02-02","m":"应用","f":"主族","d":4,"c":4,"mastery":0.6,"minutes":15,"date":"2026-11-01"},{"id":"Q04","stem":"判定含参二次型的正定性，求参数范围","source":"1800 题 P133-21","kp":"XD06-02","m":"概念辨析","f":"主族","d":4,"c":2,"mastery":0.71,"minutes":12,"date":"2026-10-29"},{"id":"Q05","stem":"将函数展开成傅里叶级数并求特定级数和","source":"教材习题 12-7","kp":"GS06-03-01","m":"直接计算","f":"主族","d":4,"c":4,"mastery":0.2,"minutes":20,"date":"2026-11-04"},{"id":"Q06","stem":"变限积分与极限综合，求参数","source":"真题改编","kp":"GS03-02-02","m":"直接计算","f":"主族","d":3,"c":2,"mastery":0.8,"minutes":8,"date":"2026-10-31"},{"id":"Q07","stem":"构造辅助函数证明存在 ξ 使等式成立","source":"1000 题 P61-18","kp":"GS02-02-05","m":"证明","f":"主族","d":5,"c":3,"mastery":0.2,"minutes":30,"date":"2026-11-05"},{"id":"Q08","stem":"二维随机变量的期望与方差","source":"真题改编","kp":"GL04-01","m":"直接计算","f":"主族","d":4,"c":4,"mastery":0.66,"minutes":14,"date":"2026-10-28"},{"id":"Q09","stem":"用夹逼与精细放缩证明数列极限为 0","source":"竞赛题选 P22-6","kp":"GS01-01-03","m":"证明","f":"族外","d":5,"c":3,"mastery":0.2,"minutes":35,"date":"2026-11-05"},{"id":"Q10","stem":"极坐标下计算二重积分，区域为圆环扇形","source":"1800 题 P102-13","kp":"GS05-01-02","m":"直接计算","f":"主族","d":3,"c":3,"mastery":0.75,"minutes":10,"date":"2026-10-30"},{"id":"Q11","stem":"判断正项级数敛散性（含参比较判别）","source":"1000 题 P88-09","kp":"GS06-01-02","m":"概念辨析","f":"次族","d":4,"c":2,"mastery":0.4,"minutes":22,"date":"2026-11-03"},{"id":"Q12","stem":"计算第二类曲线积分，用格林公式","source":"习题册 P126-05","kp":"GS05-02-02","m":"直接计算","f":"主族","d":4,"c":4,"mastery":0.3,"minutes":26,"date":"2026-11-02"}],"meta":{"version":"0.1","built":"2026-11-06","seed":true}};</script>
+<script>
+const {kp, syllabus, exams, profile, questions} = DATA;
+const KP = Object.fromEntries(kp.map(n => [n.id, n]));
+const SUBJ = {1: "数一", 2: "数二", 3: "数三"};
+const POOLNAME = {"GS_1": "数一高数池", "GS_2": "数二高数池", "GS_3": "数三高数池", "GS_ALL": "高数三卷合并池", "XD_ALL": "线代三卷合并池", "GL_13": "概率数一三合并池"};
+
+const state = {subject: 1, view: "enter", sel: null, lastMsg: ""};
+
+function poolOf(kpId, s) {
+  const b = KP[kpId].block;
+  if (b === "XD") return "XD_ALL";
+  if (b === "GL") return "GL_13";
+  return "GS_" + s;
+}
+function inScope(kpId, s) {
+  const m = syllabus[kpId];
+  return !!(m && m[s]);
+}
+function chapterOf(id) {
+  let n = KP[id];
+  while (n && n.level > 1) n = KP[n.parent];
+  return n ? n.name : "—";
+}
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+
+function judge(q, s) {
+  const k = KP[q.kp];
+  const base = {q, s, kp: k, pool: poolOf(q.kp, s), dims: null, evidence: [], lowSample: false};
+  if (!inScope(q.kp, s)) {
+    return {...base, score: 0, verdict: "超纲", reason: `「${k.name}」不在${SUBJ[s]}的考查范围内，大纲白名单直接否决。`};
+  }
+  const pOwn = profile[q.kp + "|" + base.pool];
+  if (!pOwn) {
+    return {...base, score: null, verdict: "数据不足", reason: `该考点在${POOLNAME[base.pool]}没有真题样本，无法判定。`};
+  }
+  // 本池样本不足时，考法与难度退回跨卷合并池借分布；热度必须用本卷事实
+  let p = pOwn, usedPool = base.pool, lowSample = false;
+  if (pOwn.n < 5) {
+    const alt = profile[q.kp + "|GS_ALL"];
+    if (alt && alt.n >= 5 && KP[q.kp].block === "GS") { p = alt; usedPool = "GS_ALL"; lowSample = true; }
+  }
+  if (p.n < 5) {
+    return {...base, score: null, verdict: "数据不足", reason: `该考点在${POOLNAME[base.pool]}仅 ${pOwn.n} 条样本，退回合并池仍不足 5 条，不做判定。`};
+  }
+  const wcH = lowSample ? p.wc / 3 : pOwn.wc;  // 本池样本不足时，用合并池折算单卷频次
+  const H = clamp(wcH / 15 * 100, 0, 100);
+  const M = (p.method[q.m] || 0) * 100;
+  const P = {"主族": 100, "次族": 60, "族外": 20}[q.f] ?? 20;
+  let D = 100;
+  if (q.d < p.dmin) D = clamp(100 - (p.dmin - q.d) * 40, 0, 100);
+  if (q.d > p.dmax) D = clamp(100 - (q.d - p.dmax) * 40, 0, 100);
+  const score = Math.round(0.3 * H + 0.3 * M + 0.25 * P + 0.15 * D);
+  let verdict = "偏题";
+  if (score >= 85) verdict = "真题同源";
+  else if (score >= 65) verdict = "常规练习";
+  else if (score >= 45) verdict = "轻微偏离";
+  else if (score >= 25) verdict = "考法偏离";
+
+  const methodList = Object.entries(p.method).sort((a, b) => b[1] - a[1]);
+  const top = methodList[0] || ["—", 0];
+  const ev = exams
+    .filter(e => e.kp === q.kp && poolOf(e.kp, e.s) === base.pool)
+    .sort((a, b) => b.y - a.y)
+    .slice(0, 3);
+
+  let reason = `「${k.name}」在${POOLNAME[usedPool]}出现 ${p.n} 次（时间衰减加权 ${p.wc}），最主流考法是「${top[0]}」（占 ${Math.round(top[1] * 100)}%）；本题考法为「${q.m}」（占 ${Math.round(M)}%）。`;
+  if (q.f === "族外") reason += "本题的最优解法属族外（技巧性解法），不在该考点的真题标准思路族内。";
+  if (lowSample) reason += ` 注意：${POOLNAME[base.pool]}仅 ${pOwn.n} 条样本，考法分布借用合并池，置信度已下调。`;
+
+  return {...base, score, verdict, dims: {H, M, P, D}, evidence: ev, lowSample, usedPool, reason};
+}
+
+function tone(v) {
+  if (v === "超纲" || v === "偏题") return "red";
+  if (v === "考法偏离" || v === "轻微偏离") return "amber";
+  if (v === "真题同源" || v === "常规练习") return "teal";
+  return "gray";
+}
+const scoreColor = t => t === "red" ? "var(--red)" : t === "amber" ? "var(--amber)" : "var(--teal)";
+
+function renderStats() {
+  const s = state.subject;
+  const js = questions.map(q => judge(q, s));
+  const over = js.filter(x => x.verdict === "超纲").length;
+  const scored = js.filter(x => x.score !== null && x.score > 0);
+  const avg = scored.length ? Math.round(scored.reduce((a, b) => a + b.score, 0) / scored.length) : 0;
+  const totalMin = questions.reduce((a, q) => a + q.minutes, 0);
+  const offMin = js.filter(x => x.score === null || x.score < 45).reduce((a, x) => a + x.q.minutes, 0);
+  const pct = totalMin ? Math.round(offMin / totalMin * 100) : 0;
+  document.getElementById("stats").innerHTML = `
+    <div class="stat"><div class="k">${SUBJ[s]} · 题库题量</div><div class="v">${questions.length}<small>题</small></div></div>
+    <div class="stat"><div class="k">超纲（白名单否决）</div><div class="v" style="color:${over ? "var(--red)" : "var(--ink)"}">${over}<small>题</small></div></div>
+    <div class="stat"><div class="k">平均贴合度</div><div class="v">${avg}<small>/100</small></div></div>
+    <div class="stat"><div class="k">偏离题占用练习时间</div><div class="v" style="color:${pct > 25 ? "var(--red)" : "var(--ink)"}">${pct}<small>%</small></div></div>`;
+}
+
+function dimRow(label, val, hint) {
+  const w = Math.round(clamp(val, 0, 100));
+  const c = w >= 65 ? "var(--teal)" : w >= 40 ? "#C99A3E" : "#C2554A";
+  return `<div class="dim"><span>${label}</span><span class="track"><i style="width:${w}%;background:${c}"></i></span><span class="v">${w}</span></div>`;
+}
+
+function detail(j) {
+  const t = tone(j.verdict);
+  const dims = j.dims;
+  return `<div class="card">
+    <div class="top">
+      <div class="q">
+        <b>${j.q.stem}</b>
+        <div class="meta">${j.q.source} · 考点 ${j.kp.name} · ${chapterOf(j.q.kp)}</div>
+      </div>
+      <div class="score">
+        <div class="n ${j.score === null ? "na" : ""}" style="color:${j.score === null ? "var(--ink3)" : scoreColor(t)}">${j.score === null ? "—" : j.score}</div>
+        <div class="l">考研贴合度</div>
+      </div>
+    </div>
+    ${dims ? `<div class="dims">
+      ${dimRow("考点热度", dims.H)}
+      ${dimRow("考法匹配", dims.M)}
+      ${dimRow("思路匹配", dims.P)}
+      ${dimRow("难度匹配", dims.D)}
+    </div>` : ""}
+    <div class="verdict">
+      <span class="lead" style="background:var(--${t}-bg);color:var(--${t})">${j.verdict}</span>
+      <b>${j.reason}</b>
+    </div>
+    ${j.evidence.length ? `<div class="evid">
+      <div class="h">判定依据 · 最近 ${j.evidence.length} 条真题（同池同考点）</div>
+      ${j.evidence.map(e => `<div class="e"><i>${e.y} ${SUBJ[e.s]} 第 ${e.no} 题</i><span>${e.stem} · ${e.m} · 难度 ${e.d}</span></div>`).join("")}
+    </div>` : ""}
+    <div class="note">当前科目 ${SUBJ[j.s]} · 画像池 ${POOLNAME[j.usedPool || j.pool]}${j.lowSample ? " · 样本不足，已借用合并池并降置信度" : ""}</div>
+  </div>`;
+}
+
+function viewEnter() {
+  const s = state.subject;
+  const js = questions.map(q => judge(q, s)).sort((a, b) => (b.q.date || "").localeCompare(a.q.date || ""));
+  if (!state.sel || !js.find(x => x.q.id === state.sel)) state.sel = js[0].q.id;
+  const cur = js.find(x => x.q.id === state.sel);
+  return `<div class="split">
+    <div class="list">
+      ${js.map(x => {
+        const t = tone(x.verdict);
+        return `<div class="item ${x.q.id === state.sel ? "on" : ""}" data-q="${x.q.id}">
+          <div class="n"><div class="s">${x.q.stem}</div><div class="m">${x.q.source} · ${x.verdict}</div></div>
+          <span class="badge b-${t}">${x.score === null ? "—" : x.score}</span>
+        </div>`;
+      }).join("")}
+    </div>
+    <div>${detail(cur)}</div>
+  </div>`;
+}
+
+function viewBank() {
+  const s = state.subject;
+  const js = questions.map(q => judge(q, s)).sort((a, b) => (a.score ?? 999) - (b.score ?? 999));
+  return `<div class="split" style="grid-template-columns:1fr 1fr">
+    <table>
+      <thead><tr><th>题干</th><th>考点</th><th>贴合度</th><th>判定</th></tr></thead>
+      <tbody>
+        ${js.map(x => `<tr data-q="${x.q.id}">
+          <td style="max-width:230px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x.q.stem}</td>
+          <td style="color:var(--ink2);font-size:12px">${x.kp.name}</td>
+          <td><span class="badge b-${tone(x.verdict)}">${x.score === null ? "—" : x.score}</span></td>
+          <td style="font-size:12px;color:var(--ink2)">${x.verdict}</td>
+        </tr>`).join("")}
+      </tbody>
+    </table>
+    <div>${detail(js.find(x => x.q.id === state.sel) || js[0])}</div>
+  </div>`;
+}
+
+function viewDiag() {
+  const s = state.subject;
+  const js = questions.map(q => judge(q, s));
+  const total = questions.reduce((a, q) => a + q.minutes, 0);
+  const offList = js.filter(x => x.score === null || x.score < 45);
+  const offMin = offList.reduce((a, x) => a + x.q.minutes, 0);
+  const pct = total ? Math.round(offMin / total * 100) : 0;
+
+  const byCh = {};
+  js.forEach(x => {
+    const c = chapterOf(x.q.kp);
+    (byCh[c] = byCh[c] || []).push(x.q.mastery);
+  });
+  const chs = Object.entries(byCh).map(([k, v]) => [k, Math.round(v.reduce((a, b) => a + b, 0) / v.length * 100)]).sort((a, b) => a[1] - b[1]);
+
+  return `<div class="diag">
+    <div class="panel">
+      <h3>练习时间分配 · ${SUBJ[s]}</h3>
+      <div class="big ${pct > 25 ? "red" : ""}">${pct}<em>%</em></div>
+      <div style="font-size:12.5px;color:var(--ink2);margin-top:8px">本月 ${questions.length} 道题中 ${offList.length} 道偏离，占 ${offMin} / ${total} 分钟</div>
+      <div style="margin-top:14px">
+        ${offList.map(x => `<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:6px 0;border-top:1px solid var(--line)">
+          <span style="color:var(--ink2)">${x.q.stem.length > 16 ? x.q.stem.slice(0, 16) + "…" : x.q.stem}</span>
+          <span class="badge b-${tone(x.verdict)}">${x.score === null ? "—" : x.score}</span>
+        </div>`).join("") || '<div style="font-size:12.5px;color:var(--ink3)">没有偏离题，时间分配健康</div>'}
+      </div>
+    </div>
+    <div class="panel">
+      <h3>章节掌握度（按题目熟练度均值）</h3>
+      ${chs.map(([k, v]) => `<div class="ch">
+        <div class="r"><span>${k}</span><span style="font-variant-numeric:tabular-nums">${v}%</span></div>
+        <div class="track"><i style="width:${v}%;background:${v >= 65 ? "var(--teal)" : v >= 45 ? "#C99A3E" : "#C2554A"}"></i></div>
+      </div>`).join("")}
+      <div style="margin-top:16px;padding-top:14px;border-top:1px dashed var(--line);font-size:12px;color:var(--ink3)">
+        切换科目后，白名单与画像池同时变化，同一道题的判定会重算——这是三卷大纲差异在数据层的直接体现。
+      </div>
+    </div>
+  </div>`;
+}
+
+function render() {
+  renderStats();
+  const v = state.view;
+  document.getElementById("view").innerHTML = v === "enter" ? viewEnter() : v === "bank" ? viewBank() : viewDiag();
+  document.getElementById("toast").innerHTML = state.lastMsg ? `<div class="toast">${state.lastMsg}</div>` : "";
+  document.querySelectorAll("#seg button").forEach(b => b.classList.toggle("on", +b.dataset.s === state.subject));
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.v === state.view));
+  document.querySelectorAll("[data-q]").forEach(el => el.onclick = () => {
+    state.sel = el.dataset.q;
+    if (state.view === "diag") state.view = "enter";
+    render();
+  });
+}
+
+document.getElementById("seg").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  const ns = +b.dataset.s;
+  if (ns === state.subject) return;
+  const before = questions.filter(q => !inScope(q.kp, state.subject)).length;
+  state.subject = ns;
+  const after = questions.filter(q => !inScope(q.kp, ns)).length;
+  state.lastMsg = `已切换到${SUBJ[ns]}：白名单与画像池重算，超纲题 ${before} → ${after} 道`;
+  render();
+});
+
+document.getElementById("tabs").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (!b) return;
+  state.view = b.dataset.v;
+  state.lastMsg = "";
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

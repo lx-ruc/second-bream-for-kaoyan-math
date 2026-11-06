@@ -1,0 +1,602 @@
+[
+ {
+  "jj": 3,
+  "name": "数列敛散性的判定",
+  "vol": "一",
+  "kp": "数列敛散性的判定",
+  "n": 4,
+  "fid": "RCLwSkhjZgQc"
+ },
+ {
+  "jj": 1,
+  "name": "函数极限的计算",
+  "vol": "一",
+  "kp": "函数极限的计算",
+  "n": 9,
+  "fid": "RhUKkhTZtpnc"
+ },
+ {
+  "jj": 2,
+  "name": "确定极限中的参数",
+  "vol": "一",
+  "kp": "确定极限中的参数",
+  "n": 7,
+  "fid": "RwdiojPnuWEt"
+ },
+ {
+  "jj": 4,
+  "name": "无穷小量的比较",
+  "vol": "一",
+  "kp": "无穷小量的比较",
+  "n": 1,
+  "fid": "RKUbDusSyPlx"
+ },
+ {
+  "jj": 5,
+  "name": "函数的连续性",
+  "vol": "一",
+  "kp": "函数的连续性",
+  "n": 1,
+  "fid": "RxDLXxXbgwMX"
+ },
+ {
+  "jj": 6,
+  "name": "导数与微分的概念",
+  "vol": "一",
+  "kp": "导数与微分的概念",
+  "n": 9,
+  "fid": "REGcOhGQdYrX"
+ },
+ {
+  "jj": 7,
+  "name": "导数与微分的计算",
+  "vol": "一",
+  "kp": "导数与微分的计算",
+  "n": 9,
+  "fid": "RbVxxZZzgXtH"
+ },
+ {
+  "jj": 8,
+  "name": "导数的几何意义",
+  "vol": "一",
+  "kp": "导数的几何意义",
+  "n": 1,
+  "fid": "RoNDdqXnfaMz"
+ },
+ {
+  "jj": 9,
+  "name": "函数的单调性、极值与最值",
+  "vol": "一",
+  "kp": "函数的单调性、极值与最值",
+  "n": 6,
+  "fid": "ROdvhMmWfKtp"
+ },
+ {
+  "jj": 10,
+  "name": "曲线的凹凸性、拐点及渐近线",
+  "vol": "一",
+  "kp": "曲线的凹凸性、拐点及渐近线",
+  "n": 8,
+  "fid": "RJtHPAMxNQXU"
+ },
+ {
+  "jj": 11,
+  "name": "方程根的存在性与个数",
+  "vol": "一",
+  "kp": "方程根的存在性与个数",
+  "n": 2,
+  "fid": "RuXSURAJWhQp"
+ },
+ {
+  "jj": 12,
+  "name": "不等式的证明",
+  "vol": "一",
+  "kp": "不等式的证明",
+  "n": 1,
+  "fid": "RcuUTfKNppbO"
+ },
+ {
+  "jj": 13,
+  "name": "微分中值定理",
+  "vol": "一",
+  "kp": "微分中值定理",
+  "n": 5,
+  "fid": "RhkCNTVNBbqz"
+ },
+ {
+  "jj": 14,
+  "name": "泰勒公式",
+  "vol": "一",
+  "kp": "泰勒公式",
+  "n": 3,
+  "fid": "RNbvdQkZkTUW"
+ },
+ {
+  "jj": 15,
+  "name": "不定积分的计算",
+  "vol": "一",
+  "kp": "不定积分的计算",
+  "n": 2,
+  "fid": "RbKyohbADCkh"
+ },
+ {
+  "jj": 16,
+  "name": "定积分的概念、性质及几何意义",
+  "vol": "一",
+  "kp": "定积分的概念、性质及几何意义",
+  "n": 7,
+  "fid": "RJJSRBGTyEQf"
+ },
+ {
+  "jj": 17,
+  "name": "定积分的计算",
+  "vol": "一",
+  "kp": "定积分的计算",
+  "n": 9,
+  "fid": "RjvnNWzpNvqH"
+ },
+ {
+  "jj": 18,
+  "name": "变限积分",
+  "vol": "一",
+  "kp": "变限积分",
+  "n": 2,
+  "fid": "RtlPXHsaDnLY"
+ },
+ {
+  "jj": 19,
+  "name": "反常积分的计算与敛散性",
+  "vol": "一",
+  "kp": "反常积分的计算与敛散性",
+  "n": 5,
+  "fid": "RgdsojOHmrbR"
+ },
+ {
+  "jj": 20,
+  "name": "定积分的应用",
+  "vol": "一",
+  "kp": "定积分的应用",
+  "n": 5,
+  "fid": "RmuMbEvkfqPv"
+ },
+ {
+  "jj": 21,
+  "name": "偏导数的概念与计算",
+  "vol": "一",
+  "kp": "偏导数的概念与计算",
+  "n": 11,
+  "fid": "RgOgDtWwovEP"
+ },
+ {
+  "jj": 22,
+  "name": "全微分的概念与计算",
+  "vol": "一",
+  "kp": "全微分的概念与计算",
+  "n": 6,
+  "fid": "RfnQQrAxsqdf"
+ },
+ {
+  "jj": 23,
+  "name": "多元函数微分学的几何应用",
+  "vol": "一",
+  "kp": "多元函数微分学的几何应用",
+  "n": 4,
+  "fid": "RCNUzcdRAtfY"
+ },
+ {
+  "jj": 24,
+  "name": "方向导数和梯度",
+  "vol": "一",
+  "kp": "方向导数和梯度",
+  "n": 5,
+  "fid": "RGZDwQuFFuRB"
+ },
+ {
+  "jj": 25,
+  "name": "多元函数的极值问题",
+  "vol": "一",
+  "kp": "多元函数的极值问题",
+  "n": 12,
+  "fid": "RapqOUJtAfJb"
+ },
+ {
+  "jj": 26,
+  "name": "重积分的概念与性质",
+  "vol": "一",
+  "kp": "重积分的概念与性质",
+  "n": 2,
+  "fid": "RwgCxgfrKirQ"
+ },
+ {
+  "jj": 27,
+  "name": "交换积分次序与坐标系之间的转化",
+  "vol": "一",
+  "kp": "交换积分次序与坐标系之间的转化",
+  "n": 3,
+  "fid": "RaxeRTeCIOLO"
+ },
+ {
+  "jj": 28,
+  "name": "重积分的计算",
+  "vol": "一",
+  "kp": "重积分的计算",
+  "n": 7,
+  "fid": "RxJPXQyEzErC"
+ },
+ {
+  "jj": 29,
+  "name": "重积分的应用",
+  "vol": "一",
+  "kp": "重积分的应用",
+  "n": 3,
+  "fid": "RJjcWrsWXPBJ"
+ },
+ {
+  "jj": 30,
+  "name": "第一类曲线积分",
+  "vol": "一",
+  "kp": "第一类曲线积分",
+  "n": 2,
+  "fid": "RFyWzsWSqUhR"
+ },
+ {
+  "jj": 31,
+  "name": "第二类曲线积分",
+  "vol": "一",
+  "kp": "第二类曲线积分",
+  "n": 15,
+  "fid": "RfNAEkkERpSq"
+ },
+ {
+  "jj": 32,
+  "name": "第一类曲面积分",
+  "vol": "一",
+  "kp": "第一类曲面积分",
+  "n": 3,
+  "fid": "RrtxMEqjqSpa"
+ },
+ {
+  "jj": 33,
+  "name": "第二类曲面积分",
+  "vol": "一",
+  "kp": "第二类曲面积分",
+  "n": 10,
+  "fid": "RJasfrelKRfm"
+ },
+ {
+  "jj": 34,
+  "name": "旋度的定义",
+  "vol": "一",
+  "kp": "旋度的定义",
+  "n": 2,
+  "fid": "RaQDFfwMLAJF"
+ },
+ {
+  "jj": 35,
+  "name": "常数项级数敛散性的判定",
+  "vol": "一",
+  "kp": "常数项级数敛散性的判定",
+  "n": 6,
+  "fid": "RpaiWqkxQMpA"
+ },
+ {
+  "jj": 36,
+  "name": "幂级数的收敛半径与收敛域",
+  "vol": "一",
+  "kp": "求幂级数的收敛半径、收敛区间和收敛域",
+  "n": 5,
+  "fid": "RaEvtSoujkXQ"
+ },
+ {
+  "jj": 37,
+  "name": "幂级数的和函数及幂级数展开式",
+  "vol": "一",
+  "kp": "幂级数的和函数及幂级数展开式",
+  "n": 10,
+  "fid": "RDqnmnWVNMQf"
+ },
+ {
+  "jj": 38,
+  "name": "傅里叶级数",
+  "vol": "一",
+  "kp": "傅里叶级数",
+  "n": 4,
+  "fid": "RngVqayqkirR"
+ },
+ {
+  "jj": 1,
+  "name": "数列敛散性的判定",
+  "vol": "二",
+  "kp": "数列敛散性的判定",
+  "n": 6,
+  "fid": "RLFCoswFHqtM"
+ },
+ {
+  "jj": 2,
+  "name": "函数极限的计算",
+  "vol": "二",
+  "kp": "函数极限的计算",
+  "n": 13,
+  "fid": "RdadSBpDMyXT"
+ },
+ {
+  "jj": 3,
+  "name": "无穷小量",
+  "vol": "二",
+  "kp": "无穷小量",
+  "n": 8,
+  "fid": "RLYgTAbHqLZA"
+ },
+ {
+  "jj": 4,
+  "name": "确定极限中的参数",
+  "vol": "二",
+  "kp": "确定极限中的参数",
+  "n": 9,
+  "fid": "RoFKuyzgMmLu"
+ },
+ {
+  "jj": 5,
+  "name": "函数的连续性与间断点的类型",
+  "vol": "二",
+  "kp": "函数的连续性与间断点的类型",
+  "n": 7,
+  "fid": "RgMqBtEWBCVo"
+ },
+ {
+  "jj": 6,
+  "name": "导数与微分的概念",
+  "vol": "二",
+  "kp": "导数与微分的概念",
+  "n": 10,
+  "fid": "RxPqQYSWIbng"
+ },
+ {
+  "jj": 7,
+  "name": "导数与微分的计算",
+  "vol": "二",
+  "kp": "导数与微分的计算",
+  "n": 16,
+  "fid": "RNapRJSOzRvS"
+ },
+ {
+  "jj": 8,
+  "name": "导数的应用",
+  "vol": "二",
+  "kp": "导数的应用",
+  "n": 17,
+  "fid": "RBpdWHOldkKo"
+ },
+ {
+  "jj": 9,
+  "name": "函数的单调性、极值与最值",
+  "vol": "二",
+  "kp": "函数的单调性、极值与最值",
+  "n": 6,
+  "fid": "RzkreuSQndvg"
+ },
+ {
+  "jj": 10,
+  "name": "曲线的凹凸性、拐点及渐近线",
+  "vol": "二",
+  "kp": "曲线的凹凸性、拐点及渐近线",
+  "n": 21,
+  "fid": "RgIlOoJAysqF"
+ },
+ {
+  "jj": 11,
+  "name": "方程根的存在性与个数",
+  "vol": "二",
+  "kp": "方程根的存在性与个数",
+  "n": 5,
+  "fid": "RpSJbKPHjIkf"
+ },
+ {
+  "jj": 12,
+  "name": "不等式的证明",
+  "vol": "二",
+  "kp": "不等式的证明",
+  "n": 2,
+  "fid": "RGBrliCtoGnJ"
+ },
+ {
+  "jj": 13,
+  "name": "微分中值定理",
+  "vol": "二",
+  "kp": "微分中值定理",
+  "n": 10,
+  "fid": "RHpCJwMqofzC"
+ },
+ {
+  "jj": 14,
+  "name": "泰勒公式",
+  "vol": "二",
+  "kp": "泰勒公式",
+  "n": 1,
+  "fid": "RkZCBwyTHBpv"
+ },
+ {
+  "jj": 15,
+  "name": "不定积分的计算",
+  "vol": "二",
+  "kp": "不定积分的计算",
+  "n": 5,
+  "fid": "RBOwrlDKsznP"
+ },
+ {
+  "jj": 16,
+  "name": "定积分的概念与性质",
+  "vol": "二",
+  "kp": "定积分的概念与性质",
+  "n": 10,
+  "fid": "RKlngOCSpvDW"
+ },
+ {
+  "jj": 17,
+  "name": "定积分的计算",
+  "vol": "二",
+  "kp": "定积分的计算",
+  "n": 9,
+  "fid": "RgEFciKUboTn"
+ },
+ {
+  "jj": 1,
+  "name": "数列极限的概念与性质",
+  "vol": "三",
+  "kp": "数列极限的概念与性质",
+  "n": 3,
+  "fid": "RRKnUCOUFfTs"
+ },
+ {
+  "jj": 2,
+  "name": "数列敛散性的判定",
+  "vol": "三",
+  "kp": "数列敛散性的判定",
+  "n": 1,
+  "fid": "RnfEgbOVggxV"
+ },
+ {
+  "jj": 3,
+  "name": "函数极限的计算",
+  "vol": "三",
+  "kp": "函数极限的计算",
+  "n": 15,
+  "fid": "RrxtkPVtEAAw"
+ },
+ {
+  "jj": 4,
+  "name": "数列极限的计算",
+  "vol": "三",
+  "kp": "数列极限的计算",
+  "n": 1,
+  "fid": "RdNkDiKdFoCS"
+ },
+ {
+  "jj": 5,
+  "name": "无穷小量",
+  "vol": "三",
+  "kp": "无穷小量",
+  "n": 5,
+  "fid": "RcvXVITNRmOC"
+ },
+ {
+  "jj": 6,
+  "name": "确定极限中的参数",
+  "vol": "三",
+  "kp": "确定极限中的参数",
+  "n": 10,
+  "fid": "RbxCofNfvkBE"
+ },
+ {
+  "jj": 7,
+  "name": "函数的连续性与间断点的类型",
+  "vol": "三",
+  "kp": "函数的连续性与间断点的类型",
+  "n": 5,
+  "fid": "RtjZsiugaLAX"
+ },
+ {
+  "jj": 8,
+  "name": "导数与微分的概念",
+  "vol": "三",
+  "kp": "导数与微分的概念",
+  "n": 6,
+  "fid": "RwmcQLDVmNfk"
+ },
+ {
+  "jj": 9,
+  "name": "导数与微分的计算",
+  "vol": "三",
+  "kp": "导数与微分的计算",
+  "n": 4,
+  "fid": "RhkjLqmFgwUY"
+ },
+ {
+  "jj": 10,
+  "name": "导数的几何意义",
+  "vol": "三",
+  "kp": "导数的几何意义",
+  "n": 3,
+  "fid": "RwViVmkZjsBK"
+ },
+ {
+  "jj": 11,
+  "name": "函数的单调性、极值与最值",
+  "vol": "三",
+  "kp": "函数的单调性、极值与最值",
+  "n": 5,
+  "fid": "RAnkSJrtbuEq"
+ },
+ {
+  "jj": 12,
+  "name": "曲线的凹凸性、拐点及渐近线",
+  "vol": "三",
+  "kp": "曲线的凹凸性、拐点及渐近线",
+  "n": 12,
+  "fid": "RDcPeJOaiEVb"
+ },
+ {
+  "jj": 13,
+  "name": "方程根的存在性与个数",
+  "vol": "三",
+  "kp": "方程根的存在性与个数",
+  "n": 4,
+  "fid": "RfbrmGsOAQQO"
+ },
+ {
+  "jj": 14,
+  "name": "不等式",
+  "vol": "三",
+  "kp": "不等式",
+  "n": 2,
+  "fid": "RfyXHOUzKZdU"
+ },
+ {
+  "jj": 15,
+  "name": "微分中值定理",
+  "vol": "三",
+  "kp": "微分中值定理",
+  "n": 6,
+  "fid": "RCDxGJGJLBeG"
+ },
+ {
+  "jj": 16,
+  "name": "泰勒公式",
+  "vol": "三",
+  "kp": "泰勒公式",
+  "n": 2,
+  "fid": "RxMWbubsKYzQ"
+ },
+ {
+  "jj": 17,
+  "name": "微分学在经济学中的应用",
+  "vol": "三",
+  "kp": "微分学在经济学中的应用",
+  "n": 12,
+  "fid": "RBCznIafhmVM"
+ },
+ {
+  "jj": 18,
+  "name": "不定积分的计算",
+  "vol": "三",
+  "kp": "不定积分的计算",
+  "n": 4,
+  "fid": "RtLueOalMxvb"
+ },
+ {
+  "jj": 19,
+  "name": "定积分的概念与性质",
+  "vol": "三",
+  "kp": "定积分的概念与性质",
+  "n": 6,
+  "fid": "RlsZNllQmQun"
+ },
+ {
+  "jj": 20,
+  "name": "定积分的计算",
+  "vol": "三",
+  "kp": "定积分的计算",
+  "n": 8,
+  "fid": "RlSDKHkCModd"
+ }
+]

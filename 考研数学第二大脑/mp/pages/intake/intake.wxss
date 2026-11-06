@@ -1,0 +1,173 @@
+.ta {
+  width: 100%;
+  height: 200rpx;
+  font-size: 27rpx;
+  line-height: 1.65;
+  color: #211f1c;
+  margin-bottom: 22rpx;
+  box-sizing: border-box;
+}
+
+.ph {
+  color: #b3ab9c;
+  font-size: 26rpx;
+}
+
+.note {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.75;
+  color: #9c9587;
+  margin-top: 14rpx;
+}
+
+.link {
+  font-size: 25rpx;
+  color: #a6342a;
+}
+
+.sub-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sub-row .note {
+  margin-top: 0;
+}
+
+/* 考点卡 */
+.kp-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.kp-name {
+  font-family: "Songti SC", "SimSun", Georgia, serif;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #211f1c;
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.stats {
+  display: flex;
+  border-top: 1rpx solid #eae4d7;
+  padding-top: 20rpx;
+}
+
+.st {
+  flex: 1;
+  text-align: center;
+}
+
+.st .num {
+  display: block;
+  color: #211f1c;
+}
+
+.st .lb {
+  display: block;
+  font-size: 21rpx;
+  color: #9c9587;
+  margin-top: 2rpx;
+}
+
+/* 判定卡 */
+.verdict {
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+  border: 1rpx solid #e6dfd1;
+  background: #fffdf8;
+}
+
+.v-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 10rpx;
+  font-family: "Songti SC", "SimSun", Georgia, serif;
+}
+
+.v-desc {
+  display: block;
+  font-size: 26rpx;
+  line-height: 1.7;
+  color: #4a453c;
+}
+
+.v-meta {
+  margin-top: 16rpx;
+}
+
+.verdict.ok-hot {
+  background: #f2f7f3;
+  border-color: #cfe3d7;
+}
+
+.verdict.ok-hot .v-title {
+  color: #2f6b52;
+}
+
+.verdict.ok-cold,
+.verdict.ok-gone {
+  background: #f2f5f8;
+  border-color: #d7e0e9;
+}
+
+.verdict.ok-cold .v-title,
+.verdict.ok-gone .v-title {
+  color: #3d5a80;
+}
+
+.verdict.off-method,
+.verdict.off {
+  background: #fbf1ef;
+  border-color: #eccfc9;
+}
+
+.verdict.off-method .v-title,
+.verdict.off .v-title {
+  color: #a6342a;
+}
+
+.verdict.nodata {
+  background: #f6f4ee;
+}
+
+.verdict.nodata .v-title {
+  color: #6b6558;
+}
+
+/* 保存后 */
+.saved {
+  background: #f2f7f3;
+  border-color: #cfe3d7;
+}
+
+.saved-t {
+  display: block;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #2f6b52;
+  margin-bottom: 6rpx;
+}
+
+.saved-row {
+  display: flex;
+  margin-top: 24rpx;
+}
+
+.saved-row .half {
+  flex: 1;
+  padding: 20rpx;
+  font-size: 26rpx;
+}
+
+.saved-row .half + .half {
+  margin-left: 16rpx;
+}

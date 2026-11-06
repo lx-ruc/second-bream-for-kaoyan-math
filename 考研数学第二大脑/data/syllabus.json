@@ -1,0 +1,689 @@
+{
+ "version": "0.1",
+ "matrix": {
+  "GS01-01-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS01-01-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS01-01-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS01-01-04": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS01-02-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS01-02-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS01-02-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS01-02-04": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS01-02-05": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS01-02-06": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS02-01-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS02-01-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS02-01-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS02-01-04": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS02-02-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS02-02-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS02-02-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS02-02-04": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS02-02-05": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS02-02-06": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS02-02-07": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS02-02-08": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS02-02-09": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS03-01-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS03-01-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS03-01-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS03-02-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS03-02-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS03-02-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS03-02-04": {
+   "1": true,
+   "2": true,
+   "3": false
+  },
+  "GS03-02-05": {
+   "1": false,
+   "2": false,
+   "3": true
+  },
+  "GS03-02-06": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS03-02-07": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS04-01-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS04-01-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS04-02-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS04-02-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS04-02-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS04-03-01": {
+   "1": true,
+   "2": false,
+   "3": false
+  },
+  "GS04-03-02": {
+   "1": true,
+   "2": false,
+   "3": false
+  },
+  "GS05-01-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS05-01-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS05-01-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS05-01-04": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS05-02-01": {
+   "1": true,
+   "2": false,
+   "3": false
+  },
+  "GS05-02-02": {
+   "1": true,
+   "2": false,
+   "3": false
+  },
+  "GS05-02-03": {
+   "1": true,
+   "2": false,
+   "3": false
+  },
+  "GS05-02-04": {
+   "1": true,
+   "2": false,
+   "3": false
+  },
+  "GS05-02-05": {
+   "1": true,
+   "2": false,
+   "3": false
+  },
+  "GS06-01-01": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GS06-01-02": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GS06-01-03": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GS06-02-01": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GS06-02-02": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GS06-02-03": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GS06-03-01": {
+   "1": true,
+   "2": false,
+   "3": false
+  },
+  "GS07-01-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS07-01-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS07-01-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS07-02-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS07-02-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS07-02-03": {
+   "1": true,
+   "2": false,
+   "3": false
+  },
+  "GS07-03-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GS08-01-01": {
+   "1": true,
+   "2": false,
+   "3": false
+  },
+  "GS08-01-02": {
+   "1": true,
+   "2": false,
+   "3": false
+  },
+  "GS08-02-01": {
+   "1": true,
+   "2": false,
+   "3": false
+  },
+  "GS08-02-02": {
+   "1": true,
+   "2": false,
+   "3": false
+  },
+  "XD01-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD01-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD01-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD02-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD02-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD02-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD02-04": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD02-05": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD02-06": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD03-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD03-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD03-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD04-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD04-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD04-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD05-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD05-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD05-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD06-01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD06-02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD06-03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "GL01-01": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL01-02": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL01-03": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL01-04": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL02-01": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL02-02": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL02-03": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL02-04": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL03-01": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL03-02": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL03-03": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL03-04": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL04-01": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL04-02": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL04-03": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL05-01": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL05-02": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL06-01": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL06-02": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL06-03": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL06-04": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL06-05": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GS01": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "GS02": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "GS03": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "GS04": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "GS05": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "GS06": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "GS07": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "GS08": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "GS": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "GS01-01": {},
+  "GS01-02": {},
+  "GS02-01": {},
+  "GS02-02": {},
+  "GS03-01": {},
+  "GS03-02": {},
+  "GS04-01": {},
+  "GS04-02": {},
+  "GS04-03": {},
+  "GS05-01": {},
+  "GS05-02": {},
+  "GS06-01": {},
+  "GS06-02": {},
+  "GS06-03": {},
+  "GS07-01": {},
+  "GS07-02": {},
+  "GS07-03": {},
+  "GS08-01": {},
+  "GS08-02": {},
+  "XD01": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD02": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD03": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD04": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD05": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD06": {
+   "1": true,
+   "2": true,
+   "3": true
+  },
+  "XD": {
+   "1": false,
+   "2": false,
+   "3": false
+  },
+  "GL01": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL02": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL03": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL04": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL05": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL06": {
+   "1": true,
+   "2": false,
+   "3": true
+  },
+  "GL": {
+   "1": false,
+   "2": false,
+   "3": false
+  }
+ }
+}

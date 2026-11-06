@@ -1,0 +1,165 @@
+.summary {
+  background: #211f1c;
+  border-radius: 20rpx;
+  padding: 32rpx 28rpx;
+  margin-bottom: 32rpx;
+}
+
+.sum-line {
+  display: block;
+  font-size: 27rpx;
+  line-height: 1.8;
+  color: #e8e2d5;
+}
+
+.sum-line + .sum-line {
+  margin-top: 10rpx;
+}
+
+.sum-line.warn {
+  color: #e8b4a8;
+}
+
+.sum-line .b {
+  font-family: Georgia, serif;
+  font-size: 32rpx;
+  color: #fffdf8;
+}
+
+.sum-line.warn .b {
+  color: #f0a596;
+}
+
+.note {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.75;
+  color: #9c9587;
+  margin-top: 14rpx;
+}
+
+/* 优先级 */
+.prio {
+  background: #fffdf8;
+  border: 1rpx solid #e6dfd1;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.prio-hd {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14rpx;
+}
+
+.prio-name {
+  font-size: 29rpx;
+  font-weight: 600;
+  color: #211f1c;
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.prio-pct {
+  font-family: Georgia, serif;
+  font-size: 30rpx;
+  color: #a6342a;
+}
+
+.bar {
+  height: 8rpx;
+  background: #efe9dc;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  background: #a6342a;
+  border-radius: 4rpx;
+}
+
+.prio-meta {
+  display: block;
+  font-size: 21rpx;
+  color: #9c9587;
+  margin-top: 12rpx;
+}
+
+/* 卡点 */
+.stuck-wrap {
+  margin-bottom: 32rpx;
+}
+
+.stuck-item {
+  border-left: 4rpx solid #a6342a;
+  padding: 4rpx 0 4rpx 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.stuck-n {
+  display: inline-block;
+  font-size: 21rpx;
+  color: #a6342a;
+  font-family: Georgia, serif;
+  margin-right: 12rpx;
+}
+
+.stuck-t {
+  font-size: 26rpx;
+  line-height: 1.65;
+  color: #211f1c;
+}
+
+.stuck-meta {
+  display: block;
+  font-size: 21rpx;
+  color: #9c9587;
+  margin-top: 6rpx;
+}
+
+/* 记录 */
+.rec {
+  padding: 22rpx 0;
+  border-bottom: 1rpx solid #eae4d7;
+}
+
+.rec-hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.rec-name {
+  font-size: 27rpx;
+  font-weight: 600;
+  color: #211f1c;
+}
+
+.rec-when {
+  font-size: 21rpx;
+  color: #9c9587;
+}
+
+.rec-text {
+  display: block;
+  font-size: 23rpx;
+  color: #6b6558;
+  margin-top: 8rpx;
+  line-height: 1.6;
+}
+
+.rec-ft {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14rpx;
+}
+
+.rec-del {
+  font-size: 22rpx;
+  color: #b3ab9c;
+  padding: 6rpx 12rpx;
+}

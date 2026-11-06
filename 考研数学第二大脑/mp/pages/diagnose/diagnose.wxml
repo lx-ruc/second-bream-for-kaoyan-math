@@ -1,0 +1,61 @@
+<view class="page">
+  <view class="head">
+    <text class="kicker">诊断</text>
+    <text class="h1">你现在该补哪里</text>
+  </view>
+
+  <view wx:if="{{empty}}" class="empty">
+    <text>还没有记录。\n记满 5 道，这张诊断才开始准。</text>
+    <view class="btn" style="margin-top:32rpx" bindtap="goIntake">去记第一道</view>
+  </view>
+
+  <block wx:else>
+    <!-- 摘要 -->
+    <view class="summary">
+      <text class="sum-line">你记了 <text class="b">{{total}}</text> 道题，覆盖 <text class="b">{{kpCount}}</text> 个考点，整体掌握度 <text class="b">{{avgPct}}%</text>。</text>
+      <text wx:if="{{offCount > 0}}" class="sum-line warn">其中 <text class="b">{{offCount}}</text> 道用的是族外解法，占你练习量的 {{offPct}}%。</text>
+      <text wx:if="{{top}}" class="sum-line">最该补的是「<text class="b">{{top.name}}</text>」——近六年考 {{top.n6}} 次，你 {{top.n}} 道题平均掌握 {{top.masteryPct}}%。</text>
+    </view>
+
+    <!-- 优先级 -->
+    <text class="sec">优先级 · 高频且没掌握的排前面</text>
+    <view wx:for="{{rows}}" wx:key="kp" class="prio" data-kp="{{item.kp}}" bindtap="goMap">
+      <view class="prio-hd">
+        <text class="prio-name">{{item.name}}</text>
+        <text wx:if="{{item.gone}}" class="chip dim">近六年未考</text>
+        <text class="prio-pct">{{item.masteryPct}}%</text>
+      </view>
+      <view class="bar">
+        <view class="bar-fill" style="width:{{item.prioPct}}%"></view>
+      </view>
+      <text class="prio-meta">{{item.vol}} · 近六年 {{item.n6}} 次 · 你记了 {{item.n}} 道</text>
+    </view>
+
+    <!-- 反复卡点 -->
+    <block wx:if="{{stuck.length}}">
+      <text class="sec">反复卡住的地方</text>
+      <view class="stuck-wrap">
+        <view wx:for="{{stuck}}" wx:key="text" class="stuck-item">
+          <text class="stuck-n">卡 {{item.n}} 次</text>
+          <text class="stuck-t">{{item.tagged ? '「' + item.text + '」' : item.text}}</text>
+          <text class="stuck-meta">横跨 {{item.kps}} 个考点</text>
+        </view>
+        <text class="note">同一个思路在不同章节反复卡住，不是巧合。这条比「哪一章错得多」更能说明问题。</text>
+      </view>
+    </block>
+
+    <!-- 最近 -->
+    <text class="sec">最近记录</text>
+    <view wx:for="{{recent}}" wx:key="id" class="rec">
+      <view class="rec-hd">
+        <text class="rec-name">{{item.kpName}}</text>
+        <text class="rec-when">{{item.when}}</text>
+      </view>
+      <text wx:if="{{item.text}}" class="rec-text">{{item.text}}…</text>
+      <view class="rec-ft">
+        <text class="chip {{item.kind === 'off-method' ? 'hot' : (item.kind === 'ok-hot' ? 'ok' : 'dim')}}">{{item.label}}</text>
+        <text class="rec-del" data-id="{{item.id}}" catchtap="del">删</text>
+      </view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,42 @@
+{
+  "pages": [
+    "pages/intake/intake",
+    "pages/diagnose/diagnose",
+    "pages/map/map",
+    "pages/prior/prior"
+  ],
+  "window": {
+    "navigationBarTitleText": "第二大脑",
+    "navigationBarBackgroundColor": "#f4f1ea",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f4f1ea",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#9c9587",
+    "selectedColor": "#a6342a",
+    "backgroundColor": "#fffdf8",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/intake/intake",
+        "text": "记一道题"
+      },
+      {
+        "pagePath": "pages/diagnose/diagnose",
+        "text": "诊断"
+      },
+      {
+        "pagePath": "pages/map/map",
+        "text": "考点"
+      },
+      {
+        "pagePath": "pages/prior/prior",
+        "text": "考频"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

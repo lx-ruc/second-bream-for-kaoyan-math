@@ -1,0 +1,217 @@
+page {
+  min-height: 100%;
+  background: #f4f1ea;
+  color: #211f1c;
+  font-size: 28rpx;
+  line-height: 1.62;
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  padding: 32rpx 32rpx 64rpx;
+}
+
+/* ---------- 页头 ---------- */
+.kicker {
+  display: block;
+  font-size: 22rpx;
+  letter-spacing: 3rpx;
+  color: #9c9587;
+  margin-bottom: 8rpx;
+}
+
+.h1 {
+  display: block;
+  font-family: "Songti SC", "SimSun", Georgia, serif;
+  font-size: 44rpx;
+  line-height: 1.35;
+  font-weight: 600;
+  color: #211f1c;
+  letter-spacing: 0.5rpx;
+}
+
+.lede {
+  display: block;
+  font-size: 25rpx;
+  color: #6b6558;
+  margin-top: 12rpx;
+  line-height: 1.7;
+}
+
+.head {
+  margin-bottom: 28rpx;
+}
+
+/* ---------- 卡片 ---------- */
+.card {
+  background: #fffdf8;
+  border: 1rpx solid #e6dfd1;
+  border-radius: 20rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+}
+
+.card.tight {
+  padding: 22rpx 24rpx;
+}
+
+.sec {
+  font-size: 22rpx;
+  letter-spacing: 2rpx;
+  color: #9c9587;
+  margin: 8rpx 0 14rpx;
+}
+
+/* ---------- 科目切换 ---------- */
+.seg {
+  display: flex;
+  background: #eae4d7;
+  border-radius: 14rpx;
+  padding: 6rpx;
+  margin-bottom: 24rpx;
+}
+
+.seg .item {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 0;
+  font-size: 26rpx;
+  color: #6b6558;
+  border-radius: 10rpx;
+}
+
+.seg .item.on {
+  background: #fffdf8;
+  color: #211f1c;
+  font-weight: 600;
+  box-shadow: 0 2rpx 8rpx rgba(33, 31, 28, 0.08);
+}
+
+/* ---------- 按钮 ---------- */
+.btn {
+  display: block;
+  text-align: center;
+  padding: 24rpx;
+  border-radius: 14rpx;
+  font-size: 29rpx;
+  background: #211f1c;
+  color: #fffdf8;
+  letter-spacing: 1rpx;
+}
+
+.btn.ghost {
+  background: transparent;
+  color: #6b6558;
+  border: 1rpx solid #d8d0c0;
+}
+
+.btn:active {
+  opacity: 0.82;
+}
+
+.btn.disabled {
+  background: #d8d0c0;
+  color: #f4f1ea;
+}
+
+/* ---------- 标签 ---------- */
+.chip {
+  display: inline-block;
+  font-size: 21rpx;
+  padding: 3rpx 12rpx;
+  border-radius: 6rpx;
+  background: #efe9dc;
+  color: #6b6558;
+  margin-right: 10rpx;
+}
+
+.chip.hot {
+  background: #f6e3df;
+  color: #a6342a;
+}
+
+.chip.ok {
+  background: #e2efe7;
+  color: #2f6b52;
+}
+
+.chip.dim {
+  background: transparent;
+  border: 1rpx dashed #d8d0c0;
+  color: #9c9587;
+}
+
+/* ---------- 数字 ---------- */
+.num {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 46rpx;
+  line-height: 1.1;
+}
+
+/* ---------- 选项行 ---------- */
+.opt {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 22rpx;
+  border: 1rpx solid #e6dfd1;
+  border-radius: 14rpx;
+  margin-bottom: 14rpx;
+  background: #fffdf8;
+}
+
+.opt.on {
+  border-color: #a6342a;
+  background: #fdf6f3;
+}
+
+.opt .idx {
+  width: 44rpx;
+  flex: none;
+  font-family: Georgia, serif;
+  font-size: 26rpx;
+  color: #9c9587;
+  padding-top: 2rpx;
+}
+
+.opt.on .idx {
+  color: #a6342a;
+}
+
+.opt .body {
+  flex: 1;
+  min-width: 0;
+}
+
+.opt .t {
+  display: block;
+  font-size: 27rpx;
+  line-height: 1.55;
+  color: #211f1c;
+}
+
+.opt .h {
+  display: block;
+  font-size: 22rpx;
+  color: #9c9587;
+  margin-top: 4rpx;
+}
+
+/* ---------- 空态 ---------- */
+.empty {
+  text-align: center;
+  padding: 80rpx 40rpx;
+  color: #9c9587;
+  font-size: 26rpx;
+  line-height: 1.8;
+}
+
+.divider {
+  height: 1rpx;
+  background: #eae4d7;
+  margin: 24rpx 0;
+}
+
+.mono {
+  font-family: Georgia, "Times New Roman", serif;
+}

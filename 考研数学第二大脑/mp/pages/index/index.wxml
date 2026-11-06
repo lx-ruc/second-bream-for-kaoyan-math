@@ -1,0 +1,47 @@
+<view class="page">
+    <view class="hero">
+        <text class="eyebrow">WORKBUDDY NATIVE</text>
+        <text class="title">{{title}}</text>
+        <text class="subtitle">{{subtitle}}</text>
+    </view>
+
+    <view class="state-card" wx:if="{{viewState === 'loading'}}">
+        <view class="spinner"></view>
+        <text class="state-title">正在加载</text>
+        <text class="state-description">请稍候，内容马上准备好。</text>
+    </view>
+
+    <view class="state-card" wx:elif="{{viewState === 'empty'}}">
+        <text class="state-icon">○</text>
+        <text class="state-title">暂无内容</text>
+        <text class="state-description">完成业务接入后，可在这里展示第一条数据。</text>
+    </view>
+
+    <view class="state-card state-card-error" wx:elif="{{viewState === 'error'}}">
+        <text class="state-icon">!</text>
+        <text class="state-title">加载失败</text>
+        <text class="state-description">请检查网络后重试。</text>
+        <button class="primary-button" bindtap="handleRetry">重新加载</button>
+    </view>
+
+    <view class="content-card" wx:else>
+        <text class="section-title">原生基础工程已就绪</text>
+        <text class="section-description">从稳定模板出发，只需增量实现你的业务页面与交互。</text>
+        <view class="feature-list">
+            <view class="feature-item" wx:for="{{features}}" wx:key="id">
+                <text class="feature-index">{{index + 1}}</text>
+                <text class="feature-text">{{item.text}}</text>
+            </view>
+        </view>
+    </view>
+
+    <view class="demo-panel">
+        <text class="demo-title">状态示例</text>
+        <view class="demo-actions">
+            <button class="demo-button" size="mini" data-state="loading" bindtap="switchState">加载</button>
+            <button class="demo-button" size="mini" data-state="empty" bindtap="switchState">空态</button>
+            <button class="demo-button" size="mini" data-state="error" bindtap="switchState">错误</button>
+            <button class="demo-button" size="mini" data-state="ready" bindtap="switchState">内容</button>
+        </view>
+    </view>
+</view>

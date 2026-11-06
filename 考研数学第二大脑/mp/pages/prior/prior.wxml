@@ -1,0 +1,29 @@
+<view class="page">
+  <view class="head">
+    <text class="kicker">考频先验</text>
+    <text class="h1">40 年的考法统计</text>
+    <text class="lede">这张表来自「为你代研」的统计：每个考点的近六年复现率、难易、以及要考到多少分该拿下它。它不参与纠偏判定，只作独立参考。</text>
+  </view>
+
+  <view class="search">
+    <input class="inp" value="{{kw}}" bindinput="onInput" placeholder="搜章节、知识点或考点名" placeholder-class="ph" confirm-type="search" />
+  </view>
+
+  <view class="thead">
+    <text class="th name">考点</text>
+    <text class="th">近六年</text>
+    <text class="th">目标</text>
+  </view>
+
+  <view wx:for="{{rows}}" wx:key="name" class="tr">
+    <view class="td name">
+      <text class="tr-name">{{item.name}}</text>
+      <text class="tr-pt">{{item.pt}}</text>
+    </view>
+    <text class="td fr {{item.hot ? 'hot' : ''}}">{{item.fr}}</text>
+    <text class="td tg">{{item.target}}</text>
+  </view>
+
+  <view wx:if="{{rows.length < total}}" class="btn ghost" bindtap="more">还有 {{total - rows.length}} 条 · 继续看</view>
+  <text wx:if="{{!rows.length}}" class="empty">没搜到。换个词试试，比如「极限」「二次型」。</text>
+</view>

@@ -1,0 +1,128 @@
+<view class="page">
+  <view class="head">
+    <text class="kicker">考研数学 · 第二大脑</text>
+    <text class="h1">这道题，考的是哪一点？</text>
+    <text class="lede">粘题干、认考点、记下卡在哪一步。存下来的不是题，是你薄弱的位置。</text>
+  </view>
+
+  <view class="seg">
+    <view wx:for="{{vols}}" wx:key="k" class="item {{vol === item.k ? 'on' : ''}}"
+          data-v="{{item.k}}" bindtap="onVol">{{item.n}}</view>
+  </view>
+
+  <!-- 1. 题干 -->
+  <view class="card">
+    <text class="sec">题干</text>
+    <textarea class="ta" value="{{text}}" bindinput="onInput" maxlength="1000"
+              placeholder="把题目条件粘进来。写不清公式就写「设 f(x)=…，求极限」这种白话，也能识别。"
+              placeholder-class="ph" />
+    <view class="btn {{matching ? 'disabled' : ''}}" bindtap="doMatch">
+      {{matching ? '正在比对 475 道真题…' : '识别考点'}}
+    </view>
+  </view>
+
+  <!-- 候选 -->
+  <view wx:if="{{cands.length}}" class="card">
+    <text class="sec">最像的考点</text>
+    <view wx:for="{{cands}}" wx:key="kp" class="opt {{kpId === item.kp ? 'on' : ''}}"
+          data-kp="{{item.kp}}" bindtap="pickCand">
+      <view class="idx">{{index + 1}}</view>
+      <view class="body">
+        <text class="t">{{item.name}}</text>
+        <text class="h">相似度 {{item.sim}}% · 最接近 {{item.sample}}{{item.conf >= 60 ? ' · 高置信' : ''}}</text>
+      </view>
+    </view>
+    <text class="note">系统只是给候选，选哪个由你定。识别依据是同考点真题的题干相似度，不是模型猜的。</text>
+  </view>
+
+  <!-- 手动选 -->
+  <view wx:if="{{!kpId}}" class="card tight">
+    <view class="sub-row">
+      <text class="note">真题库里没有这道题？</text>
+      <picker mode="selector" range="{{pickerNames}}" bindchange="onPicker">
+        <text class="link">手动选考点 ›</text>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 2. 考点确认 + 思路族 -->
+  <block wx:if="{{kpId}}">
+    <view class="card">
+      <view class="kp-top">
+        <text class="kp-name">{{kpName}}</text>
+        <text class="chip {{kpInfo.n6 >= 3 ? 'hot' : 'dim'}}">{{kpInfo.n6 >= 3 ? '高频' : (kpInfo.n6 > 0 ? '低频' : '近六年未考')}}</text>
+      </view>
+      <view class="stats">
+        <view class="st">
+          <text class="num">{{kpInfo.n6}}</text>
+          <text class="lb">近六年</text>
+        </view>
+        <view class="st">
+          <text class="num">{{kpInfo.total}}</text>
+          <text class="lb">18 年总计</text>
+        </view>
+        <view class="st">
+          <text class="num">{{fams.length}}</text>
+          <text class="lb">标准思路</text>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{fams.length}}" class="card">
+      <text class="sec">你卡在哪条思路</text>
+      <view wx:for="{{fams}}" wx:key="n" class="opt {{famN === item.n ? 'on' : ''}}"
+            data-n="{{item.n}}" bindtap="pickFam">
+        <view class="idx">{{item.n}}</view>
+        <view class="body">
+          <text class="t">{{item.t}}</text>
+        </view>
+      </view>
+      <view class="opt {{famN === 0 ? 'on' : ''}}" bindtap="pickNone">
+        <view class="idx">—</view>
+        <view class="body">
+          <text class="t">都不是</text>
+          <text class="h">我用的是这个考点标准思路以外的解法</text>
+        </view>
+      </view>
+      <text class="note">一题常有多解，精讲里的「法一／法二」是同一道题的两种解法，跟这里的思路编号不是一回事。这里记的是你实际走的那条路。</text>
+    </view>
+
+    <view wx:if="{{!fams.length}}" class="card">
+      <text class="note">这个考点还没有逐题精讲，暂不判考法，只记录掌握度。</text>
+    </view>
+
+    <!-- 3. 掌握度 -->
+    <view class="card">
+      <text class="sec">当时做得怎么样</text>
+      <view wx:for="{{levels}}" wx:key="k" class="opt {{masteryIdx === index ? 'on' : ''}}"
+            data-i="{{index}}" bindtap="pickLevel">
+        <view class="idx">{{index + 1}}</view>
+        <view class="body">
+          <text class="t">{{item.label}}</text>
+          <text class="h">{{item.hint}}</text>
+        </view>
+      </view>
+      <text class="note">不问你「掌握了没」——那个永远答不准。只记事实：这题当时怎么下来的。</text>
+    </view>
+
+    <!-- 判定 -->
+    <view wx:if="{{verdict}}" class="verdict {{verdict.kind}}">
+      <text class="v-title">{{verdict.title}}</text>
+      <text class="v-desc">{{verdict.desc}}</text>
+      <view class="v-meta">
+        <text class="chip dim">近六年 {{verdict.heat.n6}} 次</text>
+        <text class="chip dim">18 年 {{verdict.heat.total}} 次</text>
+      </view>
+    </view>
+
+    <view wx:if="{{!saved}}" class="btn" bindtap="save">存入题库</view>
+    <view wx:else class="card saved">
+      <text class="saved-t">已存进去</text>
+      <text class="note">这道题会进你薄弱考点的排序里。继续记下一道，或者去看诊断。</text>
+      <view class="saved-row">
+        <view class="btn ghost half" bindtap="reset">再记一道</view>
+        <view class="btn half" bindtap="goDiagnose">看诊断</view>
+      </view>
+    </view>
+  </block>
+</view>

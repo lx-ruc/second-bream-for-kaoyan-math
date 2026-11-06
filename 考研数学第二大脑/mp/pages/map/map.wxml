@@ -1,0 +1,73 @@
+<view class="page">
+  <view class="head">
+    <text class="kicker">考点地图</text>
+    <text class="h1">{{totalCount}} 个考点，{{hotCount}} 个近六年还在考</text>
+    <text class="lede">按近六年出场次数排序。冷热一眼看出来，别把时间花在已经停考的考点上。</text>
+  </view>
+
+  <view class="seg">
+    <view wx:for="{{vols}}" wx:key="k" class="item {{vol === item.k ? 'on' : ''}}"
+          data-v="{{item.k}}" bindtap="onVol">{{item.n}}</view>
+  </view>
+
+  <view class="filters">
+    <text class="f {{filter === 'all' ? 'on' : ''}}" data-f="all" bindtap="setFilter">全部</text>
+    <text class="f {{filter === 'hot' ? 'on' : ''}}" data-f="hot" bindtap="setFilter">高频</text>
+    <text class="f {{filter === 'cold' ? 'on' : ''}}" data-f="cold" bindtap="setFilter">低频/停考</text>
+    <text class="f {{filter === 'jj' ? 'on' : ''}}" data-f="jj" bindtap="setFilter">有精讲</text>
+  </view>
+
+  <view wx:for="{{list}}" wx:key="id" class="row {{open === item.id ? 'open' : ''}}">
+    <view class="row-main" data-id="{{item.id}}" bindtap="tapKp">
+      <view class="row-l">
+        <text class="row-name">{{item.name}}</text>
+        <text class="row-sub">{{item.total}} 题 · 18 年{{item.fams ? ' · ' + item.fams + ' 条思路' : ''}}</text>
+      </view>
+      <view class="row-r">
+        <text class="row-n {{item.n6 >= 3 ? 'hot' : ''}}">{{item.n6}}</text>
+        <text class="row-u">近六年</text>
+      </view>
+    </view>
+
+    <view wx:if="{{open === item.id}}" class="detail">
+      <block wx:if="{{detail}}">
+        <text class="d-chap">{{detail.chap}}</text>
+
+        <view class="bars">
+          <view wx:for="{{detail.bars}}" wx:key="y" class="bar-col">
+            <view class="bar-v" style="height:{{item.h}}%"></view>
+            <text class="bar-y {{item.recent ? 'recent' : ''}}">{{item.y}}</text>
+          </view>
+        </view>
+        <text class="note">灰底是 2016 之前的年份。2021 年题型调整后权重更高，别按 2012 年的频次判断今天。</text>
+
+        <view class="d-sec">
+          <text class="d-t">出场记录 {{detail.qs.length}} 次</text>
+          <text wx:if="{{detail.hasStem < detail.qs.length}}" class="chip dim">{{detail.qs.length - detail.hasStem}} 条仅坐标</text>
+        </view>
+        <view class="qs">
+          <view wx:for="{{detail.qs}}" wx:key="y" class="q">
+            <text class="q-y">{{item.y}}</text>
+            <text class="q-no">第{{item.no}}题</text>
+            <text class="q-t">{{item.t}}</text>
+            <text class="q-s">{{item.sc}} 分</text>
+            <text wx:if="{{!item.has}}" class="chip dim">仅坐标</text>
+          </view>
+        </view>
+
+        <block wx:if="{{detail.fams.length}}">
+          <text class="d-t">标准思路 {{detail.fams.length}} 条</text>
+          <view wx:for="{{detail.fams}}" wx:key="n" class="fam">
+            <text class="fam-n">{{item.n}}</text>
+            <text class="fam-t">{{item.t}}</text>
+          </view>
+        </block>
+        <block wx:else>
+          <text class="note">这个考点还没有逐题精讲，暂不显示标准思路。</text>
+        </block>
+
+        <view class="btn ghost" bindtap="copyUrl">{{detail.hasJJ ? '复制精讲原文链接' : '暂无精讲原文'}}</view>
+      </block>
+    </view>
+  </view>
+</view>

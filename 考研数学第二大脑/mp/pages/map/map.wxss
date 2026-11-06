@@ -1,0 +1,199 @@
+.filters {
+  display: flex;
+  margin-bottom: 20rpx;
+}
+
+.f {
+  font-size: 24rpx;
+  color: #6b6558;
+  padding: 10rpx 22rpx;
+  border-radius: 999rpx;
+  background: #eae4d7;
+  margin-right: 14rpx;
+}
+
+.f.on {
+  background: #211f1c;
+  color: #fffdf8;
+}
+
+.row {
+  border-bottom: 1rpx solid #eae4d7;
+}
+
+.row-main {
+  display: flex;
+  align-items: center;
+  padding: 26rpx 4rpx;
+}
+
+.row-l {
+  flex: 1;
+  min-width: 0;
+}
+
+.row-name {
+  display: block;
+  font-size: 29rpx;
+  color: #211f1c;
+  line-height: 1.45;
+}
+
+.row-sub {
+  display: block;
+  font-size: 21rpx;
+  color: #9c9587;
+  margin-top: 4rpx;
+}
+
+.row-r {
+  text-align: right;
+  flex: none;
+  width: 130rpx;
+}
+
+.row-n {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 36rpx;
+  color: #6b6558;
+  line-height: 1.1;
+}
+
+.row-n.hot {
+  color: #a6342a;
+}
+
+.row-u {
+  display: block;
+  font-size: 20rpx;
+  color: #b3ab9c;
+}
+
+/* 展开详情 */
+.detail {
+  padding: 8rpx 4rpx 40rpx;
+}
+
+.d-chap {
+  display: block;
+  font-size: 22rpx;
+  color: #9c9587;
+  margin-bottom: 20rpx;
+}
+
+.bars {
+  display: flex;
+  align-items: flex-end;
+  height: 150rpx;
+  padding: 0 0 0 0;
+}
+
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  height: 100%;
+}
+
+.bar-v {
+  width: 60%;
+  background: #211f1c;
+  border-radius: 2rpx 2rpx 0 0;
+  min-height: 2rpx;
+}
+
+.bar-y {
+  font-size: 16rpx;
+  color: #b3ab9c;
+  margin-top: 8rpx;
+  transform: scale(0.92);
+}
+
+.bar-y.recent {
+  color: #a6342a;
+}
+
+.note {
+  display: block;
+  font-size: 21rpx;
+  line-height: 1.7;
+  color: #9c9587;
+  margin: 14rpx 0 24rpx;
+}
+
+.d-sec {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.d-t {
+  display: block;
+  font-size: 23rpx;
+  color: #211f1c;
+  font-weight: 600;
+  margin: 28rpx 0 14rpx;
+}
+
+.qs {
+  border-top: 1rpx solid #eae4d7;
+}
+
+.q {
+  display: flex;
+  align-items: center;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #f1ece1;
+  font-size: 23rpx;
+  color: #4a453c;
+}
+
+.q-y {
+  width: 90rpx;
+  font-family: Georgia, serif;
+  color: #211f1c;
+}
+
+.q-no {
+  width: 110rpx;
+}
+
+.q-t {
+  width: 70rpx;
+  color: #9c9587;
+}
+
+.q-s {
+  width: 90rpx;
+  color: #9c9587;
+  font-family: Georgia, serif;
+}
+
+.fam {
+  display: flex;
+  align-items: flex-start;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #f1ece1;
+}
+
+.fam-n {
+  width: 44rpx;
+  flex: none;
+  font-family: Georgia, serif;
+  font-size: 24rpx;
+  color: #a6342a;
+}
+
+.fam-t {
+  flex: 1;
+  font-size: 25rpx;
+  line-height: 1.62;
+  color: #211f1c;
+}
+
+.btn.ghost {
+  margin-top: 32rpx;
+}
