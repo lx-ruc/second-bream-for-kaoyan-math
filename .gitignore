@@ -3,3 +3,7 @@ __pycache__/
 *.pyc
 *.pyo
 node_modules/
+
+# 应用卡标记是设备本地状态：另一台机器有自己的 appID，提交会互相覆盖
+.wbapp_*.genie
+.workbuddy/applications.yaml

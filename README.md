@@ -91,3 +91,5 @@ python3 build.py      # 产出 dist/真题库原型.html
 ## 协作约定
 
 多机开发。**每次动手前先 `git pull`，看清最新代码再改；提交时全量提交，不要只提改动的一部分**——另一台机器上的 WorkBuddy 要靠仓库延续上下文，包括 `.workbuddy/memory/` 里的工作记忆。
+
+两个例外（已在 `.gitignore` 排除，属于设备本地状态，提交会互相覆盖）：`.wbapp_*.genie` 应用卡标记、`.workbuddy/applications.yaml` 应用归属记录。
