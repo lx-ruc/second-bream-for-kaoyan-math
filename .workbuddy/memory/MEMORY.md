@@ -1,7 +1,7 @@
 # 第二大脑项目 · 长期记忆
 
 ## 仓库与协作
-- 远程：https://github.com/lx-ruc/second-bream-for-kaoyan-math
+- 远程：`ssh://git@ssh.github.com:443/lx-ruc/second-bream-for-kaoyan-math.git`（**必须 443**，22 端口不通；走 https 要先清掉失效的 `http.proxy`）
 - 多机开发：**每次动手前先 `git pull`**；**提交时全量提交**（含 `.workbuddy/memory/`），另一台机器的 WorkBuddy 靠仓库延续上下文。
 - 语料来源：作者本人的腾讯文档空间（三卷真题索引 / 75 篇逐题精讲 / 「为你代研」考频表），非爬取。
 
