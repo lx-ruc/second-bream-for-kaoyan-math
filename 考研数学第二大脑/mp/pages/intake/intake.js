@@ -227,6 +227,10 @@ Page({
       verdict: null,
       saved: false,
     });
+    // 用户改选了别的考点，说明原题命中是错的：不能再拿那道题的题干存进去
+    if (this.data.original && this.data.original.kp !== kpId) {
+      this.setData({ original: null });
+    }
   },
 
   /* ---------- 思路族 ---------- */

@@ -23,3 +23,9 @@
 ## 当前进度
 `mp/` 小程序四页已完成（录题 / 诊断 / 考点 / 考频），静态校验通过，**尚未在微信开发者工具里编译和真机验证**。
 已知限制：小程序无 DOM 跑不了 KaTeX，公式用 Unicode 近似（`xᵐ`、`∫₀ˣ` 可用，矩阵失真）；热度归一化系数 n6/8 是拍的，语料做大后要重校。
+
+## 云服务（2026-11-06）
+- 小程序应用 `wbapp_0O2obdqnkhk3o0ON9v837l`（考研第二大脑）已开通云服务，仅用了 LLM 模块做拍照识题（视觉模型，免密钥）。记录仍存 wx.storage，用户明确选了本地存储。
+- `endpoint` = `https://mp-api.app.workbuddy.host`；`publishableKey` 可入库，资源 id / provider key 不落地。
+- 小程序 npm：`@tencent-ai/workbuddy-cloud-sdk@dev` 的 `/miniprogram` 子路径，必须配 `createDiagnosticWx(wx)`。
+- **发布前检查**：小程序请求域名白名单必须包含 `mp-api.app.workbuddy.host`，否则运行时报 `auth_` 错误。
