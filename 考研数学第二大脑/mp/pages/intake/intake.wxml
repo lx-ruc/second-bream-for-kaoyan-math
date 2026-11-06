@@ -10,13 +10,24 @@
           data-v="{{item.k}}" bindtap="onVol">{{item.n}}</view>
   </view>
 
-  <!-- 1. 拍照识题 -->
+  <!-- 1. 拍照识题：拍照是主路径，必须一眼看见 -->
   <view class="card shoot">
     <text class="sec">这道题从哪来</text>
+
+    <view class="snap {{busy ? 'disabled' : ''}}" data-src="camera" bindtap="onShoot">
+      <text class="snap-t">拍照识题</text>
+      <text class="snap-h">对着题目拍一张，不用打字</text>
+    </view>
+
     <view class="srcs">
-      <view class="src primary {{busy ? 'disabled' : ''}}" data-src="camera" bindtap="onShoot">拍照</view>
-      <view class="src {{busy ? 'disabled' : ''}}" data-src="album" bindtap="onShoot">相册截图</view>
-      <view class="src {{busy ? 'disabled' : ''}}" data-src="message" bindtap="onShoot">微信图片</view>
+      <view class="src {{busy ? 'disabled' : ''}}" data-src="album" bindtap="onShoot">
+        <text class="src-t">上传截图</text>
+        <text class="src-h">手机截图 / 相册</text>
+      </view>
+      <view class="src {{busy ? 'disabled' : ''}}" data-src="message" bindtap="onShoot">
+        <text class="src-t">微信图片</text>
+        <text class="src-h">聊天里收到的</text>
+      </view>
     </view>
 
     <view wx:if="{{imgPath}}" class="shot">

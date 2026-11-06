@@ -3,31 +3,71 @@
   padding-bottom: 22rpx;
 }
 
+/* 主按钮：整块可点，字号压过页面上所有正文 */
+.snap {
+  margin-top: 20rpx;
+  padding: 36rpx 30rpx;
+  border-radius: 16rpx;
+  background: #211f1c;
+  border: 1rpx solid #211f1c;
+}
+
+.snap-t {
+  display: block;
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #fffdf8;
+  letter-spacing: 1rpx;
+  line-height: 1.3;
+}
+
+.snap-h {
+  display: block;
+  font-size: 22rpx;
+  color: #b9b2a3;
+  margin-top: 8rpx;
+  line-height: 1.4;
+}
+
+.snap:active {
+  opacity: 0.85;
+}
+
+.snap.disabled {
+  opacity: 0.45;
+}
+
 .srcs {
   display: flex;
-  margin-bottom: 4rpx;
+  margin-top: 16rpx;
 }
 
 .src {
   flex: 1;
   text-align: center;
-  padding: 24rpx 0;
-  font-size: 27rpx;
+  padding: 22rpx 0;
   border-radius: 14rpx;
   border: 1rpx solid #d8d0c0;
-  color: #4a453c;
   background: #fffdf8;
+}
+
+.src-t {
+  display: block;
+  font-size: 27rpx;
+  color: #4a453c;
+  line-height: 1.4;
+}
+
+.src-h {
+  display: block;
+  font-size: 20rpx;
+  color: #9c9587;
+  margin-top: 2rpx;
+  line-height: 1.4;
 }
 
 .src + .src {
   margin-left: 14rpx;
-}
-
-.src.primary {
-  background: #211f1c;
-  border-color: #211f1c;
-  color: #fffdf8;
-  font-weight: 600;
 }
 
 .src.disabled {
