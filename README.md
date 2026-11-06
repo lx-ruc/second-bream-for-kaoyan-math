@@ -57,6 +57,8 @@ cd 考研数学第二大脑/mp
 npm install
 ```
 
+`miniprogram_npm/` 是构建产物，但**必须入库**：小程序只在 `miniprogram_npm/` 下解析 `require('@tencent-ai/...')` 这类包名，缺了它编译期就 module not found，页面 JS 整份不执行——表现是白屏，连拍照按钮都没有，而且在预览面板里看不到报错。`npm run check` 现在会拦住这种状态。云客户端也改成了懒初始化（`utils/cloud.js` 的 `getCloud()`），SDK 初始化失败只会让识别不可用，不会拖垮整页。
+
 改语料后重新生成数据，改代码后跑校验：
 
 ```bash
