@@ -2,7 +2,7 @@
   <view class="head">
     <text class="kicker">考研数学 · 第二大脑</text>
     <text class="h1">这道题，考的是哪一点？</text>
-    <text class="lede">粘题干、认考点、记下卡在哪一步。存下来的不是题，是你薄弱的位置。</text>
+    <text class="lede">拍下来就行，不用打字。拍完系统先找它是不是真题原题，再告诉你这个考点考过几次。</text>
   </view>
 
   <view class="seg">
@@ -10,18 +10,63 @@
           data-v="{{item.k}}" bindtap="onVol">{{item.n}}</view>
   </view>
 
-  <!-- 1. 题干 -->
-  <view class="card">
-    <text class="sec">题干</text>
-    <textarea class="ta" value="{{text}}" bindinput="onInput" maxlength="1000"
-              placeholder="把题目条件粘进来。写不清公式就写「设 f(x)=…，求极限」这种白话，也能识别。"
-              placeholder-class="ph" />
-    <view class="btn {{matching ? 'disabled' : ''}}" bindtap="doMatch">
-      {{matching ? '正在比对 475 道真题…' : '识别考点'}}
+  <!-- 1. 拍照识题 -->
+  <view class="card shoot">
+    <text class="sec">这道题从哪来</text>
+    <view class="srcs">
+      <view class="src primary {{busy ? 'disabled' : ''}}" data-src="camera" bindtap="onShoot">拍照</view>
+      <view class="src {{busy ? 'disabled' : ''}}" data-src="album" bindtap="onShoot">相册截图</view>
+      <view class="src {{busy ? 'disabled' : ''}}" data-src="message" bindtap="onShoot">微信图片</view>
     </view>
+
+    <view wx:if="{{imgPath}}" class="shot">
+      <image class="thumb" src="{{imgPath}}" mode="aspectFill" bindtap="previewImg" />
+      <view class="shot-body">
+        <block wx:if="{{busy}}">
+          <text class="shot-t loading">{{busyText}}</text>
+          <text class="shot-h">第一次识别要加载模型，慢一点</text>
+        </block>
+        <block wx:elif="{{ocr}}">
+          <text class="shot-t ok">识别完成</text>
+          <text class="shot-h">{{ocr.model}} · 置信 {{ocr.confPct}}%{{ocr.formulaHeavy ? ' · 公式较多' : ''}}</text>
+        </block>
+        <block wx:else>
+          <text class="shot-t">这张图还没识别</text>
+          <text class="shot-h">点右边重试，或换一张</text>
+        </block>
+      </view>
+      <view wx:if="{{!busy}}" class="shot-act" bindtap="reOcr">重新识别</view>
+    </view>
+
+    <text class="note">拍清楚题面就行，旁边的草稿、答案、水印会被忽略。手写解题过程认不准，但那本来也不该由系统来读——你只要告诉它卡在哪条思路。</text>
   </view>
 
-  <!-- 候选 -->
+  <!-- 命中真题原题 -->
+  <view wx:if="{{original}}" class="card orig">
+    <view class="orig-top">
+      <text class="chip hot">对上原题 {{original.sim}}%</text>
+      <text class="orig-label">{{original.label}}</text>
+    </view>
+    <text class="orig-stem">{{original.stem}}</text>
+    <view wx:if="{{kpId === original.kp}}" class="orig-done">
+      <text class="orig-done-t">已按这道原题填好考点</text>
+    </view>
+    <view wx:else class="btn ghost orig-btn" bindtap="useOriginal">用这道原题的题干</view>
+    <text class="note">认到原题就用库里的标准题干，识别时认错的字全部丢掉——这也是为什么公式认不准不影响你记题。</text>
+  </view>
+
+  <!-- 识别文本（没命中原题时才有意义） -->
+  <view wx:if="{{ocr && !original}}" class="card">
+    <view class="row-between" bindtap="toggleOcrText">
+      <text class="sec" style="margin:0">识别出的题面</text>
+      <text class="link">{{showOcrText ? '收起' : '展开'}}</text>
+    </view>
+    <text class="ocr-text {{showOcrText ? 'full' : 'clamp'}}">{{ocr.stem}}</text>
+    <text wx:if="{{ocr.note}}" class="note warn">模型自述：{{ocr.note}}</text>
+    <text class="note">这段字只用来检索考点，不用来读题。认错几个符号不影响匹配，但别拿它当题目原文。</text>
+  </view>
+
+  <!-- 候选考点 -->
   <view wx:if="{{cands.length}}" class="card">
     <text class="sec">最像的考点</text>
     <view wx:for="{{cands}}" wx:key="kp" class="opt {{kpId === item.kp ? 'on' : ''}}"
@@ -32,20 +77,34 @@
         <text class="h">相似度 {{item.sim}}% · 最接近 {{item.sample}}{{item.conf >= 60 ? ' · 高置信' : ''}}</text>
       </view>
     </view>
-    <text class="note">系统只是给候选，选哪个由你定。识别依据是同考点真题的题干相似度，不是模型猜的。</text>
+    <text class="note">系统只给候选，选哪个由你定。依据是同考点真题的题干相似度，不是模型猜的。</text>
   </view>
 
-  <!-- 手动选 -->
+  <!-- 手动选考点 -->
   <view wx:if="{{!kpId}}" class="card tight">
     <view class="sub-row">
-      <text class="note">真题库里没有这道题？</text>
+      <text class="note">没匹配上？直接自己选</text>
       <picker mode="selector" range="{{pickerNames}}" bindchange="onPicker">
         <text class="link">手动选考点 ›</text>
       </picker>
     </view>
   </view>
 
-  <!-- 2. 考点确认 + 思路族 -->
+  <!-- 粘贴（电脑端备用） -->
+  <view wx:if="{{!kpId}}" class="card tight">
+    <view class="sub-row" bindtap="togglePaste">
+      <text class="note">也可以直接粘贴题干</text>
+      <text class="link">{{showPaste ? '收起' : '展开'}}</text>
+    </view>
+    <block wx:if="{{showPaste}}">
+      <textarea class="ta" value="{{text}}" bindinput="onInput" maxlength="1000"
+                placeholder="把题目条件粘进来，公式写不清也没关系。"
+                placeholder-class="ph" />
+      <view class="btn ghost" bindtap="doMatch">识别考点</view>
+    </block>
+  </view>
+
+  <!-- 2. 考点确认 -->
   <block wx:if="{{kpId}}">
     <view class="card">
       <view class="kp-top">
@@ -105,7 +164,6 @@
       <text class="note">不问你「掌握了没」——那个永远答不准。只记事实：这题当时怎么下来的。</text>
     </view>
 
-    <!-- 判定 -->
     <view wx:if="{{verdict}}" class="verdict {{verdict.kind}}">
       <text class="v-title">{{verdict.title}}</text>
       <text class="v-desc">{{verdict.desc}}</text>
@@ -118,7 +176,7 @@
     <view wx:if="{{!saved}}" class="btn" bindtap="save">存入题库</view>
     <view wx:else class="card saved">
       <text class="saved-t">已存进去</text>
-      <text class="note">这道题会进你薄弱考点的排序里。继续记下一道，或者去看诊断。</text>
+      <text class="note">这道题会进你薄弱考点的排序里。继续拍下一道，或者去看诊断。</text>
       <view class="saved-row">
         <view class="btn ghost half" bindtap="reset">再记一道</view>
         <view class="btn half" bindtap="goDiagnose">看诊断</view>

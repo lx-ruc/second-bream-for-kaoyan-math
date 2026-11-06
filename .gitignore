@@ -7,3 +7,7 @@ node_modules/
 # 应用卡标记是设备本地状态：另一台机器有自己的 appID，提交会互相覆盖
 .wbapp_*.genie
 .workbuddy/applications.yaml
+
+# 小程序 npm 依赖：由 package.json / package-lock.json 还原，不入库
+考研数学第二大脑/mp/node_modules/
+考研数学第二大脑/mp/miniprogram_npm/

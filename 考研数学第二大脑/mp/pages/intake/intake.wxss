@@ -1,9 +1,180 @@
+/* ---------- 拍照入口 ---------- */
+.shoot {
+  padding-bottom: 22rpx;
+}
+
+.srcs {
+  display: flex;
+  margin-bottom: 4rpx;
+}
+
+.src {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 27rpx;
+  border-radius: 14rpx;
+  border: 1rpx solid #d8d0c0;
+  color: #4a453c;
+  background: #fffdf8;
+}
+
+.src + .src {
+  margin-left: 14rpx;
+}
+
+.src.primary {
+  background: #211f1c;
+  border-color: #211f1c;
+  color: #fffdf8;
+  font-weight: 600;
+}
+
+.src.disabled {
+  opacity: 0.45;
+}
+
+.src:active {
+  opacity: 0.8;
+}
+
+/* ---------- 已选图片 ---------- */
+.shot {
+  display: flex;
+  align-items: center;
+  margin-top: 22rpx;
+  padding-top: 22rpx;
+  border-top: 1rpx solid #eae4d7;
+}
+
+.thumb {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  background: #eae4d7;
+  flex: none;
+}
+
+.shot-body {
+  flex: 1;
+  min-width: 0;
+  padding: 0 18rpx;
+}
+
+.shot-t {
+  display: block;
+  font-size: 27rpx;
+  color: #211f1c;
+  line-height: 1.5;
+}
+
+.shot-t.ok {
+  color: #2f6b52;
+  font-weight: 600;
+}
+
+.shot-t.loading {
+  color: #a6342a;
+}
+
+.shot-h {
+  display: block;
+  font-size: 21rpx;
+  color: #9c9587;
+  margin-top: 4rpx;
+  line-height: 1.5;
+}
+
+.shot-act {
+  flex: none;
+  font-size: 24rpx;
+  color: #6b6558;
+  padding: 12rpx 18rpx;
+  border: 1rpx solid #d8d0c0;
+  border-radius: 10rpx;
+}
+
+/* ---------- 命中真题 ---------- */
+.orig {
+  background: #f2f7f3;
+  border-color: #cfe3d7;
+}
+
+.orig-top {
+  display: flex;
+  align-items: center;
+  margin-bottom: 14rpx;
+}
+
+.orig-label {
+  font-size: 24rpx;
+  color: #2f6b52;
+}
+
+.orig-stem {
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 26rpx;
+  line-height: 1.72;
+  color: #211f1c;
+}
+
+.orig-btn {
+  margin-top: 18rpx;
+  padding: 18rpx;
+  font-size: 26rpx;
+}
+
+.orig-done {
+  margin-top: 16rpx;
+  padding: 14rpx 18rpx;
+  border-radius: 10rpx;
+  background: #e2efe7;
+}
+
+.orig-done-t {
+  font-size: 24rpx;
+  color: #2f6b52;
+}
+
+/* ---------- 识别文本 ---------- */
+.row-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.ocr-text {
+  display: block;
+  font-size: 26rpx;
+  line-height: 1.75;
+  color: #4a453c;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.ocr-text.clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.note.warn {
+  color: #a6342a;
+}
+
+/* ---------- 粘贴（备用） ---------- */
 .ta {
   width: 100%;
   height: 200rpx;
   font-size: 27rpx;
   line-height: 1.65;
   color: #211f1c;
+  margin-top: 18rpx;
   margin-bottom: 22rpx;
   box-sizing: border-box;
 }

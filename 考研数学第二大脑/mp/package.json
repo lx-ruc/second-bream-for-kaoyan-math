@@ -1,0 +1,9 @@
+{
+  "name": "kaoyan-second-brain-mp",
+  "version": "0.1.0",
+  "private": true,
+  "description": "考研数学第二大脑 · 微信小程序",
+  "dependencies": {
+    "@tencent-ai/workbuddy-cloud-sdk": "dev"
+  }
+}

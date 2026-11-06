@@ -48,8 +48,12 @@
     <text class="sec">最近记录</text>
     <view wx:for="{{recent}}" wx:key="id" class="rec">
       <view class="rec-hd">
-        <text class="rec-name">{{item.kpName}}</text>
-        <text class="rec-when">{{item.when}}</text>
+        <image wx:if="{{item.img}}" class="rec-thumb" src="{{item.img}}" mode="aspectFill"
+               data-src="{{item.img}}" catchtap="viewImg" />
+        <view class="rec-hd-main">
+          <text class="rec-name">{{item.kpName}}</text>
+          <text class="rec-when">{{item.when}}{{item.fromPhoto ? ' · 拍照录入' : ''}}</text>
+        </view>
       </view>
       <text wx:if="{{item.text}}" class="rec-text">{{item.text}}…</text>
       <view class="rec-ft">

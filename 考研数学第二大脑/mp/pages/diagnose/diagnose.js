@@ -1,5 +1,6 @@
 const E = require('../../utils/engine.js');
 const S = require('../../utils/store.js');
+const IMG = require('../../utils/img.js');
 
 function ago(ts) {
   const d = Math.floor((Date.now() - ts) / 86400000);
@@ -44,6 +45,8 @@ Page({
         kind: r.kind,
         when: ago(r.ts),
         text: (r.stem || '').slice(0, 48),
+        img: r.img ? IMG.abs(r.img) : '',
+        fromPhoto: !!r.img,
       };
     });
     this.setData({
@@ -78,17 +81,24 @@ Page({
 
   del(e) {
     const id = e.currentTarget.dataset.id;
+    const rec = S.load().filter(function (r) { return r.id === id; })[0];
     wx.showModal({
       title: '删掉这条记录？',
-      content: '删除后不影响其他题，但它不再计入诊断。',
+      content: '删除后不影响其他题，但它不再计入诊断。拍过的原图也会一起删掉。',
       confirmColor: '#a6342a',
       success: (res) => {
         if (res.confirm) {
+          if (rec && rec.img) IMG.remove(rec.img);
           S.remove(id);
           this.refresh();
         }
       },
     });
+  },
+
+  viewImg(e) {
+    const src = e.currentTarget.dataset.src;
+    if (src) wx.previewImage({ urls: [src] });
   },
 
   goIntake() {

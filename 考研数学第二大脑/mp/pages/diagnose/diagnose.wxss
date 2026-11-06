@@ -128,6 +128,22 @@
 
 .rec-hd {
   display: flex;
+  align-items: center;
+}
+
+.rec-thumb {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 10rpx;
+  background: #eae4d7;
+  flex: none;
+  margin-right: 16rpx;
+}
+
+.rec-hd-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
   justify-content: space-between;
   align-items: baseline;
 }
