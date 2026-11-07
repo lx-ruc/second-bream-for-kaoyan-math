@@ -46,12 +46,15 @@
           <text wx:if="{{detail.hasStem < detail.qs.length}}" class="chip dim">{{detail.qs.length - detail.hasStem}} 条仅坐标</text>
         </view>
         <view class="qs">
-          <view wx:for="{{detail.qs}}" wx:key="k" class="q">
+          <view wx:for="{{detail.qs}}" wx:key="k" class="q {{item.has ? 'q-go' : ''}}"
+                data-y="{{item.y}}" data-no="{{item.no}}" data-has="{{item.has}}"
+                bindtap="goExam">
             <text class="q-y">{{item.y}}</text>
             <text class="q-no">第{{item.no}}题</text>
             <text class="q-t">{{item.t}}</text>
             <text class="q-s">{{item.sc}} 分</text>
-            <text wx:if="{{!item.has}}" class="chip dim">仅坐标</text>
+            <text wx:if="{{item.has}}" class="chip ok">题干+解析</text>
+            <text wx:else class="chip dim">仅坐标</text>
           </view>
         </view>
 

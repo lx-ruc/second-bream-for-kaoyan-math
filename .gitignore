@@ -15,3 +15,4 @@ node_modules/
 
 # Swift 点击器的编译产物（e2e 首跑时用 swiftc 现场构建）
 考研数学第二大脑/mp/scripts/click.bin
+.playwright-mcp/

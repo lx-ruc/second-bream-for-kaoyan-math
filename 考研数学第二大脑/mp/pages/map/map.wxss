@@ -172,6 +172,15 @@
   font-family: Georgia, serif;
 }
 
+/* 有题干+解析的行可点进真题详情页（分包） */
+.q.q-go {
+  color: #211f1c;
+}
+
+.q.q-go:active {
+  background: #f6f1e7;
+}
+
 .fam {
   display: flex;
   align-items: flex-start;

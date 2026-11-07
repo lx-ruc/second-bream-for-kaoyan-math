@@ -108,4 +108,14 @@ Page({
       },
     });
   },
+
+  /** 点出场记录 → 真题详情页（分包）。has=false 只有坐标没有原文，不进 */
+  goExam(e) {
+    if (!e.currentTarget.dataset.has) return;
+    wx.navigateTo({
+      url: '/packageExam/pages/exam/exam?vol=' + this.data.vol +
+        '&y=' + e.currentTarget.dataset.y + '&o=' + e.currentTarget.dataset.no +
+        '&kpName=' + encodeURIComponent(this.data.detail.name || ''),
+    });
+  },
 });

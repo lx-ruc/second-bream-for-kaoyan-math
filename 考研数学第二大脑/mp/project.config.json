@@ -15,7 +15,8 @@
     "minified": true,
     "postcss": true,
     "urlCheck": false,
-    "packNpmManually": false
+    "packNpmManually": false,
+    "minifyWXML": true
   },
   "compileType": "miniprogram",
   "appid": "touristappid",

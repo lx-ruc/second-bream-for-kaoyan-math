@@ -63,6 +63,7 @@
       <text class="orig-done-t">已按这道原题填好考点</text>
     </view>
     <view wx:else class="btn ghost orig-btn" bindtap="useOriginal">用这道原题的题干</view>
+    <view class="btn ghost orig-btn" bindtap="goExam">题干想清楚了？看答案与解析 ›</view>
     <text class="note">认到原题就用库里的标准题干，识别时认错的字全部丢掉——这也是为什么公式认不准不影响你记题。</text>
   </view>
 

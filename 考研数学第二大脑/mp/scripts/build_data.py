@@ -3,8 +3,10 @@
 
 输出：
   data/kp.js     考点（含逐卷题量、思路族、精讲链接、真题坐标）
-  data/stem.js   475 道题的题干
+  data/stem.js   全部真题的题干（主包：拍照匹配要用，必须随包）
   data/prior.js  考频统计表 239 行
+  packageExam/data/qbank.js  逐题 {题干, 答案, 完整解析}（独立分包：
+                 主包 2MB 放不下全套解析，真题详情页在分包里按需加载）
 
 思路族文本从 raw/jj/*.json 重新抽取（v2/data/jj.json 那份被硬截断过，公式被切坏）。
 LaTeX 统一转成可读 Unicode：小程序没有 DOM，跑不了 KaTeX，行内小公式用文本近似。
@@ -17,6 +19,7 @@ import glob
 HERE = os.path.dirname(os.path.abspath(__file__))
 V2 = os.path.normpath(os.path.join(HERE, "..", "..", "v2"))
 OUT = os.path.normpath(os.path.join(HERE, "..", "data"))
+OUT_EXAM = os.path.normpath(os.path.join(HERE, "..", "packageExam", "data"))
 
 GREEK = {
     "alpha": "α", "beta": "β", "gamma": "γ", "delta": "δ", "epsilon": "ε", "varepsilon": "ε",
@@ -217,6 +220,8 @@ def main():
 
     # 题干：按 考点|卷 索引
     stem = {}
+    qbank = {}
+    qbank_dup = 0
     for doc in jj:
         for q in doc["qs"]:
             key = "%s|%s" % (doc["kp"], doc["vol"])
@@ -225,6 +230,13 @@ def main():
                 "s": clean(q["stem"] or ""),
                 "a": clean(q["ans"] or "")[:110],
             })
+            # 真题库：卷|年|题号 → 题干/答案/完整解析。同一坐标被两篇精讲
+            # 收录时（语料偶发），后者覆盖前者并计数上报。
+            qk = "%s|%s|%s" % (doc["vol"], q["y"], q["no"])
+            if qk in qbank:
+                qbank_dup += 1
+            qbank[qk] = {"s": clean(q["stem"] or ""), "a": clean(q["ans"] or ""),
+                         "sol": clean(q["sol"] or ""), "kp": doc["kp"]}
 
     has_stem = set((k.split("|")[0], k.split("|")[1], q["y"], q["o"]) for k, v in stem.items() for q in v)
 
@@ -265,20 +277,24 @@ def main():
 
     os.makedirs(OUT, exist_ok=True)
 
-    def dump(name, obj):
-        p = os.path.join(OUT, name + ".js")
+    def dump(base, name, obj):
+        p = os.path.join(base, name + ".js")
         body = json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
         open(p, "w", encoding="utf-8").write("module.exports=" + body + ";\n")
         print("%-10s %7.1f KB" % (name + ".js", os.path.getsize(p) / 1024))
 
-    dump("kp", {"nodes": nodes})
-    dump("stem", stem)
-    dump("prior", prows)
+    os.makedirs(OUT_EXAM, exist_ok=True)
+
+    dump(OUT, "kp", {"nodes": nodes})
+    dump(OUT, "stem", stem)
+    dump(OUT, "prior", prows)
+    dump(OUT_EXAM, "qbank", qbank)
 
     nfam = sum(len(v) for n in nodes for v in n["fam"].values())
     nq = sum(len(n["qs"]) for n in nodes)
-    print("考点 %d | 真题坐标 %d | 题干 %d | 思路族 %d | 考频 %d"
-          % (len(nodes), nq, sum(len(v) for v in stem.values()), nfam, len(prows)))
+    print("考点 %d | 真题坐标 %d | 题干 %d | 真题库 %d（坐标重复 %d）| 思路族 %d | 考频 %d"
+          % (len(nodes), nq, sum(len(v) for v in stem.values()), len(qbank),
+             qbank_dup, nfam, len(prows)))
 
 
 if __name__ == "__main__":

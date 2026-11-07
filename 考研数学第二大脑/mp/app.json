@@ -5,6 +5,14 @@
     "pages/map/map",
     "pages/prior/prior"
   ],
+  "subPackages": [
+    {
+      "root": "packageExam",
+      "pages": [
+        "pages/exam/exam"
+      ]
+    }
+  ],
   "window": {
     "navigationBarTitleText": "第二大脑",
     "navigationBarBackgroundColor": "#f4f1ea",

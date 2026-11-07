@@ -3,10 +3,11 @@
 """
 腾讯文档语料 → 结构化数据
 
-输入（raw/，均来自腾讯文档原文快照，可重新抓取）：
+输入（raw/，均来自腾讯文档原文快照，fetch_space.py 可重新抓取）：
   idx1/2/3.json   数学一/二/三 全考点真题索引（2009-2026）
-  overview.json   全考点总览（规模 + 精讲页登记表）
-  jj/*.json       75 个考点逐题精讲页（题干 + 答案 + 解析 + 思路族）
+  jj/*.json       170 个考点逐题精讲页（题干 + 答案 + 解析 + 思路族），
+                  meta 含 fid/vol/jj/标题，考点名从标题解析（不再用 jj_registry.json）
+  zt_word.json    根级「必刷真题」word 文档（备查，暂不解析）
   kaopin.csv      “为你代研”87-26 真题考频统计表
 
 输出（data/）：
@@ -139,27 +140,63 @@ def parse_jj(c):
         qs.append(dict(y=int(mk.group(1)), no=int(mk.group(2)),
                        stem=re.sub(r"\s+", " ", stem).strip()[:600],
                        ans=re.sub(r"\s+", " ", ans).strip()[:200],
-                       sol=re.sub(r"\s+", " ", meth).strip(),
+                       # SOL 的「解析 I(?=：)」是前瞻不消费冒号，切完常在开头留一个「：」
+                       sol=re.sub(r"\s+", " ", meth).strip().lstrip("：:· ").strip(),
                        methods=labels))
     return brief, fams, qs
 
 
-reg = json.load(open(os.path.join(RAW, "jj_registry.json"), encoding="utf-8"))
+# 精讲登记表改为直接从快照 meta 生成（fetch_space.py 抓取时写入），
+# 不再依赖手工维护的 jj_registry.json；抓取清单变化后无需同步登记。
 VMAP = {"一": "1", "二": "2", "三": "3"}
-for _r in reg:
-    _r["vol"] = VMAP.get(_r["vol"], _r["vol"])
+
+# 文档标题与索引表考点名有少量措辞差异，精确 kp_id 对不上时用这个别名兜底
+# （key=标题名 → value=索引表名；只列宽松匹配也救不回来的）
+KP_ALIAS = {
+    "幂级数的收敛半径与收敛域": "求幂级数的收敛半径、收敛区间和收敛域",
+}
+
+
+def loose(a, b):
+    """去掉「的/求/之间」等虚字后，判断两个考点名是否同义（相等或互相包含）。"""
+    ka = re.sub(r"[的求]", "", norm(a).replace("之间", ""))
+    kb = re.sub(r"[的求]", "", norm(b).replace("之间", ""))
+    return ka == kb or (len(ka) >= 6 and ka in kb) or (len(kb) >= 6 and kb in ka)
+
+
+def resolve_kid(name, vol):
+    """标题名 → 索引表考点 ID。精确优先，同卷范围内宽松匹配兜底。"""
+    kid = kp_id(name)
+    if kid in kp_nodes:
+        return kid
+    if name in KP_ALIAS:
+        kid = kp_id(KP_ALIAS[name])
+        if kid in kp_nodes:
+            return kid
+    cand = [nid for nid, n in kp_nodes.items()
+            if vol in n["scope"] and loose(name, n["name"])]
+    return cand[0] if len(cand) == 1 else kid
+
+
+reg = []
+for fn in sorted(os.listdir(os.path.join(RAW, "jj"))):
+    if not fn.endswith(".json"):
+        continue
+    meta = json.load(open(os.path.join(RAW, "jj", fn), encoding="utf-8"))["meta"]
+    title = meta.get("title", "")
+    m = re.match(r"^数学[一二三]·考点\d+\s*(.+?)[（(]", title)
+    kp_name = m.group(1).strip() if m else title
+    reg.append(dict(vol=VMAP.get(meta.get("vol"), meta.get("vol")), jj=meta["jj"],
+                    kp=kp_name, fid=meta["fid"], src=fn))
 jjdocs = []
 jj_index = {}   # (vol, y, no) -> 精讲定位
 for r in reg:
-    fn = "%s_%s_%02d.json" % (r["vol"], r["fid"], r["jj"])
-    p = os.path.join(RAW, "jj", fn)
-    if not os.path.exists(p):
-        continue
-    d = json.load(open(p, encoding="utf-8"))
+    d = json.load(open(os.path.join(RAW, "jj", r["src"]), encoding="utf-8"))
     brief, fams, qs = parse_jj(d["content"])
-    kid = kp_id(r["kp"])
+    kid = resolve_kid(r["kp"], r["vol"])
+    declared = kp_nodes.get(kid, {}).get("declared", {}).get(r["vol"], len(qs))
     doc = dict(kp=kid, kp_name=r["kp"], vol=r["vol"], jj=r["jj"], fid=r["fid"],
-               url="https://docs.qq.com/aio/D%s" % r["fid"], declared=r["n"],
+               url="https://docs.qq.com/aio/D%s" % r["fid"], declared=declared,
                brief=brief, families=fams, n=len(qs), qs=qs)
     jjdocs.append(doc)
     for q in qs:

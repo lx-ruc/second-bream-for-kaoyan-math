@@ -196,6 +196,16 @@ Page({
     this.loadKp(o.kp);
   },
 
+  /** 跳到真题详情页（分包）：题干自己想过一遍再看答案与解析，顺序不能反 */
+  goExam() {
+    const o = this.data.original;
+    if (!o) return;
+    wx.navigateTo({
+      url: '/packageExam/pages/exam/exam?vol=' + o.vol + '&y=' + o.y + '&o=' + o.o +
+        '&kpName=' + encodeURIComponent(o.kpName || ''),
+    });
+  },
+
   toggleOcrText() {
     this.setData({ showOcrText: !this.data.showOcrText });
   },

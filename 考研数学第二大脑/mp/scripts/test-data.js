@@ -9,6 +9,7 @@
 const KP = require('../data/kp.js').nodes;
 const STEM = require('../data/stem.js');
 const PRIOR = require('../data/prior.js');
+const QBANK = require('../packageExam/data/qbank.js');
 
 let fail = 0;
 const bad = (msg) => { fail++; console.log('  ✗ ' + msg); };
@@ -63,7 +64,32 @@ Object.keys(STEM).forEach(function (k) {
 const stemCount = Object.keys(STEM).reduce(function (a, k) { return a + STEM[k].length; }, 0);
 if (!sBad) good(stemCount + ' 条题干全部挂在考点树上');
 
-console.log('--- 4. 考频表 ---');
+console.log('--- 4. 真题库（qbank 分包）---');
+let qBad = 0;
+const kpIds = {};
+KP.forEach(function (n) { kpIds[n.id] = 1; });
+const stemCoords = {};
+Object.keys(STEM).forEach(function (k) {
+  const vol = k.split('|')[1];
+  STEM[k].forEach(function (q) { stemCoords[vol + '|' + q.y + '|' + q.o] = 1; });
+});
+const qCoords = {};
+Object.keys(QBANK).forEach(function (k) {
+  const q = QBANK[k];
+  const m = k.match(/^([123])\|(20\d\d)\|(\d+)$/);
+  if (!m) { bad('qbank key 格式异常: ' + k); qBad++; return; }
+  qCoords[k] = 1;
+  if (!q.s || q.s.length < 5) { bad('qbank 题干过短: ' + k); qBad++; }
+  if (!q.sol || q.sol.length < 10) { bad('qbank 缺解析: ' + k); qBad++; }
+  if (!q.kp || !kpIds[q.kp]) { bad('qbank.kp 指向不存在的考点: ' + k); qBad++; }
+  if (!stemCoords[k]) { bad('qbank 坐标在 stem.js 里没有(主包匹配不到): ' + k); qBad++; }
+});
+Object.keys(stemCoords).forEach(function (k) {
+  if (!qCoords[k]) { bad('stem 坐标在 qbank 里没有(详情页会落空): ' + k); qBad++; }
+});
+if (!qBad) good(Object.keys(QBANK).length + ' 题与主包题干坐标一一对应，解析全非空');
+
+console.log('--- 5. 考频表 ---');
 let pBad = 0;
 const names = {};
 PRIOR.forEach(function (r) {

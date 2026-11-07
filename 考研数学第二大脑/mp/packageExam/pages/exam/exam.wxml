@@ -1,0 +1,42 @@
+<view class="page">
+  <block wx:if="{{found}}">
+    <view class="head">
+      <text class="kicker">{{kpName}}</text>
+      <text class="h1">{{label}}</text>
+      <text wx:if="{{typeSc}}" class="lede">{{typeSc}}</text>
+    </view>
+
+    <view class="card">
+      <text class="sec">题干</text>
+      <text class="stem" user-select>{{stem}}</text>
+    </view>
+
+    <view wx:if="{{!reveal}}" class="btn" bindtap="reveal">自己想完了，看答案与解析</view>
+
+    <block wx:else>
+      <view class="card">
+        <text class="sec">答案</text>
+        <text class="ans" user-select>{{ans}}</text>
+      </view>
+
+      <view class="card" wx:if="{{sol}}">
+        <text class="sec">解析</text>
+        <text class="sol" user-select>{{sol}}</text>
+      </view>
+
+      <view class="card" wx:if="{{fams.length}}">
+        <text class="d-t">这个考点的标准思路 {{fams.length}} 条</text>
+        <view wx:for="{{fams}}" wx:key="n" class="fam">
+          <text class="fam-n">{{item.n}}</text>
+          <text class="fam-t">{{item.t}}</text>
+        </view>
+        <view class="btn ghost" bindtap="copyUrl">{{jjUrl ? '复制精讲原文链接' : '暂无精讲原文'}}</view>
+      </view>
+    </block>
+  </block>
+
+  <view wx:else class="empty">
+    <text>这道题还没有收录题干与解析。</text>
+    <text>题库按考点精讲整理，个别坐标缺原文属于正常（索引有、精讲未写）。</text>
+  </view>
+</view>
