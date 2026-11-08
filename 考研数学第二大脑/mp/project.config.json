@@ -19,7 +19,7 @@
     "minifyWXML": true
   },
   "compileType": "miniprogram",
-  "appid": "touristappid",
+  "appid": "wx3b8baf398bf449d2",
   "projectname": "kaoyan-math-second-brain",
   "miniprogramRoot": "./"
 }
