@@ -67,6 +67,19 @@
     <text class="note">认到原题就用库里的标准题干，识别时认错的字全部丢掉——这也是为什么公式认不准不影响你记题。</text>
   </view>
 
+  <!-- 刷题价值判定：值不值得做，由它与真题库的相似度说了算 -->
+  <view wx:if="{{practice}}" class="card practice p-{{practice.band}}">
+    <view class="p-top">
+      <text class="p-title">{{practice.title}}</text>
+      <text class="p-sim">最高相似 {{practice.sim}}%</text>
+    </view>
+    <text class="p-desc">{{practice.desc}}</text>
+    <view wx:if="{{practice.band !== 'skip'}}" class="p-foot">
+      <text class="note">考点「{{practice.kpName}}」· 近六年考 {{practice.n6}} 次 / 共 {{practice.total}} 次</text>
+      <text class="link" catchtap="goPracticeExam">看最接近的真题 ›</text>
+    </view>
+  </view>
+
   <!-- 识别文本（没命中原题时才有意义） -->
   <view wx:if="{{ocr && !original}}" class="card">
     <view class="row-between" bindtap="toggleOcrText">

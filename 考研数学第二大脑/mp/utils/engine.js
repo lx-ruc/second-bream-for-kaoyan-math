@@ -146,12 +146,8 @@ function matchStem(text) {
   });
 }
 
-/**
- * 找「这道题就是库里的哪一道」。
- * 匹配不是满分：OCR 转写有噪音，所以阈值必须留出容错空间（实测见 README）。
- * 命中后用库里的标准题干替换识别结果——这是让拍照录入可用的关键一步。
- */
-function findOriginal(text, vol) {
+/** 在题库里找最接近的一道题（无阈值）。findOriginal / practiceValue 共用。 */
+function closestInBank(text, vol) {
   const g = grams(text);
   const keys = Object.keys(g);
   if (keys.length < 6) return null;
@@ -164,7 +160,7 @@ function findOriginal(text, vol) {
     const s = jaccard(probe, it);
     if (!best || s > best.sim) best = { it: it, sim: s };
   }
-  if (!best || best.sim < ORIGINAL_MIN) return null;
+  if (!best) return null;
   const it = best.it;
   const n = KP_BY_ID[it.kp];
   return {
@@ -174,8 +170,69 @@ function findOriginal(text, vol) {
     y: it.y,
     o: it.o,
     stem: it.s,
-    sim: Math.round(best.sim * 100),
+    sim: best.sim, // 0-1 原始值，调用方自己取整
+    heat: n ? heat(n, it.vol) : { total: 0, n6: 0 },
     label: it.y + ' ' + VOL_NAME[it.vol] + ' 第' + it.o + '题',
+  };
+}
+
+/**
+ * 找「这道题就是库里的哪一道」。
+ * 匹配不是满分：OCR 转写有噪音，所以阈值必须留出容错空间（实测见 README）。
+ * 命中后用库里的标准题干替换识别结果——这是让拍照录入可用的关键一步。
+ */
+function findOriginal(text, vol) {
+  const best = closestInBank(text, vol);
+  if (!best || best.sim < ORIGINAL_MIN) return null;
+  const out = {};
+  for (const k in best) {
+    if (k !== 'heat') out[k] = best[k];
+  }
+  out.sim = Math.round(best.sim * 100);
+  return out;
+}
+
+/* ---------------- 刷题价值判定 ---------------- */
+
+// 分带阈值用题库自身标定（2026-11-08，1224 题全量两两比对）：
+//   同考点不同题 5873 对：p50 0.128 / p90 0.281 / p95 0.338，≥0.55 仅 0.5%（近乎原题的变式）
+//   跨考点 14365 对：p95 0.139 / p99 0.226 —— 低于 0.23 与巧合分不开
+// 判据只有相似度统计，没有模型观点——「值不值得刷」由真题库说了算。
+const PRACTICE_EXAM = 0.55;   // 原题级（= ORIGINAL_MIN）
+const PRACTICE_WORTH = 0.34;  // 同考点真题对的 p95：比 95% 的同考点不同题都更接近真题
+const PRACTICE_EDGE = 0.23;   // 跨考点噪声 p99：再低就是对不上任何真题考法
+
+/**
+ * 刷题价值判定：这道题与真题库最接近到什么程度，值不值得投入。
+ * 是 findOriginal 的无阈值版 + 分带解读，供录入前的「先纠偏后做题」。
+ */
+function practiceValue(text, vol) {
+  const best = closestInBank(text, vol);
+  if (!best) return null;
+  const sim = Math.round(best.sim * 100);
+  const h = best.heat;
+  let band, title, desc;
+  if (best.sim >= PRACTICE_EXAM) {
+    band = 'exam';
+    title = '真题级 · 值得精刷';
+    desc = '与 ' + best.label + ' 相似度 ' + sim + '%，就是这道真题（或其轻微变式）。';
+  } else if (best.sim >= PRACTICE_WORTH) {
+    band = 'worth';
+    title = '同考法 · 值得刷';
+    desc = '最接近 ' + best.label + '（' + sim + '%）。这个接近程度超过 95% 的同考点真题对，考法在真题射程内。';
+  } else if (best.sim >= PRACTICE_EDGE) {
+    band = 'edge';
+    title = '考法存疑 · 挑着做';
+    desc = '最接近 ' + best.label + '（' + sim + '%）。考点沾边，但考法与真题有距离，做过对答案即可，别深究。';
+  } else {
+    band = 'skip';
+    title = '真题不考 · 建议跳过';
+    desc = '与全部真题最接近也只有 ' + sim + '%（低于跨考点噪声线）。近 18 年没这么考过，做它是在花时间。';
+  }
+  return {
+    band: band, title: title, desc: desc, sim: sim,
+    kp: best.kp, kpName: best.kpName, vol: best.vol, y: best.y, o: best.o,
+    label: best.label, n6: h.n6, total: h.total,
   };
 }
 
@@ -378,6 +435,7 @@ module.exports = {
   listByVol: listByVol,
   matchStem: matchStem,
   findOriginal: findOriginal,
+  practiceValue: practiceValue,
   judge: judge,
   diagnose: diagnose,
   priorRows: priorRows,

@@ -84,5 +84,28 @@ function measure(label, maker) {
 measure('原文直出', function (s) { return s; });
 measure('漏字 10%', function (s) { return dropout(s, 1.0); });
 
+console.log('--- 5. 刷题价值判定（分带）---');
+// 原文直出 → 真题级；漏字 30% → 至少「值得刷」档；无关文本 → 建议跳过
+let bandOk = 0, bandFail = 0;
+items.forEach(function (it) {
+  const p1 = E.practiceValue(it.s, it.vol);
+  if (p1 && p1.band === 'exam' && p1.kp === it.kp) bandOk++; else bandFail++;
+});
+eq('原文直出判真题级', bandFail, 0);
+
+let worthHit = 0;
+items.forEach(function (it) {
+  const p = E.practiceValue(dropout(it.s, 0.7), it.vol);
+  if (p && (p.band === 'exam' || p.band === 'worth')) worthHit++;
+});
+if (worthHit / items.length >= 0.7) pass++; else { fail++; console.log('    ✗ 漏字 30% 后 worth+exam 占比仅 ' + Math.round(100 * worthHit / items.length) + '%'); }
+
+const junk = E.practiceValue('今天天气不错，我去菜市场买了三斤西红柿两斤鸡蛋，回家做了一顿饭，明天还要上班', '1');
+eq('无关文本判跳过', junk && junk.band, 'skip');
+
+const same = E.practiceValue(items[0].s, items[0].vol);
+has('判定含最接近真题坐标', same && same.desc, same && same.label);
+eq('判定带考点', !!same && !!same.kpName && same.kpName.length > 1, true);
+
 console.log('\n结果: ' + pass + ' 通过, ' + fail + ' 失败');
 process.exit(fail ? 1 : 0);

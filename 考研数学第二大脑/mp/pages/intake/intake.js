@@ -31,6 +31,7 @@ Page({
     // 识别结果
     ocr: null,
     original: null,
+    practice: null,
     showOcrText: false,
     showPaste: false,
 
@@ -131,6 +132,7 @@ Page({
     const text = r.stem || '';
     const cands = text ? E.matchStem(text) : [];
     const orig = text ? E.findOriginal(text, this.data.vol) : null;
+    const practice = text ? E.practiceValue(text, this.data.vol) : null;
     const shown = Object.assign({}, r, {
       confPct: Math.round((r.confidence || 0) * 100),
     });
@@ -140,6 +142,7 @@ Page({
       ocr: shown,
       cands: cands,
       original: orig,
+      practice: practice,
       text: text,
       showOcrText: false,
       kpId: '', kpName: '', kpInfo: null, fams: [], famN: null,
@@ -166,7 +169,8 @@ Page({
     if (t.length < 8) return;
     const cands = E.matchStem(t);
     const orig = E.findOriginal(t, this.data.vol);
-    this.setData({ cands: cands, original: orig });
+    const practice = E.practiceValue(t, this.data.vol);
+    this.setData({ cands: cands, original: orig, practice: practice });
   },
 
   doMatch() {
@@ -203,6 +207,16 @@ Page({
     wx.navigateTo({
       url: '/packageExam/pages/exam/exam?vol=' + o.vol + '&y=' + o.y + '&o=' + o.o +
         '&kpName=' + encodeURIComponent(o.kpName || ''),
+    });
+  },
+
+  /** 刷题价值卡 → 看最接近的那道真题的解析 */
+  goPracticeExam() {
+    const p = this.data.practice;
+    if (!p) return;
+    wx.navigateTo({
+      url: '/packageExam/pages/exam/exam?vol=' + p.vol + '&y=' + p.y + '&o=' + p.o +
+        '&kpName=' + encodeURIComponent(p.kpName || ''),
     });
   },
 

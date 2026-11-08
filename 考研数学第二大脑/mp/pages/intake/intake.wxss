@@ -382,3 +382,69 @@
 .saved-row .half + .half {
   margin-left: 16rpx;
 }
+
+/* ---------- 刷题价值判定卡 ---------- */
+/* 分带颜色沿用全站语义：红=真题级，绿=值得刷，赭=存疑，灰=跳过 */
+.p-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10rpx;
+}
+
+.p-title {
+  font-size: 31rpx;
+  font-weight: 600;
+}
+
+.p-sim {
+  font-family: Georgia, serif;
+  font-size: 24rpx;
+  color: #9c9587;
+}
+
+.p-desc {
+  display: block;
+  font-size: 26rpx;
+  line-height: 1.7;
+  color: #4a453c;
+}
+
+.p-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16rpx;
+}
+
+.practice {
+  border-left: 6rpx solid #d8d0c0;
+}
+
+.practice.p-exam {
+  border-left-color: #a6342a;
+}
+
+.practice.p-exam .p-title {
+  color: #a6342a;
+}
+
+.practice.p-worth {
+  border-left-color: #2f6b52;
+}
+
+.practice.p-worth .p-title {
+  color: #2f6b52;
+}
+
+.practice.p-edge {
+  border-left-color: #b08329;
+}
+
+.practice.p-edge .p-title {
+  color: #8a651f;
+}
+
+.practice.p-skip .p-title {
+  color: #6b6558;
+}
