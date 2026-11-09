@@ -54,14 +54,15 @@ input[type=search]:focus,select:focus{border-color:var(--ink3)}
 .hint{font-size:12px;color:var(--ink3)}
 
 /* layout */
-.cols{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;align-items:start}
-@media(max-width:980px){.cols{grid-template-columns:1fr}}
+.cols{display:grid;grid-template-columns:1.45fr 1fr;gap:18px;align-items:start}
+@media(max-width:1080px){.cols{grid-template-columns:1fr}}
 
 /* table */
 .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
 .tbl{width:100%;border-collapse:collapse;font-size:13px}
 .tbl th{text-align:left;font-weight:500;font-size:11.5px;letter-spacing:.04em;color:var(--ink3);
-  padding:9px 12px;border-bottom:1px solid var(--line);background:#FCFBF8;position:sticky;top:0;z-index:2}
+  padding:9px 12px;border-bottom:1px solid var(--line);background:#FCFBF8;position:sticky;top:0;z-index:2;
+  white-space:nowrap}
 .tbl td{padding:8px 12px;border-bottom:1px solid var(--line2);vertical-align:middle}
 .tbl tr.kp{cursor:pointer}
 .tbl tr.kp:hover td{background:#FCFAF5}
@@ -80,6 +81,19 @@ input[type=search]:focus,select:focus{border-color:var(--ink3)}
 .c-none{background:transparent;color:var(--ink3);border:1px dashed var(--line)}
 .c-ok{background:var(--green-bg);color:var(--green)}
 
+/* 评分列：条形表达高低，数字保留一位小数 */
+.tbl td.pri{white-space:nowrap;padding-right:14px}
+.tbl td.pri b{font-variant-numeric:tabular-nums;font-weight:600;font-size:12px;margin-left:7px;
+  display:inline-block;min-width:34px;text-align:right}
+.sc-bar{display:inline-block;width:56px;height:5px;border-radius:3px;background:var(--line2);
+  vertical-align:middle;overflow:hidden}
+.sc-bar i{display:block;height:100%;border-radius:3px}
+.s-hi i{background:var(--red)}
+.s-mid i{background:var(--amber)}
+.s-lo i{background:var(--cold)}
+.rk{display:inline-block;min-width:20px;font-size:10.5px;font-variant-numeric:tabular-nums;
+  color:var(--ink3);font-weight:500;margin-right:6px;text-align:right}
+
 /* detail */
 .detail{padding:18px 20px;position:sticky;top:16px}
 .detail h2{font-size:19px;margin:0 0 4px;font-weight:640;line-height:1.35}
@@ -91,6 +105,20 @@ input[type=search]:focus,select:focus{border-color:var(--ink3)}
 .kv span{font-size:11px;color:var(--ink3)}
 .sec{font-size:11.5px;letter-spacing:.1em;color:var(--ink3);text-transform:uppercase;
    margin:16px 0 8px;padding-bottom:5px;border-bottom:1px solid var(--line2)}
+
+/* 详情里的评分块 */
+.pri-box{display:flex;gap:16px;align-items:center;padding:12px 14px;margin-bottom:8px;
+  background:#FCFBF8;border:1px solid var(--line2);border-radius:9px}
+.pri-total{text-align:center;padding-right:16px;border-right:1px solid var(--line2)}
+.pri-total b{display:block;font-size:26px;font-weight:640;line-height:1.1;
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.pri-total span{font-size:11px;color:var(--ink3)}
+.pri-break{flex:1;display:grid;gap:7px}
+.pri-break div{display:flex;align-items:center;gap:9px;font-size:11.5px}
+.pri-break i{font-style:normal;color:var(--ink3);width:26px;flex:none}
+.pri-break .sc-bar{flex:1;width:auto}
+.pri-break .sc-bar em{display:block;height:100%;background:var(--ink3);border-radius:3px}
+.pri-break b{font-variant-numeric:tabular-nums;font-weight:600;width:32px;text-align:right;flex:none}
 
 /* year strip */
 .years{display:flex;gap:2px;align-items:flex-end;height:46px;margin-bottom:6px}
@@ -289,6 +317,7 @@ textarea:focus{border-color:var(--ink3)}
       <button data-v="1" class="on">数学一</button><button data-v="2">数学二</button><button data-v="3">数学三</button>
     </div>
     <select id="sort">
+      <option value="pri">按考频×难度综合评分</option>
       <option value="n6">按近六年题数</option>
       <option value="n">按真题总量</option>
       <option value="sc">按分值总量</option>
@@ -319,9 +348,25 @@ textarea:focus{border-color:var(--ink3)}
   </div>
   <div class="card"><div class="scroll"><table class="tbl" id="p-tbl"></table></div></div>
   <p class="note">
-    本表口径与上面的考点树不同源：它来自「为你代研」87–26 四十年统计、241 个考点、跨卷合并；
-    考点树来自你三卷真题索引、92 个考点、2009–2026 按卷归属。实测名称自动匹配只有 8%，且会把「泰勒公式」错配到「根据通项公式求极限」，
-    所以这里<strong>不做自动关联</strong>，只作独立参考。要落到考点级，需要一张人工映射表。
+    本表口径与考点树不同源：它来自「为你代研」87–26 四十年统计、241 个考点、跨卷合并；
+    考点树来自你三卷真题索引、92 个考点、2009–2026 按卷归属。名称自动匹配只有 8%，且会把「泰勒公式」错配到「根据通项公式求极限」，
+    所以两套语料靠一张<strong>人工映射表</strong>对齐（239 行 → 92 考点，已覆盖 225 行 / 全部 92 个考点）。
+    映射完成后，本表的口径才被换算成考点级的「考频×难度评分」，就是考点地图里的排序。
+  </p>
+  <p class="note">
+    <strong>评分怎么算的。</strong>
+    考频分 = 该考点年均分值（87–20 共 34 年累计分 ÷ 34）线性归一到 0–100；
+    难度分 = 按分值加权的「难」行占比，做贝叶斯平滑（先验 14.2%、垫入一份平均样本量），
+    因为 92 个考点里有 25 个只映射到 1 行，不平滑的话难度只取 0 或 1，等于让「映射了几行」冒充难度；
+    综合 = 0.7 × 考频 + 0.3 × 难度。
+    一行考频映射到多个考点时，分值按 1/n 等额分摊——否则三卷合计会从 450 分/年 虚增到 520 分/年。
+  </p>
+  <p class="note">
+    <strong>口径边界。</strong>考频表本身对「空间解析几何」整章（15 行）没有对应考点，这部分分值没有进入评分；
+    分摊后合计 383 分/年，低于三卷卷面 450 分/年的缺口就来自这里和少数未映射行。
+    同分不硬拆名次（92 个考点只落到 72 个名次）：多组同分是 1/n 分摊的必然结果，
+    数据分不出高下时就不在名次上假装分得出。
+    评分只用于<strong>排序</strong>，不替代你对单题的判断。
   </p>
 </section>
 
@@ -367,16 +412,31 @@ EX.forEach(e => { const k = e.k + "|" + e.v; (exByKV[k] = exByKV[k] || []).push(
 JJ.forEach(d => { jjByKV[d.k + "|" + d.v] = d; });
 const VOL = {"1":"数学一","2":"数学二","3":"数学三"};
 
+// 考频评分（由 build_prior.py 生成；缺失时全部降级为「无评分」）
+const PRI_ON = KP.some(k => k.pri);
+// 没有评分就把这个排序项摘掉，否则选它等于什么都不排，比没有更误导
+(function(){
+  if (PRI_ON) return;
+  const sel = document.getElementById('sort');
+  const opt = sel.querySelector('option[value="pri"]');
+  if (opt) opt.remove();
+  sel.value = 'n6';
+})();
+
 function kpRows(v){
   return KP.filter(k => k.scope.includes(v)).map(k => {
     const ex = exByKV[k.id+"|"+v] || [];
     const n6 = ex.filter(e => e.y >= 2021).length;
+    const pr = k.pri || {};
     return {
       k, ex, n: ex.length, n6,
       sc: ex.reduce((a,b) => a + b.s, 0),
       doc: jjByKV[k.id+"|"+v],
       chap: (k.chap && k.chap[v]) || "其他",
-      order: (k.order && k.order[v]) || 99
+      order: (k.order && k.order[v]) || 99,
+      // 评分是「该考点在全部三卷」上的统计量，不随卷别切换而变；
+      // 卷别只影响左边的真题/分值/近六年这几列。
+      S: pr.S, F: pr.F, D: pr.D, R: pr.r, py: pr.py, pn: pr.pn, hd: pr.hd, nr: pr.nr
     };
   });
 }
@@ -424,24 +484,49 @@ function badge(r){
   return '<span class="chip c-cold">近六年未考</span>';
 }
 
+// 评分条：S 是 0~100 的合成分，用长度直接表达高低。
+// 三档颜色只作视觉分层，不额外承载判断——真正的判断在排序里。
+function scoreCell(r){
+  if (r.S == null) return '<span class="note">—</span>';
+  const cls = r.S >= 50 ? 's-hi' : (r.S >= 25 ? 's-mid' : 's-lo');
+  return `<span class="sc-bar ${cls}" title="考频 ${r.F} · 难度 ${r.D}">` +
+         `<i style="width:${Math.max(2, Math.round(r.S))}%"></i></span>` +
+         `<b>${r.S.toFixed(1)}</b>`;
+}
+
 function renderMap(){
   let rows = kpRows(vol);
   const kw = document.getElementById('q').value.trim();
   if (kw) rows = rows.filter(r => r.k.name.includes(kw));
   const sort = document.getElementById('sort').value;
-  rows.sort((a,b) => sort === "order" ? a.order - b.order : (b[sort] - a[sort]) || (b.n - a.n));
+  // "pri" 排的是合成分 S，不是名为 pri 的字段
+  const key = sort === "pri" ? "S" : sort;
+  rows.sort((a,b) => {
+    if (key === "order") return a.order - b.order;
+    // 评分排序直接服从后端定好的名次：名次是同分时的唯一裁决，
+    // 前端如果再自己定 tie-break（比如按真题数），就会和分数打起来，出现 15→17→16 的跳号。
+    if (key === "S") return (a.R || 999) - (b.R || 999);
+    const x = a[key] == null ? -1 : a[key], y = b[key] == null ? -1 : b[key];
+    return (y - x) || (b.n - a.n);
+  });
 
-  let html = `<tr><th>考点</th><th class="num">真题</th><th class="num">近六年</th>
+  const showPri = PRI_ON && sort === "pri";
+  // 名次是三卷 92 个考点合并后的名次，切卷别不会重排，所以本卷只出现其中一段，
+  // 名次会跳号——这是有意的。表头直接写明「三卷名次」，不做局部重编号。
+  let html = `<tr><th>${showPri ? '<span class="num">#</span> ' : ''}考点</th>` +
+    (showPri ? `<th class="num" title="全部三卷 92 个考点合并排名，不随卷别重排；同分并列">评分<em style="font-style:normal;font-size:10px;color:var(--ink3)"> 三卷名次</em></th>` : '') +
+    `<th class="num">真题</th><th class="num">近六年</th>
     <th class="num">分值</th><th>方法库</th><th>判读</th></tr>`;
   let cur = null;
   rows.forEach(r => {
     if (sort === "order" && r.chap !== cur){
       cur = r.chap;
-      html += `<tr class="chap"><td colspan="6">${esc(cur)}</td></tr>`;
+      html += `<tr class="chap"><td colspan="${showPri ? 7 : 6}">${esc(cur)}</td></tr>`;
     }
     html += `<tr class="kp ${r.k.id === selKp ? 'on' : ''}" data-k="${r.k.id}">
-      <td class="name">${esc(r.k.name)}</td>
-      <td class="num">${r.n}</td>
+      <td class="name">${showPri && r.R ? `<span class="rk">${r.R}</span>` : ''}${esc(r.k.name)}</td>` +
+      (showPri ? `<td class="num pri">${scoreCell(r)}</td>` : '') +
+      `<td class="num">${r.n}</td>
       <td class="num"><b>${r.n6 || '—'}</b></td>
       <td class="num">${r.sc}</td>
       <td>${r.doc ? `<span class="chip c-doc">${r.doc.fam.length} 条思路</span>` : '<span class="chip c-none">未建</span>'}</td>
@@ -452,8 +537,10 @@ function renderMap(){
     selKp = tr.dataset.k; renderMap(); renderDetail();
   });
   const withDoc = rows.filter(r => r.doc).length;
+  const noPri = rows.filter(r => r.S == null).length;
   document.getElementById('map-hint').textContent =
-    `${rows.length} 个考点 · ${withDoc} 个有思路族 · 共 ${rows.reduce((a,b)=>a+b.n,0)} 题`;
+    `${rows.length} 个考点 · ${withDoc} 个有思路族 · 共 ${rows.reduce((a,b)=>a+b.n,0)} 题` +
+    (PRI_ON && noPri ? ` · ${noPri} 个无考频评分` : '');
 }
 
 function renderDetail(){
@@ -482,6 +569,20 @@ function renderDetail(){
       <div><b style="color:var(--red)">${r.n6}</b><span>近六年（2021–26）</span></div>
       <div><b>${r.sc}</b><span>累计分值</span></div>
     </div>
+    ${r.S != null ? `
+    <div class="sec">考频×难度综合评分 <span style="font-weight:400;font-size:12px;color:var(--ink3)">
+      三卷合并第 ${r.R} 名（同分并列，共 ${Object.keys(kpMap).length} 个考点）</span></div>
+    <div class="pri-box">
+      <div class="pri-total"><b>${r.S.toFixed(1)}</b><span>综合 ${r.S >= 50 ? '优先补' : (r.S >= 25 ? '常规' : '低优先')}</span></div>
+      <div class="pri-break">
+        <div><i>考频</i><span class="sc-bar"><em style="width:${Math.round(r.F)}%"></em></span><b>${r.F.toFixed(1)}</b></div>
+        <div><i>难度</i><span class="sc-bar"><em style="width:${Math.round(r.D)}%"></em></span><b>${r.D.toFixed(1)}</b></div>
+      </div>
+    </div>
+    <p class="note" style="margin:-4px 0 14px">
+      年均 ${r.py.toFixed(2)} 分 · 年均出现 ${r.pn.toFixed(2)} 次 · 其中「难」占 ${(r.hd*100).toFixed(0)}% ·
+      由 ${r.nr} 行考频映射而来${r.nr <= 2 ? '，样本少，难度分不稳定，看排序即可、别当结论' : ''}。
+    </p>` : ''}
     <div class="years">${strip}</div>
     <div class="axis"><span>2009</span><span>2015</span><span>2021</span><span>2026</span></div>
     <div class="sec">出场记录 <span style="font-weight:400;font-size:12px;color:var(--ink3)">${nDoc} 题有精讲${r.ex.length>nDoc?` · ${r.ex.length-nDoc} 题仅坐标`:''}</span></div>

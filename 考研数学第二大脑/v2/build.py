@@ -23,6 +23,19 @@ exams = jload("exams.json")["exams"]
 docs = jload("jj.json")["docs"]
 kaopin = jload("kaopin.json")["rows"]
 
+
+def jload_opt(name):
+    """可选数据：缺了不炸，只是对应功能不出现。"""
+    p = os.path.join(DATA, name)
+    if not os.path.exists(p):
+        return None
+    with open(p, encoding="utf-8") as f:
+        return json.load(f)
+
+
+# 考频评分（先跑 build_kpmap.py + build_prior.py 生成）；缺失时页面自动隐藏排序项
+prior = jload_opt("prior.json")
+
 # ---- 索引 ----
 by_kp_vol = {}
 for e in exams:
@@ -39,6 +52,14 @@ for n in nodes:
         id=n["id"], name=n["name"], scope=n["scope"], chap=n["chap"],
         n=n.get("n", {}),
     ))
+
+# 考点 id → 考频评分。只在有评分时才带上，避免前端到处判空。
+PR = prior["kp"] if prior else {}
+for k in KP:
+    p = PR.get(k["id"])
+    if p:
+        k["pri"] = dict(S=p["S"], F=p["F"], D=p["D"], r=p["rank"],
+                        py=p["py"], pn=p["pn"], hd=p["hard"], nr=p["nrow"])
 
 EX = [dict(k=e["kp"], v=e["vol"], y=e["y"], o=e["no"], t=e["t"], s=e["sc"], j=e["jj"]) for e in exams]
 
@@ -70,7 +91,7 @@ for fn in os.listdir(fontdir):
 css = re.sub(r"src:url\(fonts/[^)]+\.woff\)[^;]*;", "", css)
 kjs = open(os.path.join(KATEX, "katex.min.js"), encoding="utf-8").read()
 
-payload = dict(KP=KP, EX=EX, JJ=JJ, KK=kaopin)
+payload = dict(KP=KP, EX=EX, JJ=JJ, KK=kaopin, PM=prior["meta"] if prior else None)
 pjson = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
 
 tpl = open(os.path.join(SRC, "template.html"), encoding="utf-8").read()
@@ -88,3 +109,4 @@ with open(out, "w", encoding="utf-8") as f:
 print("写出 %s  %.2f MB" % (out, len(html.encode()) / 1048576))
 print("考点 %d / 真题 %d / 精讲 %d / 题干 %d" % (
     len(KP), len(EX), len(JJ), sum(len(d["qs"]) for d in JJ)))
+print("考频评分 %s" % ("%d 个考点（含排序）" % len(PR) if PR else "缺失，未启用排序"))
