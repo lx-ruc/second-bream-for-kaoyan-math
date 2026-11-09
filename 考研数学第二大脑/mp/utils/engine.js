@@ -66,8 +66,30 @@ function listByVol(vol) {
 
 /* ---------------- 题干相似度匹配 ---------------- */
 
+/**
+ * 归一化的两件事，都是为了「同一个人在说同一道题」能被算出来：
+ *
+ * 1) Unicode 上/下标 → ASCII。库内题干是 Unicode 形态（x²、P₁⁻¹），
+ *    模型识别也可能给 LaTeX（x^{2}）或纯文本（x^2），不归一就永远对不上。
+ * 2) 去掉 ^ _ 这两个标记。它们不是题目内容，留着只会放大形态差异
+ *    （e^(xₙ) vs e^(xn) vs e^{x_n}）。抹掉标记后比的是实际字符。
+ *
+ * 库内数据实测：含 ^ 的 812 处、含 _ 的 1291 处，属于高频形态，不能不管。
+ */
+const SCRIPT_REV = (function () {
+  const m = {};
+  '⁰0 ¹1 ²2 ³3 ⁴4 ⁵5 ⁶6 ⁷7 ⁸8 ⁹9 ⁺+ ⁻- ⁼= ⁽( ⁾) ⁿn ⁱi ₀0 ₁1 ₂2 ₃3 ₄4 ₅5 ₆6 ₇7 ₈8 ₉9 ₙn ᵢi ⱼj ₖk'
+    .split(' ').forEach(function (p) {
+      if (p.length === 2) m[p.charAt(0)] = p.charAt(1);
+    });
+  return m;
+})();
+const SCRIPT_RE = /[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ⁿⁱ₀₁₂₃₄₅₆₇₈₉ₙᵢⱼₖ]/g;
+
 function normText(s) {
   return (s || '')
+    .replace(SCRIPT_RE, function (c) { return SCRIPT_REV[c] || c; })
+    .replace(/[\^_]/g, '')
     .replace(/[\s\u3000]/g, '')
     .replace(/[，。、；：？！“”‘’（）【】《》「」,.;:?!"'`]/g, '')
     .toLowerCase();

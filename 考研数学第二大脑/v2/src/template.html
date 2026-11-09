@@ -152,6 +152,59 @@ summary{cursor:pointer;font-size:12.5px;color:var(--ink2);padding:6px 0}
 textarea{font-family:inherit;font-size:13px;line-height:1.75;padding:11px 13px;border:1px solid var(--line);
   border-radius:9px;background:var(--panel);color:var(--ink);width:100%;min-height:120px;resize:vertical;outline:none}
 textarea:focus{border-color:var(--ink3)}
+
+/* 来源切换 */
+.modes{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel);margin-top:12px}
+.modes button{border:0;background:0;padding:6px 14px;font-size:12.5px;color:var(--ink2);cursor:pointer;font-family:inherit}
+.modes button+button{border-left:1px solid var(--line2)}
+.modes button.on{background:var(--ink);color:#fff}
+
+/* 上传区 */
+.drop{border:1.5px dashed var(--line);border-radius:12px;background:#FCFBF8;padding:30px 20px;text-align:center;
+  cursor:pointer;transition:border-color .15s,background .15s;margin-top:12px}
+.drop:hover,.drop.over{border-color:var(--ink3);background:#F8F6F0}
+.drop-i{font-size:13.5px;color:var(--ink);line-height:1.6}
+.drop-h{font-size:11.5px;color:var(--ink3);margin-top:6px}
+.drop.has{padding:12px;text-align:left}
+.drop img{max-width:100%;max-height:280px;border-radius:8px;display:block;margin:0 auto}
+.shot-meta{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:11.5px;color:var(--ink3);flex-wrap:wrap}
+.shot-meta b{font-weight:520;color:var(--ink2);font-variant-numeric:tabular-nums}
+.busy{display:flex;align-items:center;gap:10px;padding:16px 18px;border:1px solid var(--line);border-radius:12px;
+  background:var(--panel);margin-top:12px;font-size:13px;color:var(--ink2)}
+.spin{width:14px;height:14px;border:2px solid var(--line);border-top-color:var(--red);border-radius:50%;
+  animation:sp .7s linear infinite;flex:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+.errbox{padding:12px 14px;border:1px solid #E9C9C2;background:var(--red-bg);border-radius:10px;
+  font-size:12.5px;color:var(--red);margin-top:12px;line-height:1.6}
+
+/* 识别结果卡 */
+.ocrcard{border:1px solid var(--line);border-radius:11px;background:#FCFBF8;padding:12px 14px;margin-top:14px}
+.ocrhd{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink)}
+.ocrhd .mu{margin-left:auto;font-size:11px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.ocrhd .lk{border:0;background:0;color:var(--red);font-size:11.5px;cursor:pointer;font-family:inherit;padding:0}
+.ocrbody{margin-top:10px}
+.ocrbody textarea{min-height:86px;font-size:12.5px;background:var(--panel)}
+.ocrfix{display:flex;gap:8px;margin-top:8px}
+.ocrfix input{flex:1;font-family:inherit;font-size:12px;padding:8px 11px;border:1px solid var(--line);
+  border-radius:8px;background:var(--panel);color:var(--ink);outline:none;min-width:0}
+.ocrfix input:focus{border-color:var(--ink3)}
+.ocrfix button{flex:none}
+
+/* 命中真题原题 */
+.origbox{border:1px solid #CFE3D7;background:var(--green-bg);border-radius:11px;padding:13px 15px;margin-top:4px}
+/* 第 2 步里折叠的「看原图 / 改识别文本」。折叠是必须的：主任务是点考点，
+   但认错字往往到这一步才发现，所以入口不能跑掉。 */
+.again{margin:4px 0 12px;border:1px solid var(--line);border-radius:11px;background:var(--panel)}
+.again>summary{cursor:pointer;padding:10px 14px;font-size:12.5px;color:var(--ink2);list-style:none;user-select:none}
+.again>summary::-webkit-details-marker{display:none}
+.again>summary::before{content:"▸ ";color:var(--ink3)}
+.again[open]>summary::before{content:"▾ "}
+.again>summary:hover{color:var(--ink)}
+.again>div{padding:0 14px 14px}
+.orighd{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.origstem{margin:0;font-size:12.5px;line-height:1.75;color:var(--ink)}
+.origbox .hint{margin-top:8px}
+
 .steps{display:flex;gap:6px;margin-bottom:14px;font-size:11px;color:var(--ink3);align-items:center}
 .steps b{font-weight:500;padding:2px 9px;border-radius:20px;background:var(--cold-bg);color:var(--ink3)}
 .steps b.on{background:var(--ink);color:#fff}
@@ -200,11 +253,12 @@ textarea:focus{border-color:var(--ink3)}
 <div class="wrap">
 
 <header>
-  <div class="eyebrow">真题语料 · 结构化闭环 · 数据不出本地</div>
-  <h1>考研数学第二大脑 <small>MVP · 单文件离线版</small></h1>
+  <div class="eyebrow">真题语料 · 结构化闭环 · 记录不出本地</div>
+  <h1>考研数学第二大脑 <small>网页端 · 单文件</small></h1>
   <p class="lede">
-    一条完整的闭环：粘贴或挑选一道题 → 本地按题干相似度匹配考点（人工确认，不靠模型猜）→ 记下掌握度和你卡住的思路 →
-    存进本地题库 → 诊断页告诉你该先补哪个考点、哪些题在浪费时间。语料来自你腾讯文档空间的三卷真题索引、75 篇逐题精讲与 40 年考频统计。
+    一条完整的闭环：拍照或上传截图 → 识别题面 → 在真题库里认出这是哪一道 → 匹配考点（人工确认，不靠模型猜）→
+    记下掌握度和你卡住的思路 → 存进本地题库 → 诊断页告诉你该先补哪个考点、哪些题在浪费时间。
+    语料来自你腾讯文档空间的三卷真题索引、170 篇逐题精讲与 40 年考频统计。
   </p>
   <div class="stats" id="stats"></div>
 </header>
@@ -274,6 +328,7 @@ textarea:focus{border-color:var(--ink3)}
 </div>
 
 <script>/*__KATEX_JS__*/</script>
+<script>/*__OCR_JS__*/</script>
 <script>
 const DATA = /*__DATA__*/;
 const {KP, EX, JJ, KK} = DATA;
@@ -456,8 +511,34 @@ const DONE4 = [
 ];
 
 // ---------- 题干相似度（纯本地计算） ----------
+/**
+ * 归一化分两步，两步都是为了「同一个人在说同一道题」能被算出来：
+ *
+ * 1) Unicode 上下标 → ASCII。库内题干存 LaTeX（^{-1}），模型识别输出 Unicode（⁻¹），
+ *    不归一就永远对不上。
+ * 2) 去掉 ^ 和 _ 。上下标标记本身不是题目内容，两边形态不同（^{-1} vs ^-1 vs ⁻¹），
+ *    留着只会制造差异；把标记抹掉后，比的是「-1」这个实际内容。
+ *
+ * 实测（1217 题，模拟 12% 漏字，只统计含上下标的 1016 题）：
+ *   不做归一：命中相似度 p05 = 0.424，阈值 0.55 下会有 11/200 明明认得出却判没认出来
+ *   只做 1)：p05 = 0.533，仍贴着阈值边缘
+ *   做 1)+2)：p05 = 0.605，中位 0.793 —— 留出了余量
+ */
+const SCRIPT_REV = (function(){
+  const m = {};
+  const sup = {'⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁺':'+','⁻':'-','⁼':'=','⁽':'(','⁾':')','ⁿ':'n','ⁱ':'i'};
+  const sub = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9','ₙ':'n','ᵢ':'i','ⱼ':'j','ₖ':'k'};
+  Object.keys(sup).forEach(k => { m[k] = sup[k]; });
+  Object.keys(sub).forEach(k => { m[k] = sub[k]; });
+  return m;
+})();
+const SCRIPT_RE = /[⁰¹²³⁴⁵⁶⁷⁸⁹⁺⁻⁼⁽⁾ⁿⁱ₀₁₂₃₄₅₆₇₈₉ₙᵢⱼₖ]/g;
 function normStem(t){
-  return (t || "").replace(/\\[a-zA-Z]+/g, "").replace(/[\s{}\\]/g, "").toLowerCase();
+  return (t || "")
+    .replace(SCRIPT_RE, c => SCRIPT_REV[c] || c)
+    .replace(/\\[a-zA-Z]+/g, "")
+    .replace(/[\s{}\\\^_]/g, "")
+    .toLowerCase();
 }
 function gramSet(t){
   const s = normStem(t), g = new Set();
@@ -502,6 +583,55 @@ function heatOf(kp, v){
   const ex = exByKV[kp + "|" + v] || [];
   return {n6: ex.filter(e => e.y >= 2021).length, total: ex.length};
 }
+
+/**
+ * 找真题原题。阈值 0.55 与小程序同源，是实测出来的：
+ * 1224 题模拟 12% 漏字时，命中自身相似度中位 0.639、p05 0.489；
+ * 而错配到其它题的最高相似度 p95 只有 0.415。取 0.55 → 召回约 86%、误报约 3%。
+ * 宁可不认，也不认错题——认错会把题记到别的考点上，比不识别更糟。
+ */
+const ORIG_TH = 0.55;
+function findOriginal(text, v){
+  const G = gramSet(text);
+  if (G.size < 8) return null;
+  let best = null;
+  CORPUS.forEach(c => {
+    const s = jac(G, c.g);
+    if (s > ORIG_TH && (!best || s > best.s)) {
+      best = {k: c.k, v: c.v, y: c.y, o: c.o, s: s};
+    }
+  });
+  if (!best) return null;
+  // 命中后取库里的标准题干
+  const d = jjByKV[best.k + "|" + best.v];
+  const q = d && d.qs.find(x => x.y === best.y && x.o === best.o);
+  if (!q) return null;
+  best.st = q.st;
+  return best;
+}
+
+/** 识别/改题干后统一重算：候选考点 + 原题 + 自动预选
+ *  @param {boolean} keepOpen 重算后是否保持「看原图/改识别文本」面板展开 */
+function rematch(keepOpen){
+  const t = (IN.stem || "").trim();
+  if (t.length < 8){
+    IN.cands = []; IN.orig = null; IN.noMatch = true;
+    renderIntake();
+    return;
+  }
+  IN.cands = matchKp(t, IN.vol);
+  IN.orig = findOriginal(t, IN.vol);
+  IN.noMatch = !IN.cands.length;
+  IN.kp = null;
+  // 不自动跳过第 2 步：命中原题要让人看见（那才是「可以信任库里标准题干」的理由），
+  // 而且选哪个考点必须由用户点。
+  renderIntake();
+  if (keepOpen){
+    // renderIntake 会整块重建 innerHTML，细节面板回到默认收起状态
+    const d = document.querySelector(".again");
+    if (d) d.open = true;
+  }
+}
 function levelOf(rec){
   const h = heatOf(rec.kp, rec.vol);
   if (!jjByKV[rec.kp + "|" + rec.vol]) return Object.assign({lv: "nodata"}, h);
@@ -510,9 +640,12 @@ function levelOf(rec){
 }
 
 // ---------- 录题 ----------
-const IN = {mode: "paste", vol: "1", stem: "", cands: [], kp: null, done: null, fam: null, off: false, srcRef: ""};
+// mode: photo / upload / paste / exam
+const IN = {mode: "photo", vol: "1", stem: "", cands: [], kp: null, done: null, fam: null, off: false, srcRef: "",
+            ocr: null, orig: null, busy: "", err: "", hint: "", noMatch: false};
 function inReset(){
-  Object.assign(IN, {stem: "", cands: [], kp: null, done: null, fam: null, off: false, srcRef: ""});
+  Object.assign(IN, {stem: "", cands: [], kp: null, done: null, fam: null, off: false, srcRef: "",
+                     ocr: null, orig: null, busy: "", err: "", hint: "", noMatch: false});
   renderIntake();
 }
 
@@ -544,6 +677,38 @@ function verdictHtml(){
   return `<div class="verdict ${V[0]}"><h3>${V[1]}</h3><p>${V[2]}</p></div>`;
 }
 
+/**
+ * 识别结果面板：缩略图 + 可改文本 + 纠错重识别。
+ * 抽成函数是因为第 1 步和第 2 步都要用：识别完会自动跳到第 2 步（有候选考点），
+ * 如果只在第 1 步渲染，用户一到第 2 步就看不到自己拍的是什么、也改不了认错的字，
+ * 只能退回去——那等于「认错了没法纠正」。
+ */
+function ocrPanel(s){
+  if (!s.ocr) return "";
+  return `<div class="drop has" id="in-drop"><img src="${s.ocr.preview}" alt="题目图片"></div>
+    <div class="shot-meta">
+      <span><b>${s.ocr.model}</b></span>
+      <span>置信 ${Math.round((s.ocr.confidence || 0) * 100)}%</span>
+      ${s.ocr.formulaHeavy ? "<span>公式较多</span>" : ""}
+      <button class="lk" id="in-reshoot" style="margin-left:auto;border:0;background:0;color:var(--red);cursor:pointer;font-family:inherit;font-size:11.5px">换一张</button>
+    </div>
+    <div class="ocrcard">
+      <div class="ocrhd">
+        <span>识别出的题面</span>
+        <span class="mu">可改，改完点「重新匹配」</span>
+      </div>
+      <div class="ocrbody">
+        <textarea id="in-text" placeholder="识别结果…">${esc(s.stem)}</textarea>
+        ${s.ocr.note ? `<div class="hint" style="color:var(--red);margin-top:6px">模型自述：${esc(s.ocr.note)}</div>` : ""}
+        <div class="hint" style="margin-top:6px">这段字只用来检索考点，不用来读题。认错几个符号不影响匹配，但别拿它当题目原文。</div>
+      </div>
+      <div class="ocrfix">
+        <input id="in-hint" placeholder="认错了？补一句：比如「分母是 x-1 不是 x+1」" value="${esc(s.hint || "")}">
+        <button class="btn ghost" id="in-reshint">重识别</button>
+      </div>
+    </div>`;
+}
+
 function renderIntake(){
   const el = document.getElementById("in-body");
   if (!el) return;
@@ -562,27 +727,73 @@ function renderIntake(){
   </div>`;
 
   if (step === 1){
-    if (s.mode === "paste"){
+    // 三种来源：拍照 / 上传截图 / 粘贴。拍照在手机上就是调前置摄像头，在电脑上退化成选文件。
+    h += `<div class="modes">
+      <button data-m="photo" class="${s.mode === "photo" ? "on" : ""}">拍照</button>
+      <button data-m="upload" class="${s.mode === "upload" ? "on" : ""}">上传截图</button>
+      <button data-m="paste" class="${s.mode === "paste" ? "on" : ""}">粘贴题干</button>
+      <button data-m="exam" class="${s.mode === "exam" ? "on" : ""}">从真题库选</button>
+    </div>`;
+
+    if (s.mode === "photo" || s.mode === "upload"){
+      const isPhoto = s.mode === "photo";
+      if (s.ocr){
+        // 已识别：缩略图 + 可改文本 + 重识别
+        h += ocrPanel(s);
+        h += `<div style="display:flex;gap:8px;margin-top:12px;align-items:center;flex-wrap:wrap">
+            <button class="btn" id="in-go">重新匹配</button>
+            <span class="hint">识别只做检索，最终以真题库匹配为准</span>
+          </div>`;
+      } else if (s.busy){
+        h += `<div class="busy"><span class="spin"></span><span>${s.busy === "compress" ? "正在压缩图片…" : "正在识别题面，第一次会慢一点…"}</span></div>`;
+      } else {
+        h += `<div class="drop" id="in-drop">
+          <div class="drop-i">${isPhoto ? "点这里拍一张，或直接把图片拖进来" : "点这里选截图，或直接把图片拖进来"}</div>
+          <div class="drop-h">${isPhoto ? "题目拍清楚就行，草稿、答案、水印会被忽略" : "手机截图、扫描件、别人的照片都行"} · JPG / PNG</div>
+        </div>
+        <input type="file" id="in-file" accept="image/*" ${isPhoto ? "capture=\"environment\"" : ""} style="display:none">`;
+        if (s.err) h += `<div class="errbox">${esc(s.err)}</div>`;
+      }
+    } else if (s.mode === "paste"){
       h += `<div class="sub">把题干粘进来。公式用 LaTeX 或手打都行，识别只看文字结构。</div>
         <textarea id="in-text" placeholder="直接粘贴题目文字…">${esc(s.stem)}</textarea>
         <div style="display:flex;gap:8px;margin-top:10px;align-items:center;flex-wrap:wrap">
           <button class="btn" id="in-go">识别考点</button>
-          <button class="btn ghost" id="in-mode">从真题库选一道</button>
           <span class="hint">全部在本地算，不上传</span>
         </div>`;
     } else {
-      h += `<div class="sub">从 475 道带题干与解析的真题里挑一道。</div>
+      h += `<div class="sub">从真题库里挑一道带题干与解析的原题。</div>
         <select id="in-ex" style="width:100%;margin-top:8px">${exOptions()}</select>
         <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
           <button class="btn" id="in-use">用这道题</button>
-          <button class="btn ghost" id="in-mode">改成粘贴新题</button>
         </div>`;
     }
   }
 
   if (step === 2){
+    // 拍照/截图进来的，这里也给一条回到识别面板的路。
+    // 折叠起来是因为第 2 步的主任务是「点一个考点」，别让图片和文本框把它挤下去；
+    // 但要能随手展开改——认错字跑到第 2 步才发现，是最常发生的情况。
+    if (s.ocr){
+      h += `<details class="again"><summary>看原图 / 改识别文本</summary>
+        <div style="padding-top:10px">${ocrPanel(s)}</div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn" id="in-go">重新匹配</button>
+        </div>
+      </details>`;
+    }
+    // 命中原题：优先展示库里标准题干，识别乱码不往下传
+    if (s.orig){
+      const ok = kpMap[s.orig.k];
+      h += `<div class="origbox">
+        <div class="orighd"><span class="chip c-hot">对上原题 ${Math.round(s.orig.s * 100)}%</span>
+          <span style="font-size:11.5px;color:var(--green)">${s.orig.y} ${VOL[s.orig.v]} 第${s.orig.o}题${ok ? " · " + esc(ok.name) : ""}</span></div>
+        <p class="origstem">${mathify(s.orig.st)}</p>
+        <div class="hint">认到原题就用库里的标准题干，识别时认错的字全部丢掉 —— 这也是为什么公式认不准不影响你记题。</div>
+      </div>`;
+    }
     if (s.cands.length){
-      h += `<div class="sec">识别结果</div>
+      h += `<div class="sec">${s.orig ? "按相似度排的考点" : "识别结果"}</div>
         <p class="note" style="margin-top:0">按题干字符相似度算的，不是模型猜的。点一个确认。</p>
         <div class="cand">`;
       s.cands.forEach(c => {
@@ -652,26 +863,100 @@ function bindIntake(){
   ["in-reset2", "in-reset3"].forEach(id => { if ($(id)) $(id).onclick = inReset; });
 
   document.querySelectorAll("#in-vol button").forEach(b => b.onclick = () => {
-    IN.vol = b.dataset.v; IN.cands = []; IN.kp = null; IN.noMatch = false;
+    // 换卷后要重算候选：同一段文字在数一/数二命中不同考点
+    IN.vol = b.dataset.v; IN.cands = []; IN.kp = null; IN.noMatch = false; IN.orig = null;
+    if (IN.stem && IN.stem.length >= 10) rematch();
+    else renderIntake();
+  });
+
+  // 来源切换
+  document.querySelectorAll(".modes button").forEach(b => b.onclick = () => {
+    const ta = $("in-text");
+    if (ta) IN.stem = ta.value;
+    if (b.dataset.m !== IN.mode){
+      IN.mode = b.dataset.m;
+      IN.err = ""; IN.cands = []; IN.kp = null; IN.noMatch = false;
+      if (b.dataset.m === "photo" || b.dataset.m === "upload") IN.ocr = null;
+      if (b.dataset.m !== "exam") IN.orig = null;
+    }
     renderIntake();
   });
 
-  if ($("in-mode")) $("in-mode").onclick = () => {
-    const ta = $("in-text");
-    if (ta) IN.stem = ta.value;
-    IN.mode = IN.mode === "paste" ? "exam" : "paste";
-    IN.cands = []; IN.kp = null; IN.noMatch = false;
+  /* ---------- 图片上传识别 ---------- */
+  const drop = $("in-drop"), file = $("in-file");
+  if (drop && file){
+    drop.onclick = () => file.click();
+    file.onchange = e => {
+      const f = e.target.files && e.target.files[0];
+      if (f) runOcr(f);
+    };
+    // 拖拽
+    ["dragenter", "dragover"].forEach(ev => drop.addEventListener(ev, e => {
+      e.preventDefault(); drop.classList.add("over");
+    }));
+    ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => {
+      e.preventDefault(); drop.classList.remove("over");
+    }));
+    drop.addEventListener("drop", e => {
+      const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) runOcr(f);
+    });
+  }
+
+  if ($("in-reshoot")) $("in-reshoot").onclick = () => {
+    IN.ocr = null; IN.err = ""; IN.stem = ""; IN.cands = []; IN.kp = null; IN.orig = null;
     renderIntake();
   };
+  if ($("in-reshint")) $("in-reshint").onclick = () => {
+    IN.hint = (($("in-hint") || {}).value || "").trim();
+    IN.err = "";
+    if (IN.lastFile) runOcr(IN.lastFile, IN.hint);
+    else { IN.err = "图片已经不在了，换一张重新识别"; renderIntake(); }
+  };
+
+  /** 跑一次识别。hint 是用户补充的纠错说明，会拼进提示词。 */
+  async function runOcr(f, hint){
+    const ta = $("in-text");
+    if (ta) IN.stem = ta.value;
+    // 在第 2 步里点「重识别」，说明用户是在改错字，重识别完还想接着看面板；
+    // 首次上传则是从头开始，收起面板让候选考点占主位。
+    const fromPanel = !!document.querySelector(".again[open]");
+    IN.lastFile = f;
+    IN.busy = "compress"; IN.err = ""; IN.ocr = null; IN.cands = []; IN.kp = null; IN.orig = null;
+    renderIntake();
+    try {
+      const r = await OCR.recognize(f, stage => { IN.busy = stage; renderIntake(); }, hint);
+      IN.busy = "";
+      IN.ocr = r;
+      IN.stem = r.stem;
+      if (!r.stem){ IN.err = "没认出文字，换张清晰点的，或者直接粘贴题干"; renderIntake(); return; }
+      // 识别完立刻匹配 + 找原题
+      rematch(fromPanel);
+    } catch (err){
+      IN.busy = "";
+      IN.err = mapOcrErr(err);
+      renderIntake();
+    }
+  }
+
+  function mapOcrErr(err){
+    const msg = (err && err.message) || "";
+    if (msg.indexOf("Failed to fetch") >= 0 || msg.indexOf("NetworkError") >= 0)
+      return "连不上识别服务：检查网络。离线时可以直接用「粘贴题干」，匹配全在本地算。";
+    if (msg.indexOf("图片太大") >= 0 || msg.indexOf("图片读不出") >= 0) return msg;
+    if (msg.indexOf("HTTP 4") >= 0) return "识别服务拒绝了请求（" + msg.slice(0, 60) + "）。可以先用「粘贴题干」。";
+    if (msg.indexOf("HTTP 5") >= 0) return "识别服务暂时不可用，过一会儿再试。";
+    return "识别失败：" + (msg || "未知原因") + "。可以直接用「粘贴题干」。";
+  }
 
   if ($("in-go")) $("in-go").onclick = () => {
     const t = (($("in-text") || {}).value || "").trim();
-    if (t.length < 10){ $("in-text").focus(); return; }
+    if (t.length < 10){ if ($("in-text")) $("in-text").focus(); return; }
+    // 记住折叠面板是开着的：改完字重算后，用户要看的是「候选考点变了没有」，
+    // 面板一收起来，改动的结果就看不见了。
+    const wasOpen = !!document.querySelector(".again[open]");
     IN.stem = t;
-    IN.cands = matchKp(t, IN.vol);
-    IN.noMatch = !IN.cands.length;
-    IN.kp = null;
-    renderIntake();
+    rematch(wasOpen);
   };
 
   if ($("in-use")) $("in-use").onclick = () => {
@@ -681,7 +966,7 @@ function bindIntake(){
     const q = d.qs[+p[2]];
     Object.assign(IN, {
       vol: p[1], stem: q.st, srcRef: `${q.y} ${VOL[p[1]]} 第${q.o}题`,
-      kp: p[0], cands: [], done: null, fam: null, off: false, noMatch: false
+      kp: p[0], cands: [], done: null, fam: null, off: false, noMatch: false, orig: null
     });
     renderIntake();
   };
@@ -691,7 +976,10 @@ function bindIntake(){
   });
   if ($("in-kpsel")) $("in-kpsel").onchange = e => {
     if (!e.target.value) return;
-    IN.kp = e.target.value; IN.fam = null; IN.off = false; renderIntake();
+    IN.kp = e.target.value; IN.fam = null; IN.off = false;
+    // 用户选了别的考点，说明原题命中是错的：不能拿那道题的题干存进去
+    if (IN.orig && IN.orig.k !== IN.kp) IN.orig = null;
+    renderIntake();
   };
 
   document.querySelectorAll(".done4 button").forEach(b => b.onclick = () => {
@@ -710,9 +998,16 @@ function bindIntake(){
     if (doc && IN.fam === null && !IN.off){ $("in-tip").textContent = "先选卡在哪条思路"; return; }
     RECS.unshift({
       id: "r" + Date.now(), ts: Date.now(), vol: IN.vol, kp: IN.kp,
-      stem: (IN.stem || "").slice(0, 600),
-      src: IN.mode === "paste" ? "paste" : "exam",
-      srcRef: IN.srcRef, done: IN.done, fam: IN.fam,
+      // 有原题就存库里的标准题干，不存识别出来的乱码
+      stem: ((IN.orig ? IN.orig.st : IN.stem) || "").slice(0, 600),
+      // 来源按「用户怎么进来的」记，不能被原题命中改写：
+      // 拍照认出原题，来源仍是 photo —— 这是行为事实。
+      // 之前写成 IN.orig ? "exam"，导致拍照录入全被记成「从真题库选」，
+      // 来源分布直接失真（实测第一次跑就复现了）。
+      src: (IN.mode === "exam" ? "exam" : (IN.mode === "paste" ? "paste" : "photo")),
+      srcRef: IN.orig ? `${IN.orig.y} ${VOL[IN.orig.v]} 第${IN.orig.o}题` : IN.srcRef,
+      ocrSim: IN.orig ? IN.orig.s : 0,
+      done: IN.done, fam: IN.fam,
       famTxt: (doc && IN.fam !== null) ? doc.fam[IN.fam] : "",
       off: !!IN.off
     });

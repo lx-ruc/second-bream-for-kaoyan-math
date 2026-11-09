@@ -39,6 +39,27 @@ eq('页码', TXT.clean('第 3 页 共 8 页 求极限'), '求极限');
 eq('题号', TXT.clean('第12题 求极限'), '求极限');
 eq('公众号水印', TXT.clean('求极限 微信公众号：某某考研'), '求极限');
 eq('全角数字转半角', TXT.clean('共１２分'), '共12分');
+// 模型会把试卷抬头一起转写进来，它不是题目内容，必须清掉。
+// 这几条是 2026-11-09 实际跑出来的形态：带噪声时同一道题相似度从 1.000 掉到 0.615，
+// 再叠 12% 漏字掉到 0.545 —— 刚好被阈值 0.55 挡掉，认得出却判没认出。
+eq('试卷元信息整块', TXT.clean('求极限 (2022 年 数学一 第 15 题,10 分)'), '求极限');
+eq('元信息在前', TXT.clean('(2022 年 数学一 第 15 题,10 分) 求极限'), '求极限');
+eq('卷别题号', TXT.clean('数学（一）第 15 题 求极限'), '求极限');
+eq('括号分值', TXT.clean('求极限（10 分）'), '求极限');
+eq('逗号分值', TXT.clean('求极限,10 分'), '求极限');
+eq('招生考试抬头', TXT.clean('2022 年全国硕士研究生招生考试数学（一）试题 求极限'), '求极限');
+// 别清过头：年份本身可能出现在题目里（如「2022 年产量」），不能一律当噪声
+has('正文年份保留', TXT.clean('设 2022 年某厂产量为 a，求增长率'), '2022');
+
+console.log('--- 2b. 上下标归一（库内 Unicode vs 模型 LaTeX）---');
+// 阈值 0.55 是在「两边形态一致」的前提下标的。形态不一致时相似度整体下移，
+// 同一道题会被判不中 —— 这是 2026-11-09 定位到的漏检主因。
+function simOf(text) { const o = E.findOriginal(text, '1'); return o ? o.sim : 0; }
+const baseItem = require('../data/stem.js')['K985c2677|1'].filter(function (q) { return q.y === 2022; })[0].s;
+eq('库内原文满分', simOf(baseItem), 100);
+// 模型可能给 LaTeX 形态，也可能给纯文本形态，都得认得出
+eq('LaTeX 上标仍命中', simOf(baseItem.replace(/⁻¹/g, '^{-1}')) >= 55, true);
+eq('纯文本上标仍命中', simOf(baseItem.replace(/⁻¹/g, '^-1')) >= 55, true);
 
 console.log('--- 3. 返回解析容错 ---');
 eq('标准 JSON', TXT.parsePayload('{"stem":"求极限","confidence":0.9}').stem, '求极限');
@@ -83,6 +104,11 @@ function measure(label, maker) {
 
 measure('原文直出', function (s) { return s; });
 measure('漏字 10%', function (s) { return dropout(s, 1.0); });
+// 这一条对应真实最坏情况：模型把试卷抬头也转写进来 + OCR 漏字。
+// 加噪声规则之前这里是「命中率骤降」的源头，现在必须仍然 ≥85%。
+measure('漏字 10% + 试卷元信息', function (s) {
+  return dropout(s, 1.0) + ' (2022 年 数学一 第 15 题,10 分)';
+});
 
 console.log('--- 5. 刷题价值判定（分带）---');
 // 原文直出 → 真题级；漏字 30% → 至少「值得刷」档；无关文本 → 建议跳过

@@ -74,8 +74,10 @@ payload = dict(KP=KP, EX=EX, JJ=JJ, KK=kaopin)
 pjson = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
 
 tpl = open(os.path.join(SRC, "template.html"), encoding="utf-8").read()
+ocrjs = open(os.path.join(SRC, "ocr-web.js"), encoding="utf-8").read()
 html = (tpl.replace("/*__KATEX_CSS__*/", css)
            .replace("/*__KATEX_JS__*/", kjs)
+           .replace("/*__OCR_JS__*/", ocrjs)
            .replace("/*__DATA__*/", pjson))
 
 os.makedirs(DIST, exist_ok=True)
