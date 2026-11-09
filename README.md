@@ -59,7 +59,7 @@ python3 ingest.py               # raw/ → data/*.json
 
 ### 小程序
 
-用微信开发者工具打开 `考研数学第二大脑/mp`。`appid` 目前是 `touristappid`，上传前需换成自己的。
+用微信开发者工具打开 `考研数学第二大脑/mp`。`appid` 已是正式 AppID（`wx3b8baf398bf449d2`），真机调试可用。真机跑通后把 `setting.urlCheck` 改回 `true`（或先在 mp.weixin.qq.com 后台「开发管理 → 开发设置 → 服务器域名」把 `https://mp-api.app.workbuddy.host` 加入 request 合法域名，二者满足其一即可，目前为开发期临时关闭）。
 
 首次拉代码先装依赖（`node_modules` 不入库）：
 
