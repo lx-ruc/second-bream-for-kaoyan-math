@@ -2,7 +2,7 @@
   <view class="head">
     <text class="kicker">考频先验 · 92 考点</text>
     <text class="h1">按真题统计排序</text>
-    <text class="lede">综合分只用来排序，不是学习建议。分数高低由真题索引统计得出，模型不判断考点重不重要。</text>
+    <text class="lede">综合分只用于排序参考，不构成学习建议。分数由真题索引统计得出，不含主观判断。</text>
   </view>
 
   <view class="seg">
