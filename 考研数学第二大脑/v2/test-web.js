@@ -12,7 +12,9 @@ const CHROME = '/Users/lixin/Library/Caches/ms-playwright/chromium-1234/chrome-m
 // 默认用 file:// 打开：这才是用户实际用法（双击 HTML），且网关对 Origin: null 放行
 const URL = process.env.TEST_URL ||
   'file://' + encodeURI(path.resolve(__dirname, 'dist/真题库原型.html'));
-const IMG = process.env.TEST_IMG || '/tmp/test_problem.png';
+// 测试图放仓库里，不放 /tmp（重启即丢）。数一 2011 第 5 题，库内有原题，应能命中。
+const IMG = process.env.TEST_IMG ||
+  path.resolve(__dirname, 'testdata', 'test_problem.png');
 
 (async () => {
   const browser = await chromium.launch({ executablePath: CHROME });

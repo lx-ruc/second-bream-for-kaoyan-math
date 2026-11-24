@@ -1,5 +1,8 @@
 # 考研数学第二大脑
 
+> 产品名：**黎曼刷题辅助**（微信小程序，AppID `wx3b8baf398bf449d2`）。
+> 「第二大脑」是仓库与项目名，沿用未改；小程序导航栏、首页、Web 原型标题均已对齐为「黎曼刷题辅助」。
+
 一个把「刷过的题」变成「薄弱考点地图」的工具。核心不是错题本，是**纠偏**：用 15 年真题的考法分布，告诉你手上这道题到底该不该做、该做到什么程度。
 
 面向「AI 创造公开赛 · 考研小工具限时挑战」（截稿 2027-01-06）。当前形态：微信小程序 + 可离线打开的原型页。
@@ -81,7 +84,9 @@ python3 ingest.py               # raw/ → data/*.json
 
 ### 小程序
 
-用微信开发者工具打开 `考研数学第二大脑/mp`。`appid` 已是正式 AppID（`wx3b8baf398bf449d2`），真机调试可用。真机跑通后把 `setting.urlCheck` 改回 `true`（或先在 mp.weixin.qq.com 后台「开发管理 → 开发设置 → 服务器域名」把 `https://mp-api.app.workbuddy.host` 加入 request 合法域名，二者满足其一即可，目前为开发期临时关闭）。
+用微信开发者工具打开 `考研数学第二大脑/mp`。小程序已定名为**黎曼刷题辅助**，`appid` 为正式 AppID（`wx3b8baf398bf449d2`），真机调试可用。真机跑通后把 `setting.urlCheck` 改回 `true`（或先在 mp.weixin.qq.com 后台「开发管理 → 开发设置 → 服务器域名」把 `https://mp-api.app.workbuddy.host` 加入 request 合法域名，二者满足其一即可，目前为开发期临时关闭）。
+
+> **云网关鉴权已变（2026-11-24 复测）**：`https://mp-api.app.workbuddy.host` 现在强制登录态，仅凭 `publishableKey` 调用一律 `401 login_required`（纯文本与模型清单同样被拒）。此前「按 Origin 放行、Web 端可免登录直连」的结论**已失效**。拍照识题在接入 SDK 的 OAuth 登录之前不可用；粘贴题干、手动选考点、从真题库选等路径不受影响。
 
 首次拉代码先装依赖（`node_modules` 不入库）：
 
@@ -131,13 +136,16 @@ npm run e2e                     # 开发者工具自动化（见下，需 IDE �
 
 ```bash
 cd 考研数学第二大脑/v2
+npm install            # 仅首次：装 KaTeX（build.py 要把它内联进单文件，版本锁在 package.json）
 python3 ingest.py     # 仅在 raw/ 更新后需要
 python3 build.py      # 产出 dist/真题库原型.html（单文件，双击就能用）
 ```
 
-Web 端也支持**拍照 / 上传截图识题**，且不需要后端：云网关按 `Origin` 放行，`file://` 打开时 `Origin` 是 `null`（放行），`localhost` 也放行，其它来源一律 403。所以双击 HTML 就能直接调视觉模型，密钥写在 `src/ocr-web.js` 里也不怕被别的站点盗用。
+KaTeX 从本目录的 `node_modules` 读取。它曾写死在 `/tmp/katex/dist`，那是临时目录，重启或换机器就没了，构建会直接报 FileNotFoundError。
 
-两个实测出来的网关约束（踩过，别再试）：
+Web 端支持**拍照 / 上传截图识题**，但不走后端中转——见上面的「云网关鉴权已变」：网关现在强制登录态，`publishableKey` 裸调一律 `401 login_required`。此前「按 `Origin` 放行、双击 HTML 就能调视觉模型」的行为已失效，接入 SDK 的 OAuth 登录之前，Web 端识题不可用，其余功能（粘贴题干、真题库、考点地图、考频）不受影响。
+
+两个实测出来的网关约束（仍然有效，别再试）：
 
 - **只接受 `stream: true`**，非流式一律 `request_invalid_parameter`。因此 `ocr-web.js` 里是自己读 SSE：`res.body.getReader()` + `TextDecoder({stream:true})`，**必须留残留缓冲**——一次 `read` 可能把 `data: {...}` 切成两半，不留缓冲会随机丢字符。
 - `glm-4.6v` 在该网关不可用（同样报 `request_invalid_parameter`），视觉可用的是 `glm-5.3-flash`。

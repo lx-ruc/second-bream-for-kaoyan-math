@@ -1,6 +1,6 @@
 <view class="page">
   <view class="head">
-    <text class="kicker">考研数学 · 第二大脑</text>
+    <text class="kicker">黎曼刷题辅助 · 考研数学</text>
     <text class="h1">这道题，考的是哪一点？</text>
     <text class="lede">拍下来就行，不用打字。拍完系统先找它是不是真题原题，再告诉你这个考点考过几次。</text>
   </view>

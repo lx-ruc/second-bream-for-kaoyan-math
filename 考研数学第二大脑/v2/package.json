@@ -1,0 +1,12 @@
+{
+  "name": "kaoyan-math-v2-prototype",
+  "version": "0.1.0",
+  "private": true,
+  "description": "黎曼刷题辅助 · Web 原型构建依赖（仅 KaTeX，用于内联进单文件）",
+  "scripts": {
+    "build": "python3 build.py"
+  },
+  "dependencies": {
+    "katex": "0.16.22"
+  }
+}

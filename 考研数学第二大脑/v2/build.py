@@ -5,12 +5,14 @@ import base64
 import json
 import os
 import re
+import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 SRC = os.path.join(HERE, "src")
 DIST = os.path.join(HERE, "dist")
-KATEX = "/tmp/katex/dist"
+# KaTeX 走仓库内的 npm 依赖，不再用 /tmp —— 那是临时目录，重启或换机器就没了。
+KATEX = os.path.join(HERE, "node_modules", "katex", "dist")
 
 
 def jload(name):
@@ -81,6 +83,8 @@ for d in docs:
     ))
 
 # ---- KaTeX 内联 ----
+if not os.path.exists(os.path.join(KATEX, "katex.min.css")):
+    sys.exit("缺 KaTeX：请在 %s 下先执行 `npm install`（依赖见 package.json）" % HERE)
 css = open(os.path.join(KATEX, "katex.min.css"), encoding="utf-8").read()
 fontdir = os.path.join(KATEX, "fonts")
 for fn in os.listdir(fontdir):

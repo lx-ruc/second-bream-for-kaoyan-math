@@ -1,5 +1,5 @@
 App({
     globalData: {
-        appName: '考研数学第二大脑',
+        appName: '黎曼刷题辅助',
     },
 });
