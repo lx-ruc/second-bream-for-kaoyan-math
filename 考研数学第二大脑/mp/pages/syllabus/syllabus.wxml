@@ -1,0 +1,79 @@
+<view class="page">
+  <view class="head">
+    <text class="kicker">官方大纲 · 第二棵树</text>
+    <text class="h1">大纲章节—考点</text>
+    <text class="lede">逐条转录自 skill v1.3.0 的 outline.json。官方大纲条文（{{sourceNote}}），不发挥、不改写。</text>
+  </view>
+
+  <view class="seg">
+    <view wx:for="{{vols}}" wx:key="k" class="item {{vol === item.k ? 'on' : ''}}"
+          data-v="{{item.k}}" bindtap="onVol">{{item.n}}</view>
+  </view>
+
+  <view class="seg modes">
+    <view wx:for="{{modes}}" wx:key="k" class="item {{mode === item.k ? 'on' : ''}}"
+          data-m="{{item.k}}" bindtap="setMode">{{item.n}}</view>
+  </view>
+
+  <view wx:if="{{mode === 'code'}}" class="card tight">
+    <input class="in" placeholder="输入编码：H2 / L5 / P7 / H9" value="{{codeKw}}" bindinput="onCodeInput" />
+  </view>
+  <view wx:if="{{mode === 'search'}}" class="card tight">
+    <input class="in" placeholder="搜考点原文：梯度 / 二重积分 / 假设检验" value="{{kw}}" bindinput="onKwInput" />
+  </view>
+
+  <text class="sec">{{exam}} · 共 {{count}} 项{{mode === 'search' && kw ? ' · 命中' : ''}}</text>
+
+  <view wx:for="{{rows}}" wx:key="key">
+    <text wx:if="{{item.group}}" class="grp">{{item.group}}</text>
+    <view class="row {{openCode === item.code ? 'open' : ''}}">
+      <view class="row-head" data-code="{{item.code}}" bindtap="toggleChapter">
+        <text class="row-code">{{item.code}}</text>
+        <view class="row-mid">
+          <text class="row-title">{{item.title}}</text>
+          <text wx:if="{{!item.standalone}}" class="row-sub">官方不单列成章</text>
+        </view>
+        <text class="row-count">{{item.pointCount}} 条</text>
+      </view>
+
+      <view wx:if="{{openCode === item.code && detail}}" class="detail">
+        <block wx:if="{{detail.allTitles.length}}">
+          <text class="d-sec">各卷官方章名（原文分别保留）</text>
+          <view wx:for="{{detail.allTitles}}" wx:key="exam" class="tv">
+            <text class="tv-e">{{item.exam}}</text>
+            <text class="tv-t">{{item.title}}</text>
+          </view>
+        </block>
+
+        <text class="d-sec">官方考试内容 · {{detail.pointCount}} 条</text>
+        <view wx:if="{{detail.points.length}}" class="pts">
+          <view wx:for="{{detail.points}}" wx:key="*this" class="pt">
+            <text class="pt-i">{{index + 1}}.</text>
+            <text class="pt-t">{{item}}</text>
+          </view>
+        </view>
+        <text wx:else class="note">该编码官方不单列成章，考点并入所属章；考试内容见对应章节。</text>
+
+        <text class="lvl">{{levelNote}}</text>
+
+        <block wx:if="{{detail.notes}}">
+          <text class="d-sec">skill 内置说明，非大纲条文</text>
+          <text class="note">{{detail.notes}}</text>
+        </block>
+
+        <text class="src">来源：官方大纲条文（{{sourceNote}}）</text>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{!count}}" class="empty">
+    <text>{{mode === 'search' ? '没有命中的章节或考点，换个关键词试试。' : (mode === 'code' ? '没有匹配的编码。' : '本卷暂无章节。')}}</text>
+  </view>
+
+  <view class="card notice">
+    <text class="d-sec">两棵树，别混</text>
+    <text class="note">{{twoTrees}}</text>
+    <text class="note">本页卷别独立保存，切换不会影响考点页、诊断页的卷别。</text>
+    <text class="note">{{caveat}}</text>
+  </view>
+</view>

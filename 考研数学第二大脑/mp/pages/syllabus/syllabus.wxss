@@ -1,0 +1,170 @@
+/* 官方大纲页：沿用全局米色纸感，只补本页独有的结构样式。 */
+
+.modes {
+  margin: -8rpx 0 24rpx;
+}
+
+.in {
+  width: 100%;
+  font-size: 27rpx;
+  color: #211f1c;
+  padding: 8rpx 0;
+}
+
+.grp {
+  display: block;
+  font-size: 22rpx;
+  letter-spacing: 2rpx;
+  color: #9c9587;
+  margin: 28rpx 0 6rpx;
+}
+
+.row {
+  border-bottom: 1rpx solid #eae4d7;
+}
+
+.row.open {
+  background: #fffdf8;
+  border-radius: 12rpx;
+}
+
+.row-head {
+  display: flex;
+  align-items: flex-start;
+  padding: 22rpx 8rpx;
+}
+
+.row-code {
+  flex: none;
+  width: 84rpx;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 27rpx;
+  color: #a6342a;
+  line-height: 1.5;
+}
+
+.row-mid {
+  flex: 1;
+  min-width: 0;
+}
+
+.row-title {
+  display: block;
+  font-size: 28rpx;
+  color: #211f1c;
+  line-height: 1.5;
+}
+
+.row-sub {
+  display: block;
+  font-size: 20rpx;
+  color: #9c9587;
+  margin-top: 4rpx;
+}
+
+.row-count {
+  flex: none;
+  width: 76rpx;
+  text-align: right;
+  font-size: 21rpx;
+  color: #9c9587;
+  line-height: 1.6;
+}
+
+/* 展开的章节详情 */
+.detail {
+  padding: 4rpx 12rpx 32rpx;
+}
+
+.d-sec {
+  display: block;
+  font-size: 21rpx;
+  letter-spacing: 1rpx;
+  color: #9c9587;
+  margin: 20rpx 0 10rpx;
+}
+
+.titles {
+  border-bottom: 1rpx dashed #e6dfd1;
+  padding-bottom: 12rpx;
+}
+
+.tv {
+  display: flex;
+  align-items: baseline;
+  padding: 3rpx 0;
+}
+
+.tv-e {
+  flex: none;
+  width: 84rpx;
+  font-size: 21rpx;
+  color: #a6342a;
+}
+
+.tv-t {
+  flex: 1;
+  font-size: 23rpx;
+  color: #6b6558;
+}
+
+.pts {
+  padding-left: 4rpx;
+}
+
+.pt {
+  display: flex;
+  align-items: flex-start;
+  padding: 10rpx 0;
+  border-bottom: 1rpx solid #f0ebdf;
+}
+
+.pt-i {
+  flex: none;
+  width: 44rpx;
+  font-family: Georgia, serif;
+  font-size: 22rpx;
+  color: #b3ab9c;
+  line-height: 1.7;
+}
+
+.pt-t {
+  flex: 1;
+  font-size: 26rpx;
+  color: #211f1c;
+  line-height: 1.65;
+}
+
+.lvl {
+  display: block;
+  font-size: 21rpx;
+  color: #8a6b3b;
+  background: #f5efe0;
+  border-radius: 8rpx;
+  padding: 12rpx 16rpx;
+  margin: 20rpx 0 4rpx;
+  line-height: 1.6;
+}
+
+.note {
+  display: block;
+  font-size: 23rpx;
+  color: #6b6558;
+  line-height: 1.75;
+  margin: 8rpx 0;
+}
+
+.src {
+  display: block;
+  font-size: 20rpx;
+  color: #9c9587;
+  border-top: 1rpx dashed #e6dfd1;
+  padding-top: 14rpx;
+  margin-top: 20rpx;
+  line-height: 1.6;
+}
+
+.notice {
+  margin-top: 40rpx;
+  border-left: 6rpx solid #a6342a;
+}

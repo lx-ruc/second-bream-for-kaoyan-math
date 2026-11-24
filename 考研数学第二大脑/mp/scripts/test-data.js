@@ -8,6 +8,10 @@
  *
  * 另含考频页排序数据 kpPrior 的完整性：92 条、同分并列、名次跳号、
  * 三卷 scope、分项字段——这些是「数据分不出高下不许假装分得出」的防线。
+ *
+ * 第 8 节守第二棵树（官方大纲 syllabus.js）：三卷章数、编码唯一、卷种边界
+ * 全部按 outline.json 数据断言；它与 kp.js 真题考点树并列、不合并、不互校，
+ * 这里只验「两棵树各自完整」，不验两者是否一致。
  */
 const KP = require('../data/kp.js').nodes;
 const STEM = require('../data/stem.js');
@@ -196,6 +200,52 @@ sub.forEach(function (r) {
 if (!kfBad) good('关键词过滤只隐藏行，不改变三卷名次与本卷序号');
 if (!E.priorRows('极限').length) bad('旧 priorRows 回归失败（239 行表数据仍需保留）');
 if (!kfBad && E.priorRows('极限').length) good('旧 priorRows 仍可用（回归断言未断）');
+
+console.log('--- 8. 官方大纲树（syllabus，第二棵树）---');
+const SYL = require('../data/syllabus.js');
+let sylBad = 0;
+const SCHK = (cond, msg) => { if (!cond) { bad(msg); sylBad++; } };
+
+// 三卷齐全 + 章数（实测值来自 brain.py outline --list：22 / 11 / 19）
+SCHK(SYL.exams.length === 3 && ['数一', '数二', '数三'].every(function (e) {
+  return SYL.exams.indexOf(e) >= 0;
+}), 'syllabus.exams 未覆盖三卷');
+const EXPECT = { '数一': 22, '数二': 11, '数三': 19 };
+Object.keys(EXPECT).forEach(function (exam) {
+  const got = E.syllabusChapters(exam).length;
+  SCHK(got === EXPECT[exam], exam + ' 大纲章数 ' + got + ' ≠ ' + EXPECT[exam]);
+});
+if (!sylBad) good('三卷大纲章数：数一 22 / 数二 11 / 数三 19');
+
+// 章号编码唯一（行 wx:key 的数据基础）；非独立章编码也不得与独立章撞号
+const ALL_CODES = SYL.chapters.map(function (c) { return c.code; })
+  .concat((SYL.codeOnly || []).map(function (c) { return c.code; }));
+SCHK(ALL_CODES.length === new Set(ALL_CODES).size, '大纲编码重复: ' + ALL_CODES.length + ' 个里存在撞号');
+SCHK(ALL_CODES.length === 25, '大纲编码全集应为 25 个，实际 ' + ALL_CODES.length);
+if (!sylBad) good('大纲编码唯一：22 独立章 + 3 非独立章 = 25 个');
+
+// 卷种边界全部按 outline.json 数据派生，不依赖代码里任何硬编码判断
+SCHK(E.syllabusChapters('数二').filter(function (c) { return c.code.charAt(0) === 'P'; }).length === 0,
+  '数二不应有 P（概率）章');
+const P3 = E.syllabusChapters('数三');
+SCHK(!P3.some(function (c) { return c.title.indexOf('假设检验') >= 0; }), '数三不应有假设检验章');
+SCHK(!P3.some(function (c) {
+  return c.points.some(function (p) { return p.indexOf('区间估计') >= 0; });
+}), '数三不应有区间估计考点条目');
+SCHK(E.syllabusChapters('数一').some(function (c) {
+  return c.title.indexOf('向量代数和空间解析几何') >= 0;
+}), '数一大纲应有「向量代数和空间解析几何」整章（实测缺章在真题索引，不在大纲）');
+SCHK(E.syllabusChapter('H5', '数一').title.indexOf('多元函数微分学') >= 0 &&
+     E.syllabusChapter('H5', '数二').title.indexOf('多元函数微积分学') >= 0,
+  'H5 章名未按各卷官方原文分别保留');
+if (!sylBad) good('卷种边界按数据：数二无 P 章、数三无假设检验/区间估计、数一有向量代数整章、H5 各卷章名分列');
+
+// 关键词搜索：命中考点原文，且不越过卷种边界
+SCHK(E.syllabusQuery('梯度', '数一').length > 0, 'syllabusQuery(梯度, 数一) 未命中');
+SCHK(E.syllabusQuery('二重积分', '数二').length > 0, 'syllabusQuery(二重积分, 数二) 未命中');
+SCHK(E.syllabusQuery('假设检验', '数三').length === 0, 'syllabusQuery(假设检验, 数三) 不应命中');
+SCHK(E.syllabusChapter('L7', '数一').standalone === false, 'L7 应是非独立章编码');
+if (!sylBad) good('关键词搜索可命中、不越卷；非独立章编码标记正确');
 
 console.log('\n结果: ' + (fail ? fail + ' 个问题' : '全部通过'));
 process.exit(fail ? 1 : 0);

@@ -3,7 +3,8 @@
     "pages/intake/intake",
     "pages/diagnose/diagnose",
     "pages/map/map",
-    "pages/prior/prior"
+    "pages/prior/prior",
+    "pages/syllabus/syllabus"
   ],
   "subPackages": [
     {
@@ -41,6 +42,10 @@
       {
         "pagePath": "pages/prior/prior",
         "text": "考频"
+      },
+      {
+        "pagePath": "pages/syllabus/syllabus",
+        "text": "大纲"
       }
     ]
   },

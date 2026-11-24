@@ -6,6 +6,9 @@ const KP_DATA = require('../data/kp.js');
 const STEM = require('../data/stem.js');
 const PRIOR = require('../data/prior.js');
 const KP_PRIOR = require('../data/kpPrior.js');
+// 第二棵树：官方大纲章节—考点（skill outline.json 转录）。与 kp.js 真题考点树
+// 来源不同、并列、不合并、不互校；这里只做查询，不产出任何热度/重要性判断。
+const SYLLABUS = require('../data/syllabus.js');
 
 const NODES = KP_DATA.nodes;
 const KP_BY_ID = {};
@@ -479,6 +482,132 @@ function priorKpRows(vol, kw) {
   });
 }
 
+/* ---------------- 官方大纲树（第二棵树，与真题考点树并列） ---------------- */
+/**
+ * 查询口径对齐 skill 的 `brain.py outline`：
+ *  - 章号/章名按各卷官方原文分别保留（titles 是 {卷: 章名}）；
+ *  - 卷种边界只看 outline.json 的 exams / points_by_exam，这里不硬编码任何
+ *    「数二不考 X」「数一独有 Y」判断；
+ *  - 数二/数三把多元微分与二重积分合为一章、数一拆两章，是数据本身的结构，
+ *    不是本文件的分支逻辑；
+ *  - notes 是 skill 内置说明（非大纲条文），由页面显式标注。
+ */
+
+/** 章的考试内容条目：common + 该卷专属；无卷种时按 brain.py 口径加［卷］前缀 */
+function syllabusPoints(ch, exam) {
+  const pts = (ch.pointsCommon || []).slice();
+  const extra = ch.pointsByExam || {};
+  if (exam) {
+    (extra[exam] || []).forEach(function (p) { if (p) pts.push(p); });
+  } else {
+    (ch.exams || []).forEach(function (e) {
+      (extra[e] || []).forEach(function (p) {
+        if (!p) return;
+        const tag = '［' + e + '］' + p;
+        if (pts.indexOf(tag) < 0) pts.push(tag);
+      });
+    });
+  }
+  return pts;
+}
+
+/** 章名按卷取官方原文；多卷并列时与 brain.py 一样逐卷写出 */
+function syllabusTitleOf(ch, exam) {
+  const t = ch.titles || {};
+  if (exam) return t[exam] || t[SYLLABUS.exams[0]] || ch.code;
+  return (ch.exams || []).map(function (e) {
+    return t[e] ? (e + ' ' + t[e]) : '';
+  }).filter(Boolean).join(' / ');
+}
+
+function syllabusView(ch, exam) {
+  const pts = syllabusPoints(ch, exam);
+  return {
+    code: ch.code,
+    title: syllabusTitleOf(ch, exam),
+    titles: ch.titles || {},
+    exams: (ch.exams || []).slice(),
+    subjectKey: ch.subjectKey,
+    subjectName: ch.subjectName,
+    points: pts,
+    pointCount: pts.length,
+    notes: ch.notes || '',
+    standalone: true,
+  };
+}
+
+/** 非独立章编码（H9/H10/L7）的科目归属，按编码前缀推导，与 brain.py 一致 */
+function syllabusCodeOnlyView(item) {
+  const c = item.code.charAt(0);
+  const subjectKey = c === 'H' ? 'calc' : (c === 'L' ? 'linear' : 'prob');
+  const sub = SYLLABUS.subjects.filter(function (s) { return s.key === subjectKey; })[0];
+  return {
+    code: item.code,
+    title: item.name,
+    titles: {},
+    exams: (item.exams || []).slice(),
+    subjectKey: subjectKey,
+    subjectName: sub ? sub.name : '',
+    points: [],
+    pointCount: 0,
+    notes: item.note || '',
+    standalone: false,
+  };
+}
+
+/** 按卷/科目列章。examType 省略则三卷并列；subject 取 calc/linear/prob。 */
+function syllabusChapters(examType, subject) {
+  const exam = examType || '';
+  const out = [];
+  SYLLABUS.chapters.forEach(function (ch) {
+    if (subject && ch.subjectKey !== subject) return;
+    if (exam && (ch.exams || []).indexOf(exam) < 0) return;
+    out.push(syllabusView(ch, exam));
+  });
+  return out;
+}
+
+/** 按 H/L/P 编码查一章；codeOnly 也返回，standalone=false 且 points 为空。 */
+function syllabusChapter(code, examType) {
+  if (!code) return null;
+  const up = String(code).trim().toUpperCase();
+  const exam = examType || '';
+  let hit = null;
+  SYLLABUS.chapters.forEach(function (ch) {
+    if (ch.code.toUpperCase() === up) hit = syllabusView(ch, exam);
+  });
+  if (hit) return hit;
+  const co = (SYLLABUS.codeOnly || []).filter(function (x) {
+    return x.code.toUpperCase() === up;
+  })[0];
+  return co ? syllabusCodeOnlyView(co) : null;
+}
+
+/**
+ * 关键词搜考点。haystack 与 brain.py outline --query 一致：
+ * 编码 + 各卷章名 + 该卷考试内容条目 + notes。
+ * 返回值额外带 matchedPoints（命中的条目原文），供页面只展示命中项。
+ */
+function syllabusQuery(kw, examType) {
+  const k = (kw || '').trim();
+  if (!k) return [];
+  const exam = examType || '';
+  const out = [];
+  SYLLABUS.chapters.forEach(function (ch) {
+    if (exam && (ch.exams || []).indexOf(exam) < 0) return;
+    const titlesHay = Object.keys(ch.titles || {}).map(function (e) {
+      return ch.titles[e];
+    }).join(' ');
+    const pts = syllabusPoints(ch, exam);
+    const hay = [ch.code, titlesHay].concat(pts).concat([ch.notes || '']).join(' ');
+    if (hay.indexOf(k) < 0) return;
+    const v = syllabusView(ch, exam);
+    v.matchedPoints = pts.filter(function (p) { return p.indexOf(k) >= 0; });
+    out.push(v);
+  });
+  return out;
+}
+
 module.exports = {
   NODES: NODES,
   KP_BY_ID: KP_BY_ID,
@@ -495,6 +624,9 @@ module.exports = {
   diagnose: diagnose,
   priorRows: priorRows,
   priorKpRows: priorKpRows,
+  syllabusChapters: syllabusChapters,
+  syllabusChapter: syllabusChapter,
+  syllabusQuery: syllabusQuery,
   decay: decay,
   tagsOf: tagsOf,
 };
