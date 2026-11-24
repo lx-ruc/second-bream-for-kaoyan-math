@@ -90,6 +90,85 @@
     </view>
   </view>
 
+  <!-- 启发式参考层：与事实层并列展示，但结论以真题统计为准 -->
+  <view wx:if="{{practice && assess}}" class="card heuristic">
+    <view class="h-top">
+      <text class="h-title">启发式参考（可推翻）</text>
+      <text class="h-tag">非官方口径</text>
+    </view>
+    <text class="h-lede">按 skill 的 F1–F6 判据与五维加权收益给出一个参考结论。它不预测命题、不是精确概率，每一条判据都能被你推翻；「值不值得做」的最终判定仍以上面真题统计为准。</text>
+
+    <view class="h-row">
+      <text class="h-label">主考点大纲编码</text>
+      <input class="h-input" value="{{assessTag}}" bindinput="onAssessTag"
+             placeholder="如 H2.3 / P8，用于卷种校验" placeholder-class="ph" />
+    </view>
+    <text class="note">两棵树不合并：编码请对照大纲页自己填；不填就不做卷种校验，系统不替你猜考点。</text>
+
+    <view class="h-row">
+      <text class="h-label">题型</text>
+      <view class="h-formats">
+        <view wx:for="{{assessFormats}}" wx:key="*this" class="fmt {{assessFormat === item ? 'on' : ''}}"
+              data-f="{{item}}" bindtap="pickAssessFormat">{{item}}</view>
+      </view>
+    </view>
+    <view class="h-row">
+      <text class="h-label">总耗时（含订正复盘）</text>
+      <input class="h-input" type="number" value="{{assessMinutes}}" bindinput="onAssessMinutes"
+             placeholder="{{assessDefaults[assessFormat]}} 分钟（默认）" placeholder-class="ph" />
+    </view>
+
+    <text class="h-sub">F1–F6 贴近度判据（勾你认可的，拿不准判 0）</text>
+    <view class="flag-list">
+      <view wx:for="{{assessFlags}}" wx:key="code" class="flag-row" data-i="{{index}}" bindtap="toggleFlag">
+        <view class="flag-box {{item.on ? 'on' : ''}}">{{item.on ? '✓' : ''}}</view>
+        <view class="flag-body">
+          <text class="flag-t">{{item.code}} · {{item.name}}</text>
+          <text class="flag-h">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+    <text class="note">{{flagsNote}}</text>
+
+    <view class="h-result">
+      <view class="hr-line"><text class="hr-k">贴近度 F1–F6</text><text class="hr-v">{{assess.fidelity}}</text></view>
+      <view class="hr-line"><text class="hr-k">五维收益 R</text><text class="hr-v">{{assess.R}}</text></view>
+      <view class="hr-line"><text class="hr-k">总耗时 C</text><text class="hr-v">{{assess.C}} 分钟</text></view>
+      <view class="hr-line"><text class="hr-k">性价比 R/C</text><text class="hr-v">{{assess.value}} · 每 10 分钟 {{assess.per10}}</text></view>
+      <view class="hr-line"><text class="hr-k">启发式结论</text>
+        <text class="hr-v v-{{assess.verdict}}">{{assess.verdict === 'worth' ? '值得做' : (assess.verdict === 'skip' ? '不值得做' : '可选')}}</text>
+      </view>
+    </view>
+    <text class="h-scores">五维分：层级 {{assess.scores.mastery}} · 覆盖 {{assess.scores.coverage}} · 贴近 {{assess.scores.fidelity}} · 迁移 {{assess.scores.transfer}} · 个人 {{assess.scores.personal}}</text>
+    <text class="h-reason">{{assess.reason}}</text>
+    <text class="h-personal">{{assess.personalNote}}</text>
+    <view wx:if="{{assess.veto.length}}" class="h-veto">
+      <text class="h-veto-t">硬否决：{{assess.veto}}</text>
+    </view>
+
+    <view wx:if="{{assess.conflictWithFact}}" class="h-conflict">
+      <text class="hc-title">两层结论不一致</text>
+      <text class="hc-body">启发式判断与真题统计不一致时，以真题统计为准。上面「{{practice.title}}」是事实层结论，本区只作参考，可推翻。</text>
+    </view>
+    <text wx:else class="note">两层结论一致时也要分清：真题统计是事实层，这里是启发式参考。</text>
+
+    <text class="h-disclaimer">{{assess.disclaimer}}</text>
+
+    <view class="h-rubric">
+      <view class="row-between" bindtap="toggleRubric">
+        <text class="h-label" style="margin:0">评分依据（权重 / 阈值 / 公式）</text>
+        <text class="link">{{showRubric ? '收起' : '展开'}}</text>
+      </view>
+      <block wx:if="{{showRubric}}">
+        <view wx:for="{{rubricRows}}" wx:key="key" class="r-row">
+          <text class="r-k">{{item.name}} · {{item.weight}}</text>
+          <text class="r-o">{{item.origin}}</text>
+        </view>
+        <text class="note">{{rubricSummary}}</text>
+      </block>
+    </view>
+  </view>
+
   <!-- 识别文本（没命中原题时才有意义） -->
   <view wx:if="{{ocr && !original}}" class="card">
     <view class="row-between" bindtap="toggleOcrText">

@@ -461,3 +461,269 @@
 .practice.p-skip .p-title {
   color: #6b6558;
 }
+
+/* ---------- 启发式参考层（事实层优先） ---------- */
+.heuristic {
+  border-left: 6rpx solid #b9b2a3;
+  background: #fbfaf6;
+}
+
+.h-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12rpx;
+}
+
+.h-title {
+  font-size: 31rpx;
+  font-weight: 600;
+  color: #4a453c;
+}
+
+.h-tag {
+  font-size: 20rpx;
+  color: #8a651f;
+  border: 1rpx solid #d9c79f;
+  border-radius: 8rpx;
+  padding: 4rpx 10rpx;
+}
+
+.h-lede {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #6b6558;
+}
+
+.h-row {
+  display: flex;
+  align-items: center;
+  margin-top: 18rpx;
+}
+
+.h-label {
+  font-size: 24rpx;
+  color: #6b6558;
+  flex: none;
+  margin-right: 16rpx;
+}
+
+.h-input {
+  flex: 1;
+  min-width: 0;
+  font-size: 25rpx;
+  color: #211f1c;
+  border-bottom: 1rpx solid #d8d0c0;
+  padding: 8rpx 0;
+}
+
+.h-formats {
+  display: flex;
+  flex: 1;
+}
+
+.fmt {
+  flex: 1;
+  text-align: center;
+  font-size: 24rpx;
+  color: #6b6558;
+  padding: 10rpx 0;
+  border: 1rpx solid #d8d0c0;
+  border-right: none;
+}
+
+.fmt:first-child {
+  border-radius: 8rpx 0 0 8rpx;
+}
+
+.fmt:last-child {
+  border-right: 1rpx solid #d8d0c0;
+  border-radius: 0 8rpx 8rpx 0;
+}
+
+.fmt.on {
+  color: #fffdf8;
+  background: #6b6558;
+  border-color: #6b6558;
+}
+
+.h-sub {
+  display: block;
+  font-size: 25rpx;
+  font-weight: 600;
+  color: #4a453c;
+  margin-top: 26rpx;
+  margin-bottom: 8rpx;
+}
+
+.flag-list {
+  margin-top: 6rpx;
+}
+
+.flag-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 14rpx 0;
+  border-bottom: 1rpx solid #eae4d7;
+}
+
+.flag-box {
+  flex: none;
+  width: 36rpx;
+  height: 36rpx;
+  line-height: 34rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #b9b2a3;
+  border: 1rpx solid #d8d0c0;
+  border-radius: 8rpx;
+  background: #fffdf8;
+  margin-right: 16rpx;
+}
+
+.flag-box.on {
+  color: #fffdf8;
+  background: #2f6b52;
+  border-color: #2f6b52;
+}
+
+.flag-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.flag-t {
+  display: block;
+  font-size: 25rpx;
+  color: #4a453c;
+  line-height: 1.5;
+}
+
+.flag-h {
+  display: block;
+  font-size: 21rpx;
+  color: #9c9587;
+  line-height: 1.55;
+  margin-top: 2rpx;
+}
+
+.h-result {
+  margin-top: 22rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 12rpx;
+  background: #fffdf8;
+  border: 1rpx solid #e6dfd1;
+}
+
+.hr-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 6rpx 0;
+}
+
+.hr-k {
+  font-size: 23rpx;
+  color: #9c9587;
+}
+
+.hr-v {
+  font-family: Georgia, serif;
+  font-size: 26rpx;
+  color: #211f1c;
+}
+
+.hr-v.v-worth {
+  color: #2f6b52;
+  font-weight: 600;
+}
+
+.hr-v.v-optional {
+  color: #8a651f;
+  font-weight: 600;
+}
+
+.hr-v.v-skip {
+  color: #a6342a;
+  font-weight: 600;
+}
+
+.h-scores,
+.h-reason,
+.h-personal {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.7;
+  color: #6b6558;
+  margin-top: 12rpx;
+}
+
+.h-veto {
+  margin-top: 12rpx;
+  padding: 12rpx 16rpx;
+  border-radius: 8rpx;
+  background: #fbf1ef;
+}
+
+.h-veto-t {
+  font-size: 23rpx;
+  color: #a6342a;
+}
+
+.h-conflict {
+  margin-top: 18rpx;
+  padding: 18rpx 20rpx;
+  border-radius: 12rpx;
+  border: 1rpx solid #eccfc9;
+  background: #fbf1ef;
+}
+
+.hc-title {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #a6342a;
+  margin-bottom: 6rpx;
+}
+
+.hc-body {
+  display: block;
+  font-size: 23rpx;
+  line-height: 1.7;
+  color: #6b6558;
+}
+
+.h-disclaimer {
+  display: block;
+  font-size: 20rpx;
+  line-height: 1.75;
+  color: #9c9587;
+  margin-top: 18rpx;
+  padding-top: 14rpx;
+  border-top: 1rpx dashed #d8d0c0;
+}
+
+.h-rubric {
+  margin-top: 18rpx;
+  padding-top: 14rpx;
+  border-top: 1rpx solid #eae4d7;
+}
+
+.r-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 8rpx 0;
+  border-bottom: 1rpx solid #eae4d7;
+}
+
+.r-k {
+  font-size: 23rpx;
+  color: #4a453c;
+}
+
+.r-o {
+  font-size: 20rpx;
+  color: #9c9587;
+}

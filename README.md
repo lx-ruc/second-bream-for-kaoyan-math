@@ -24,11 +24,14 @@
     build_kpmap.py                 239 行考频表 → 92 考点的人工映射表
     build_prior.py                 考频 × 难度综合评分（排序用）
     build_mp_prior.py              Web 评分 → 小程序 data/kpPrior.js（按 id 补 scope/chap）
+    build_syllabus.py              官方大纲全表 → 小程序 data/syllabus.js（独立第二棵树）
+    build_rubric.py                skill 拆题评分参数 → 小程序 data/rubric.js（启发层，事实层优先）
     build_audit.py                 考点树 × 考研大纲 的核对审计
 
   mp/                              微信小程序（当前主线）
     data/                          由 v2/data 预聚合而来，供小程序 require
-                                   （kpPrior.js = 92 考点排序数据，由 v2/build_mp_prior.py 生成）
+                                   （kpPrior.js = 92 考点排序数据，由 v2/build_mp_prior.py 生成；
+                                   rubric.js = 启发式判据，由 v2/build_rubric.py 从 skill assessment-rubric.json 原样生成）
     utils/engine.js                判定引擎：热度、题干匹配、纠偏、诊断
     utils/store.js                 本地记录存储（wx.storage）
     pages/intake                   记一道题
@@ -107,7 +110,7 @@ npm install
 
 ```bash
 python3 scripts/build_data.py   # 语料 → data/*.js
-npm run verify                  # 静态校验 + 数据完整性 + 四层回归（含登录闭环）
+npm run verify                  # 静态校验 + 数据完整性 + 五层回归（OCR / 页面闭环 / 启发层 / 登录）
 npm run e2e                     # 开发者工具自动化（见下，需 IDE 环境）
 ```
 
@@ -190,6 +193,7 @@ node test-again.js                  # 第 2 步折叠面板：展开 → 改字 
 - [x] 拍照识题：三种图片来源 → 视觉模型 → 清洗 → 找原题 → 命中则用库内题干替换
 - [x] Web 端拍照 / 上传截图识题（2026-11-09）：单文件双击即用，浏览器直辖云网关，无需后端；Playwright 在 `file://` 下全链路实测通过（上传真实真题图 → 识别置信 0.98 → 命中原题 67% → 用库内题干替换 → 判定 → 存记录，控制台零报错）
 - [x] 刷题价值判定（2026-11-08）：题干进来先分带——真题级/同考法/考法存疑/真题不考，阈值用题库全量标定；做题前纠偏，别把时间花在真题不考的考法上
+- [x] **F1–F6 启发层（事实层优先，2026-11-24）**：同一张 practice 卡下方并列展示 skill 的六判据 / 五维收益 R / 性价比 R·C⁻¹ / 每 10 分钟收益 / verdict，带 disclaimer 与「可推翻」标注。权重实测 mastery 0.25 / coverage 0.15 / fidelity 0.30 / transfer 0.15 / personal 0.15，阈值实测 70 / 45 / 0.5 / 0.6，来自 `mp/data/rubric.js`（`v2/build_rubric.py` 原样转录 `assessment-rubric.json`，幂等）。**判定权裁决**：事实层 `practiceValue` 四带（阈值 0.55/0.34/0.23 未动）仍是唯一结论；启发层与它冲突时只作参考，UI 写明「启发式判断与真题统计不一致时，以真题统计为准」。卷种错配边界由 `syllabus.js` 的 `exams` 派生（数三 P8 / 数二 H7 / 非数一 L7 实测均拦），两棵树仍不合并、不互校；无 vault 时 personal 取中性 0.5 并显式标注，层级无逐条字段取 0.6 并标注，不编造频次。`npm run verify` 新增第 5 层 `scripts/test-assess.js`（43 项全绿）。
 - [x] 真机调试跑通（2026-11-08，正式 AppID）：拍照识别 + 命中原题在真机验证成功
 - [x] 开发者工具编译验证（2026-11-07）：工程在真实 IDE 里编译通过、录题页与诊断页在模拟器完整渲染，白屏问题确认修复。真题详情页同日验证渲染正常。
 - [x] 回归三层：纯函数（OCR 清洗/找原题）+ 数据完整性（含 qbank↔题干坐标一一对应）+ 页面逻辑闭环（mock wx 驱动真实页面 JS）

@@ -2,6 +2,8 @@ const E = require('../../utils/engine.js');
 const S = require('../../utils/store.js');
 const IMG = require('../../utils/img.js');
 const OCR = require('../../utils/ocr.js');
+// 启发层的判据/权重/阈值/免责声明（skill assessment-rubric.json 原样转录）
+const RUBRIC = require('../../data/rubric.js');
 
 const VOLS = [
   { k: '1', n: '数学一' },
@@ -53,6 +55,25 @@ Page({
     verdict: null,
     saved: false,
     pickerNames: [],
+
+    // F1–F6 启发层：事实层（practice 四带）优先，本区可推翻、仅供参考
+    assessFlags: [],
+    assessTag: '',
+    assessFormat: '解答',
+    assessFormats: Object.keys(RUBRIC.default_minutes || {}),
+    assessDefaults: RUBRIC.default_minutes || {},
+    assessMinutes: '',
+    assess: null,
+    flagsNote: '',
+    showRubric: false,
+    rubricRows: (RUBRIC.dimensions || []).map(function (d) {
+      return { key: d.key, name: d.name, weight: d.weight, origin: d.origin };
+    }),
+    rubricSummary: '阈值：值得做 ' + RUBRIC.thresholds.worth_score +
+      ' / 可选 ' + RUBRIC.thresholds.optional_score +
+      ' / 贴近度硬线 ' + RUBRIC.thresholds.hard_fidelity +
+      ' / 值得做贴近度 ' + RUBRIC.thresholds.worth_fidelity +
+      '；' + RUBRIC.value_formula + '；' + RUBRIC.coverage_formula,
   },
 
   async onLoad() {
@@ -100,6 +121,8 @@ Page({
       vol: v, kpId: '', kpName: '', kpInfo: null, fams: [],
       famN: null, masteryIdx: -1, verdict: null, saved: false,
       pickerNames: this.namesOf(v), original: null,
+      // 换卷后事实层必须重算：旧 band 不能配新卷种的启发层
+      practice: null, assess: null, assessFlags: [], flagsNote: '',
     });
     // 换科目后重新按新科目找原题
     if (this.data.text) this.rematch();
@@ -201,6 +224,7 @@ Page({
       kpId: '', kpName: '', kpInfo: null, fams: [], famN: null,
       masteryIdx: -1, verdict: null, saved: false,
     });
+    this.initAssess(practice);
 
     if (!text) {
       wx.showToast({ title: '没认出文字，换张清晰点的', icon: 'none' });
@@ -224,6 +248,7 @@ Page({
     const orig = E.findOriginal(t, this.data.vol);
     const practice = E.practiceValue(t, this.data.vol);
     this.setData({ cands: cands, original: orig, practice: practice });
+    this.initAssess(practice);
   },
 
   doMatch() {
@@ -271,6 +296,73 @@ Page({
       url: '/packageExam/pages/exam/exam?vol=' + p.vol + '&y=' + p.y + '&o=' + p.o +
         '&kpName=' + encodeURIComponent(p.kpName || ''),
     });
+  },
+
+  /* ---------- F1–F6 启发层（事实层优先，可推翻） ---------- */
+  /**
+   * 初始勾法只按 practice.band 给建议，绝不冒充「模型读过题」的结论：
+   * exam → 全 1；worth → F1/F2/F5=1；edge/skip → 全 0（拿不准判 0）。
+   */
+  initAssess(practice) {
+    if (!practice) {
+      this.setData({ assess: null, assessFlags: [], flagsNote: '' });
+      return;
+    }
+    const presets = { exam: [1, 1, 1, 1, 1, 1], worth: [1, 1, 0, 0, 1, 0] };
+    const init = presets[practice.band] || [0, 0, 0, 0, 0, 0];
+    const flags = (RUBRIC.fidelity || []).map(function (f, i) {
+      return { code: f.code, name: f.name, desc: f.desc, on: init[i] || 0 };
+    });
+    const note = (practice.band === 'edge' || practice.band === 'skip')
+      ? '拿不准判 0：六条里没把握的先不勾，判据可逐条改。'
+      : '这是按真题分带给的初始建议，不是模型读题的结论；勾哪些由你定。';
+    this.setData({ assessFlags: flags, flagsNote: note });
+    this.refreshAssess();
+  },
+
+  /** 每次勾选/题型/耗时/编码变化都重算一遍，结果只由可见参数决定 */
+  refreshAssess() {
+    const d = this.data;
+    if (!d.practice) { this.setData({ assess: null }); return; }
+    const minutes = Number(d.assessMinutes);
+    this.setData({
+      assess: E.assessValue({
+        examType: d.vol,
+        tags: d.assessTag,
+        format: d.assessFormat,
+        minutes: (isFinite(minutes) && minutes > 0) ? minutes : undefined,
+        fidelity: d.assessFlags.map(function (f) { return f.on; }),
+        practiceBand: d.practice.band,
+      }),
+    });
+  },
+
+  toggleFlag(e) {
+    const i = Number(e.currentTarget.dataset.i);
+    const flags = this.data.assessFlags.map(function (f, idx) {
+      return idx === i ? { code: f.code, name: f.name, desc: f.desc, on: f.on ? 0 : 1 } : f;
+    });
+    this.setData({ assessFlags: flags });
+    this.refreshAssess();
+  },
+
+  onAssessTag(e) {
+    this.setData({ assessTag: e.detail.value });
+    this.refreshAssess();
+  },
+
+  onAssessMinutes(e) {
+    this.setData({ assessMinutes: e.detail.value });
+    this.refreshAssess();
+  },
+
+  pickAssessFormat(e) {
+    this.setData({ assessFormat: e.currentTarget.dataset.f });
+    this.refreshAssess();
+  },
+
+  toggleRubric() {
+    this.setData({ showRubric: !this.data.showRubric });
   },
 
   toggleOcrText() {
@@ -375,6 +467,8 @@ Page({
       text: '', cands: [], kpId: '', kpName: '', kpInfo: null,
       fams: [], famN: null, masteryIdx: -1, verdict: null, saved: false,
       imgPath: '', imgName: '', ocr: null, original: null,
+      practice: null, assess: null, assessFlags: [], assessTag: '',
+      assessMinutes: '', flagsNote: '', showRubric: false,
       showOcrText: false, busy: '',
       // 登录提示是跟着那张图来的，图清了提示也该收；loggedIn 是真实登录态，不动
       needLogin: false,

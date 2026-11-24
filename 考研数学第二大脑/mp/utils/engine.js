@@ -9,6 +9,9 @@ const KP_PRIOR = require('../data/kpPrior.js');
 // 第二棵树：官方大纲章节—考点（skill outline.json 转录）。与 kp.js 真题考点树
 // 来源不同、并列、不合并、不互校；这里只做查询，不产出任何热度/重要性判断。
 const SYLLABUS = require('../data/syllabus.js');
+// 启发式评分参数（skill assessment-rubric.json 原样转录）。与事实层 practiceValue
+// 并列；启发层的结论不得覆盖真题相似度四带，阈值与权重全从这份数据读，不在此重造。
+const RUBRIC = require('../data/rubric.js');
 
 const NODES = KP_DATA.nodes;
 const KP_BY_ID = {};
@@ -608,6 +611,194 @@ function syllabusQuery(kw, examType) {
   return out;
 }
 
+/* ---------------- 启发式参考层（F1–F6，事实层优先） ---------------- */
+/**
+ * 本层只回答「按 skill 的 F1–F6 判据，这道题值不值得花时间」，不得回答
+ * 「这个考点重不重要」——后者只能由 practiceValue 的真真题相似度四带给出。
+ * 两层结论冲突时以事实层为准，UI 必须写明这条裁决（conflictWithFact）。
+ *
+ * 所有权重/阈值/占比/免责声明都来自 data/rubric.js（assessment-rubric.json 原样），
+ * 本文件不写第二套常量；卷种边界来自 data/syllabus.js 的 exams，不硬编码。
+ */
+
+/** 卷号三种写法归一到大纲引擎的中文卷名；默认取 SYLLABUS.exams[0]（skill 默认数一）。 */
+function examNameOf(v) {
+  if (!v) return SYLLABUS.exams[0];
+  const s = String(v).trim();
+  if (SYLLABUS.exams.indexOf(s) >= 0) return s;
+  const idx = { '1': 0, '2': 1, '3': 2, '一': 0, '二': 1, '三': 2 }[s.replace(/^数学/, '')];
+  return idx !== undefined && SYLLABUS.exams[idx] ? SYLLABUS.exams[idx] : s;
+}
+
+function toList(v) {
+  if (Array.isArray(v)) return v.filter(Boolean).map(function (x) { return String(x).trim(); });
+  if (!v) return [];
+  return String(v).split(',').map(function (x) { return x.trim(); }).filter(Boolean);
+}
+
+function clamp01(x) { return Math.min(1, Math.max(0, x)); }
+function roundN(x, d) { const p = Math.pow(10, d); return Math.round(x * p) / p; }
+
+/** 与 brain.py 的 top_tag 一致：H2.3 → H2，L7 → L7。 */
+function topTagOf(tag) { return String(tag || '').split('.')[0].toUpperCase(); }
+
+/** 从 rubric 的 coverage_formula 字面解析系数；解析不到就报错，绝不猜一个数。 */
+function coverageCoefs() {
+  const nums = (String(RUBRIC.coverage_formula || '').match(/\d+(?:\.\d+)?/g) || []).map(Number);
+  if (nums.length < 2 || !isFinite(nums[0]) || !isFinite(nums[1])) {
+    throw new Error('rubric.coverage_formula 无法解析系数: ' + RUBRIC.coverage_formula);
+  }
+  return { base: nums[0], factor: nums[1] };
+}
+
+/** 六位 0/1 的均值。非 1 一律记 0（skill：拿不准判 0）；位数不对直接 0，不折算。 */
+function fidelityScore(flags) {
+  if (!Array.isArray(flags) || flags.length !== 6) return 0;
+  let n = 0;
+  for (let i = 0; i < 6; i++) if (Number(flags[i]) === 1) n++;
+  return n / 6;
+}
+
+/**
+ * 启发式评估。opts: examType / tags / minutes / format / fidelity /
+ * transfer / personal / practiceBand（+ 可选 level / veto）。
+ *
+ * 返回 verdict 用英文码 worth / optional / skip；reason 为中文依据，
+ * 始终带「启发式」属性与 disclaimer，供 UI 原样展示、允许用户推翻。
+ */
+function assessValue(opts) {
+  const o = opts || {};
+  const exam = examNameOf(o.examType);
+  const tags = toList(o.tags);
+  const mainTag = tags[0] || '';
+  const mainCode = topTagOf(mainTag);
+  const notes = [];
+  const veto = [];
+
+  // 显式否决项只接受 rubric.veto 里真实存在的 code，不自行扩权
+  const validVeto = (RUBRIC.veto || []).map(function (v) { return v.code; });
+  toList(o.veto).forEach(function (c) {
+    if (validVeto.indexOf(c) >= 0 && veto.indexOf(c) < 0) veto.push(c);
+  });
+
+  // 卷种校验只查主 tag（派单口径）。边界完全由 syllabus.js 的 exams 派生：
+  // 数三贴 P8 / 数二贴 H7 / 非数一贴 L7 都由数据自己拦，代码里没有卷种专属判断。
+  if (mainCode) {
+    const ch = syllabusChapter(mainCode, exam);
+    if (!ch) {
+      veto.push('卷种错配');
+      notes.push(mainTag + ' 的编码 ' + mainCode + ' 不在大纲编码表内，需核对');
+    } else if ((ch.exams || []).indexOf(exam) < 0) {
+      veto.push('卷种错配');
+      notes.push(mainTag + '（' + ch.code + ' ' + (ch.title || '') + '）不属于' + exam +
+        '（该章适用：' + (ch.exams || []).join('、') + '）');
+    }
+  } else {
+    notes.push('未给主考点大纲编码，本层不做卷种校验（不替用户猜考点）');
+  }
+
+  // 五维原始分
+  const fidelity = fidelityScore(o.fidelity);
+
+  // 大纲没有逐条 level 字段（outline.json meta.scope 明确层级差异写在 notes），
+  // 所以缺省 0.6 中性值并显式标注；只有调用方明确给了 rubric.levels 的键才采用。
+  let mastery = 0.6;
+  if (o.level && RUBRIC.levels && RUBRIC.levels[o.level] !== undefined) {
+    mastery = RUBRIC.levels[o.level];
+  } else {
+    notes.push('层级未逐条标注，取中性值');
+  }
+
+  const ratios = (RUBRIC.subject_ratio || {})[exam] || {};
+  const vals = Object.keys(ratios).map(function (k) { return ratios[k]; });
+  const maxRatio = vals.length ? Math.max.apply(null, vals) : 0;
+  const rSubj = mainCode ? (ratios[mainCode.charAt(0)] || 0) : 0;
+  const coef = coverageCoefs();
+  const coverage = coef.base + coef.factor * (maxRatio ? rSubj / maxRatio : 0);
+
+  let transfer;
+  if (typeof o.transfer === 'number' && isFinite(o.transfer)) transfer = clamp01(o.transfer);
+  else if (o.transfer && RUBRIC.transfer && RUBRIC.transfer[o.transfer] !== undefined) transfer = RUBRIC.transfer[o.transfer];
+  else { transfer = RUBRIC.transfer.mid; notes.push('迁移价值未指定，按 skill 默认 mid'); }
+
+  let personal, personalNote;
+  if (typeof o.personal === 'number' && isFinite(o.personal)) {
+    personal = clamp01(o.personal);
+    personalNote = '调用方提供 personal=' + o.personal + '，截断到 [0,1] 后为 ' + personal;
+  } else {
+    personal = RUBRIC.personal.neutral;
+    personalNote = '无 vault 个人数据，personal 取 rubric 中性值 ' + personal + '（非用户实测数据）';
+  }
+
+  const raw = {
+    mastery: mastery, coverage: coverage, fidelity: fidelity,
+    transfer: transfer, personal: personal,
+  };
+  const weights = {};
+  let R = 0;
+  (RUBRIC.dimensions || []).forEach(function (d) {
+    weights[d.key] = d.weight;
+    R += (raw[d.key] || 0) * d.weight * 100;
+  });
+  R = roundN(R, 1);
+
+  // C = 预计总耗时（含订正复盘）。缺省按 rubric.default_minutes[format]；
+  // 最后兜底 15 是 brain.py assess 的既定口径，不是这里新定的数。
+  const defs = RUBRIC.default_minutes || {};
+  let C = (typeof o.minutes === 'number' && isFinite(o.minutes) && o.minutes > 0)
+    ? o.minutes : (defs[o.format] || defs['解答'] || 15);
+  if (!isFinite(C) || C <= 0) C = 15;
+
+  const th = RUBRIC.thresholds || {};
+  let verdict, reason;
+  if (veto.length) {
+    verdict = 'skip';
+    reason = '启发式：命中硬否决 ' + veto.join('、');
+  } else if (fidelity <= th.hard_fidelity) {
+    verdict = 'skip';
+    reason = '启发式：贴近度 ' + Math.round(fidelity * 6) + '/6 ≤ ' + th.hard_fidelity + '，偏离真题命题特征';
+  } else if (R < th.optional_score) {
+    verdict = 'skip';
+    reason = '启发式：收益 ' + R + ' < ' + th.optional_score + '，投入产出不划算';
+  } else if (R >= th.worth_score && fidelity >= th.worth_fidelity) {
+    verdict = 'worth';
+    reason = '启发式：值得做（收益 ' + R + ' ≥ ' + th.worth_score +
+      ' 且贴近度 ' + Math.round(fidelity * 6) + '/6 ≥ ' + th.worth_fidelity + '）';
+  } else {
+    verdict = 'optional';
+    reason = '启发式：可选（收益或贴近度未同时达到「值得做」门槛，建议限时做或只做通法部分）';
+  }
+  if (notes.length) reason += '；' + notes.join('；');
+
+  // 判定权裁决：事实层（真题相似度四带）优先。只有两个方向明确的矛盾才置 true。
+  const band = o.practiceBand || '';
+  const conflictWithFact = (verdict === 'worth' && (band === 'edge' || band === 'skip')) ||
+    (verdict === 'skip' && (band === 'exam' || band === 'worth'));
+
+  return {
+    fidelity: roundN(fidelity, 3),
+    R: R,
+    C: C,
+    value: roundN(R / C, 2),
+    per10: roundN(R / C * 10, 1),
+    verdict: verdict,
+    reason: reason,
+    scores: {
+      mastery: roundN(mastery, 3),
+      coverage: roundN(coverage, 3),
+      fidelity: roundN(fidelity, 3),
+      transfer: roundN(transfer, 3),
+      personal: roundN(personal, 3),
+      weights: weights,
+      notes: notes,
+    },
+    personalNote: personalNote,
+    veto: veto,
+    disclaimer: RUBRIC.disclaimer || '',
+    conflictWithFact: conflictWithFact,
+  };
+}
+
 module.exports = {
   NODES: NODES,
   KP_BY_ID: KP_BY_ID,
@@ -627,6 +818,8 @@ module.exports = {
   syllabusChapters: syllabusChapters,
   syllabusChapter: syllabusChapter,
   syllabusQuery: syllabusQuery,
+  fidelityScore: fidelityScore,
+  assessValue: assessValue,
   decay: decay,
   tagsOf: tagsOf,
 };
