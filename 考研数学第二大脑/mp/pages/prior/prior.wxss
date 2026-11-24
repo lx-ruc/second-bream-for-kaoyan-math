@@ -1,51 +1,118 @@
 .search {
-  margin-bottom: 24rpx;
+  margin-bottom: 16rpx;
 }
 
 .inp {
   background: #fffdf8;
   border: 1rpx solid #e6dfd1;
   border-radius: 14rpx;
-  padding: 20rpx 24rpx;
-  font-size: 27rpx;
+  padding: 18rpx 24rpx;
+  font-size: 26rpx;
 }
 
 .ph {
   color: #b3ab9c;
 }
 
+.meta-line {
+  margin-bottom: 16rpx;
+}
+
+.ml {
+  display: block;
+  font-size: 20rpx;
+  color: #9c9587;
+  line-height: 1.6;
+}
+
 .thead {
   display: flex;
+  align-items: flex-end;
   padding: 0 4rpx 12rpx;
   border-bottom: 1rpx solid #d8d0c0;
 }
 
 .th {
-  font-size: 21rpx;
+  font-size: 20rpx;
   color: #9c9587;
   letter-spacing: 1rpx;
-  width: 130rpx;
   text-align: right;
   flex: none;
+}
+
+.th.rk {
+  width: 104rpx;
+  text-align: left;
 }
 
 .th.name {
   flex: 1;
   text-align: left;
-  width: auto;
+  padding-left: 4rpx;
+}
+
+.th.sc {
+  width: 88rpx;
+}
+
+.th.py {
+  width: 92rpx;
 }
 
 .tr {
   display: flex;
-  align-items: center;
-  padding: 20rpx 4rpx;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding: 18rpx 4rpx;
   border-bottom: 1rpx solid #f1ece1;
+}
+
+.td {
+  text-align: right;
+  flex: none;
+}
+
+.td.rk {
+  width: 104rpx;
+  text-align: left;
 }
 
 .td.name {
   flex: 1;
   min-width: 0;
-  padding-right: 16rpx;
+  padding-left: 4rpx;
+  padding-right: 12rpx;
+}
+
+.td.sc {
+  width: 88rpx;
+}
+
+.td.py {
+  width: 92rpx;
+}
+
+.volrk {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 30rpx;
+  line-height: 1.15;
+  color: #211f1c;
+}
+
+.g-rk {
+  display: block;
+  font-size: 17rpx;
+  color: #9c9587;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.fold {
+  display: block;
+  font-size: 17rpx;
+  color: #a6342a;
+  line-height: 1.4;
 }
 
 .tr-name {
@@ -55,37 +122,158 @@
   line-height: 1.45;
 }
 
-.tr-pt {
+.tr-chap {
   display: block;
-  font-size: 20rpx;
+  font-size: 19rpx;
   color: #b3ab9c;
-  margin-top: 3rpx;
+  margin-top: 2rpx;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.td {
-  width: 130rpx;
-  text-align: right;
+.bars {
+  margin-top: 8rpx;
+}
+
+.bar-line {
+  display: flex;
+  align-items: center;
+  height: 24rpx;
+}
+
+.bar-lb {
+  width: 44rpx;
   flex: none;
-  font-size: 23rpx;
-  color: #6b6558;
-}
-
-.td.fr {
-  font-family: Georgia, serif;
-}
-
-.td.fr.hot {
-  color: #a6342a;
-}
-
-.td.tg {
-  font-size: 21rpx;
+  font-size: 19rpx;
   color: #9c9587;
 }
 
-.btn.ghost {
-  margin-top: 28rpx;
+.bar {
+  flex: 1;
+  height: 8rpx;
+  background: #eae4d7;
+  border-radius: 4rpx;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 4rpx;
+}
+
+.bar-fill.f {
+  background: #a6342a;
+}
+
+.bar-fill.d {
+  background: #8a8375;
+}
+
+.bar-v {
+  width: 52rpx;
+  flex: none;
+  text-align: right;
+  font-family: Georgia, serif;
+  font-size: 19rpx;
+  color: #6b6558;
+}
+
+.s-num {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #211f1c;
+  line-height: 1.2;
+}
+
+.py-num {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 23rpx;
+  color: #6b6558;
+  line-height: 1.2;
+}
+
+.py-u {
+  display: block;
+  font-size: 17rpx;
+  color: #b3ab9c;
+  line-height: 1.4;
+}
+
+.detail {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 16rpx;
+  padding: 18rpx;
+  background: #fffdf8;
+  border: 1rpx solid #e6dfd1;
+  border-radius: 14rpx;
+}
+
+.d-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.d-cell {
+  width: 25%;
+  box-sizing: border-box;
+  padding: 8rpx 4rpx;
+}
+
+.d-k {
+  display: block;
+  font-size: 18rpx;
+  color: #9c9587;
+  line-height: 1.4;
+}
+
+.d-v {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 24rpx;
+  color: #211f1c;
+  line-height: 1.4;
+}
+
+.warn {
+  display: block;
+  font-size: 22rpx;
+  color: #a6342a;
+  line-height: 1.6;
+  margin-top: 12rpx;
+}
+
+.d-note {
+  display: block;
+  font-size: 20rpx;
+  color: #9c9587;
+  line-height: 1.6;
+  margin-top: 8rpx;
+}
+
+.notes {
+  margin-top: 40rpx;
+  padding: 24rpx;
+  background: #efe9dc;
+  border-radius: 16rpx;
+}
+
+.notes-t {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #211f1c;
+  margin-bottom: 12rpx;
+}
+
+.note-i {
+  display: block;
+  font-size: 22rpx;
+  color: #6b6558;
+  line-height: 1.75;
+  margin-top: 6rpx;
 }

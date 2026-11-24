@@ -5,6 +5,7 @@
 const KP_DATA = require('../data/kp.js');
 const STEM = require('../data/stem.js');
 const PRIOR = require('../data/prior.js');
+const KP_PRIOR = require('../data/kpPrior.js');
 
 const NODES = KP_DATA.nodes;
 const KP_BY_ID = {};
@@ -446,6 +447,38 @@ function priorRows(kw, band) {
   });
 }
 
+/**
+ * 考频页的 92 考点排序视图（读 data/kpPrior.js，不再渲染 239 行表）。
+ *
+ * 两个「名次」必须分清，界面上也要写清楚：
+ *  - rank    三卷 92 考点合并名次，来自评分脚本（同分并列、跳号），永不随卷别/搜索变化；
+ *  - volRank 本卷序号，按当前卷过滤后从 1 重排；搜索只隐藏行，不重编任何名次。
+ *
+ * 评分只用于排序——这里不输出任何「该学/不该学」的判断。
+ * 考点归属 scope/chap 来自 kp.json，评分数据本身没有卷别字段。
+ */
+function priorKpRows(vol, kw) {
+  const k = (kw || '').trim();
+  const inVol = KP_PRIOR.kp.filter(function (r) { return inScope(r, vol); });
+  // rank 由 (-S, name) 派生；同 rank（同分并列）再按 name 排，与 Web 后端一致。
+  inVol.sort(function (a, b) {
+    return a.rank - b.rank || (a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
+  });
+  return inVol.map(function (r, i) {
+    return {
+      id: r.id,
+      name: r.name,
+      rank: r.rank,                 // 三卷合并名次（全局，不变）
+      volRank: i + 1,               // 本卷序号（切卷重排，搜索不动）
+      chapName: r.chap[vol] || '',
+      F: r.F, D: r.D, S: r.S,
+      py: r.py, pn: r.pn, hard: r.hard, nrow: r.nrow,
+    };
+  }).filter(function (r) {
+    return !k || r.name.indexOf(k) >= 0;
+  });
+}
+
 module.exports = {
   NODES: NODES,
   KP_BY_ID: KP_BY_ID,
@@ -461,6 +494,7 @@ module.exports = {
   judge: judge,
   diagnose: diagnose,
   priorRows: priorRows,
+  priorKpRows: priorKpRows,
   decay: decay,
   tagsOf: tagsOf,
 };

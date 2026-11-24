@@ -1,43 +1,70 @@
 const E = require('../../utils/engine.js');
 
+const VOLS = [
+  { k: '1', n: '数学一' },
+  { k: '2', n: '数学二' },
+  { k: '3', n: '数学三' },
+];
+
 Page({
   data: {
+    vols: VOLS,
+    vol: '1',
     kw: '',
     rows: [],
-    total: 0,
-    shown: 60,
-    all: [],
+    volCount: 0,
   },
 
-  onLoad() {
-    this.apply('');
+  onShow() {
+    // 与 map 页共用 ekb.vol：从别的页面切了卷别，回来也是同一卷
+    const vol = wx.getStorageSync('ekb.vol') || '1';
+    this.setData({ vol: vol });
+    this.apply(vol, this.data.kw);
+  },
+
+  onVol(e) {
+    const v = e.currentTarget.dataset.v;
+    if (v === this.data.vol) return;
+    wx.setStorageSync('ekb.vol', v);
+    this.setData({ vol: v });
+    this.apply(v, this.data.kw);
   },
 
   onInput(e) {
     const kw = e.detail.value;
-    this.setData({ kw: kw, shown: 60 });
-    this.apply(kw);
+    this.setData({ kw: kw });
+    this.apply(this.data.vol, kw);
   },
 
-  apply(kw) {
-    const list = E.priorRows(kw).map(function (r, i) {
+  // 切卷/搜索都重建列表；搜索只隐藏行，rank 与 volRank 都在 engine 里算好，不在这里改名次
+  apply(vol, kw) {
+    const rows = E.priorKpRows(vol, kw).map(function (r) {
       return {
-        // 考点名偶有重名（数一/数三各一条），key 带序号才唯一
-        key: i + '-' + r.name,
-        chap: r.chap,
-        pt: r.pt,
+        id: r.id,
         name: r.name,
-        fr: r.fr || '—',
-        diff: r.diff || '',
-        target: r.target || '',
-        hot: r.fr && r.fr !== '0.0%' && r.fr !== '—',
+        rank: r.rank,
+        volRank: r.volRank,
+        chapName: r.chapName,
+        S: r.S,
+        F: r.F,
+        D: r.D,
+        py: r.py,
+        pn: r.pn,
+        hard: r.hard,
+        nrow: r.nrow,
+        small: r.nrow <= 2,
+        open: false,
       };
     });
-    this.setData({ all: list, total: list.length, rows: list.slice(0, this.data.shown) });
+    // volCount 是本卷全部考点数（不随搜索变），分母始终是 92
+    this.setData({ rows: rows, volCount: E.priorKpRows(vol, '').length });
   },
 
-  more() {
-    const n = this.data.shown + 60;
-    this.setData({ shown: n, rows: this.data.all.slice(0, n) });
+  // 只更新一行的展开态，不整包重传列表
+  onToggle(e) {
+    const i = e.currentTarget.dataset.i;
+    const patch = {};
+    patch['rows[' + i + '].open'] = !this.data.rows[i].open;
+    this.setData(patch);
   },
 });

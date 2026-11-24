@@ -1,29 +1,87 @@
 <view class="page">
   <view class="head">
-    <text class="kicker">考频先验</text>
-    <text class="h1">40 年的考法统计</text>
-    <text class="lede">这张表来自「为你代研」的统计：每个考点的近六年复现率、难易、以及要考到多少分该拿下它。它不参与纠偏判定，只作独立参考。</text>
+    <text class="kicker">考频先验 · 92 考点</text>
+    <text class="h1">按真题统计排序</text>
+    <text class="lede">综合分只用来排序，不是学习建议。分数高低由真题索引统计得出，模型不判断考点重不重要。</text>
+  </view>
+
+  <view class="seg">
+    <view wx:for="{{vols}}" wx:key="k" class="item {{vol === item.k ? 'on' : ''}}"
+          data-v="{{item.k}}" bindtap="onVol">{{item.n}}</view>
   </view>
 
   <view class="search">
-    <input class="inp" value="{{kw}}" bindinput="onInput" placeholder="搜章节、知识点或考点名" placeholder-class="ph" confirm-type="search" />
+    <input class="inp" value="{{kw}}" bindinput="onInput" placeholder="按考点名筛选（不改名次）" placeholder-class="ph" confirm-type="search" />
+  </view>
+
+  <view class="meta-line">
+    <text class="ml">本卷 {{volCount}} / 92 考点</text>
+    <text class="ml">名次 = 本卷序号（切卷重排） · 三卷合并名次（不变、同分并列）</text>
   </view>
 
   <view class="thead">
-    <text class="th name">考点</text>
-    <text class="th">近六年</text>
-    <text class="th">目标</text>
+    <text class="th rk">名次</text>
+    <text class="th name">考点 · 分项</text>
+    <text class="th sc">综合</text>
+    <text class="th py">年均</text>
   </view>
 
-  <view wx:for="{{rows}}" wx:key="key" class="tr">
-    <view class="td name">
-      <text class="tr-name">{{item.name}}</text>
-      <text class="tr-pt">{{item.pt}}</text>
+  <view wx:for="{{rows}}" wx:key="id" class="tr">
+    <view class="td rk" data-i="{{index}}" bindtap="onToggle">
+      <text class="volrk">{{item.volRank}}</text>
+      <text class="g-rk">三卷 {{item.rank}}</text>
+      <text class="fold">{{item.open ? '收起' : '详情'}}</text>
     </view>
-    <text class="td fr {{item.hot ? 'hot' : ''}}">{{item.fr}}</text>
-    <text class="td tg">{{item.target}}</text>
+
+    <view class="td name" data-i="{{index}}" bindtap="onToggle">
+      <text class="tr-name">{{item.name}}</text>
+      <text class="tr-chap">{{item.chapName}}</text>
+      <view class="bars">
+        <view class="bar-line">
+          <text class="bar-lb">考频</text>
+          <view class="bar"><view class="bar-fill f" style="width:{{item.F}}%"></view></view>
+          <text class="bar-v">{{item.F}}</text>
+        </view>
+        <view class="bar-line">
+          <text class="bar-lb">难度</text>
+          <view class="bar"><view class="bar-fill d" style="width:{{item.D}}%"></view></view>
+          <text class="bar-v">{{item.D}}</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="td sc" data-i="{{index}}" bindtap="onToggle">
+      <text class="s-num">{{item.S}}</text>
+    </view>
+    <view class="td py" data-i="{{index}}" bindtap="onToggle">
+      <text class="py-num">{{item.py}}</text>
+      <text class="py-u">分/年</text>
+    </view>
+
+    <view wx:if="{{item.open}}" class="detail">
+      <view class="d-grid">
+        <view class="d-cell"><text class="d-k">综合分 S</text><text class="d-v">{{item.S}}</text></view>
+        <view class="d-cell"><text class="d-k">考频分 F</text><text class="d-v">{{item.F}}</text></view>
+        <view class="d-cell"><text class="d-k">难度分 D</text><text class="d-v">{{item.D}}</text></view>
+        <view class="d-cell"><text class="d-k">年均分值 py</text><text class="d-v">{{item.py}}</text></view>
+        <view class="d-cell"><text class="d-k">年均次数 pn</text><text class="d-v">{{item.pn}}</text></view>
+        <view class="d-cell"><text class="d-k">平滑难占比 hard</text><text class="d-v">{{item.hard}}</text></view>
+        <view class="d-cell"><text class="d-k">映射行数 nrow</text><text class="d-v">{{item.nrow}}</text></view>
+        <view class="d-cell"><text class="d-k">三卷名次</text><text class="d-v">{{item.rank}}</text></view>
+      </view>
+      <text wx:if="{{item.small}}" class="warn">样本少，难度分不稳定，看排序即可、别当结论</text>
+      <text class="d-note">评分只用于排序，不是学习建议。</text>
+    </view>
   </view>
 
-  <view wx:if="{{rows.length < total}}" class="btn ghost" bindtap="more">还有 {{total - rows.length}} 条 · 继续看</view>
-  <text wx:if="{{!rows.length}}" class="empty">没搜到。换个词试试，比如「极限」「二次型」。</text>
+  <text wx:if="{{!rows.length}}" class="empty">没搜到。换个考点名试试，比如「极限」「微分方程」。</text>
+
+  <view class="notes">
+    <text class="notes-t">口径说明</text>
+    <text class="note-i">① 数据来自三卷真题索引的 239 行考频表，经人工映射到 92 考点。</text>
+    <text class="note-i">② 一对多映射按 1/n 等额分摊，不偏袒任何一个考点。</text>
+    <text class="note-i">③ 三卷 92 考点合并排名，不随卷别重排；同分并列，不按名字硬拆。</text>
+    <text class="note-i">④ 数一缺「向量代数和空间解析几何」整章，源索引里就没有。</text>
+    <text class="note-i">⑤ 评分只用于排序，不是学习建议。</text>
+  </view>
 </view>
