@@ -86,7 +86,9 @@ python3 ingest.py               # raw/ → data/*.json
 
 用微信开发者工具打开 `考研数学第二大脑/mp`。小程序已定名为**黎曼刷题辅助**，`appid` 为正式 AppID（`wx3b8baf398bf449d2`），真机调试可用。真机跑通后把 `setting.urlCheck` 改回 `true`（或先在 mp.weixin.qq.com 后台「开发管理 → 开发设置 → 服务器域名」把 `https://mp-api.app.workbuddy.host` 加入 request 合法域名，二者满足其一即可，目前为开发期临时关闭）。
 
-> **云网关鉴权已变（2026-11-24 复测）**：`https://mp-api.app.workbuddy.host` 现在强制登录态，仅凭 `publishableKey` 调用一律 `401 login_required`（纯文本与模型清单同样被拒）。此前「按 Origin 放行、Web 端可免登录直连」的结论**已失效**。拍照识题在接入 SDK 的 OAuth 登录之前不可用；粘贴题干、手动选考点、从真题库选等路径不受影响。
+> **云网关鉴权已变（2026-11-24 复测）**：`https://mp-api.app.workbuddy.host` 现在强制登录态，仅凭 `publishableKey` 调用一律 `401 login_required`（纯文本与模型清单同样被拒）。此前「按 Origin 放行、Web 端可免登录直连」的结论**已失效**。
+> **小程序端已接入登录**（WorkBuddy 账号，经官方小程序授权）：首次识题会提示「登录后识别」，登录成功后自动续上识别，不登录仍可粘贴题干 / 手动选考点。登录回调在 `app.js` 的 `onShow`，页面里 `await getApp().authReady` 后再读会话；`utils/cloud.js` 必须带平台下发的 `workBuddyOAuthClientId`，缺它登录必失败。闭环测试 `node scripts/test-login.js`（已串进 `npm run verify`）。
+> **Web 原型尚未接入登录**，其拍照识题暂不可用，其余功能正常。
 
 首次拉代码先装依赖（`node_modules` 不入库）：
 
@@ -101,7 +103,7 @@ npm install
 
 ```bash
 python3 scripts/build_data.py   # 语料 → data/*.js
-npm run verify                  # 静态校验 + 数据完整性 + 三层回归
+npm run verify                  # 静态校验 + 数据完整性 + 四层回归（含登录闭环）
 npm run e2e                     # 开发者工具自动化（见下，需 IDE 环境）
 ```
 

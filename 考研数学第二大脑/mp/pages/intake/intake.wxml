@@ -37,6 +37,10 @@
           <text class="shot-t loading">{{busyText}}</text>
           <text class="shot-h">第一次识别要加载模型，慢一点</text>
         </block>
+        <block wx:elif="{{needLogin}}">
+          <text class="shot-t">图片已就位，登录后开始识别</text>
+          <text class="shot-h">识别用的是云端的视觉模型，需要先登录 WorkBuddy 账号</text>
+        </block>
         <block wx:elif="{{ocr}}">
           <text class="shot-t ok">识别完成</text>
           <text class="shot-h">{{ocr.model}} · 置信 {{ocr.confPct}}%{{ocr.formulaHeavy ? ' · 公式较多' : ''}}</text>
@@ -46,7 +50,13 @@
           <text class="shot-h">点右边重试，或换一张</text>
         </block>
       </view>
-      <view wx:if="{{!busy}}" class="shot-act" bindtap="reOcr">重新识别</view>
+      <view wx:if="{{needLogin && !busy}}" class="shot-act login" bindtap="onLogin">{{loggingIn ? '正在跳转…' : '登录后识别'}}</view>
+      <view wx:elif="{{!busy}}" class="shot-act" bindtap="reOcr">重新识别</view>
+    </view>
+
+    <!-- 需要登录的说明：给出不登录也能走的路，别把人堵死 -->
+    <view wx:if="{{needLogin}}" class="login-tip">
+      <text class="note">不想登录？下面可以<text class="em">粘贴题干</text>或<text class="em">手动选考点</text>，记题、诊断都不受影响，只是少了自动识别这一步。</text>
     </view>
 
     <text class="note">拍清楚题面就行，旁边的草稿、答案、水印会被忽略。手写解题过程认不准，但那本来也不该由系统来读——你只要告诉它卡在哪条思路。</text>

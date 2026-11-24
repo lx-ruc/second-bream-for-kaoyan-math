@@ -133,6 +133,19 @@
   border: 1rpx solid #d8d0c0;
   border-radius: 10rpx;
 }
+/* 「登录后识别」是这步唯一该点的动作，比「重新识别」重一档 */
+.shot-act.login {
+  color: #fffdf8;
+  background: #a6342a;
+  border-color: #a6342a;
+}
+.login-tip {
+  margin-top: 4rpx;
+}
+.em {
+  color: #6b6558;
+  font-weight: 600;
+}
 
 /* ---------- 命中真题 ---------- */
 .orig {

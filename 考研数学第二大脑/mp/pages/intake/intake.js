@@ -28,6 +28,11 @@ Page({
     busy: '',
     busyText: '',
 
+    // 登录态。null = 还不知道（onShow 里异步填），false 时识题需要先登录
+    loggedIn: null,
+    needLogin: false,
+    loggingIn: false,
+
     // 识别结果
     ocr: null,
     original: null,
@@ -50,11 +55,34 @@ Page({
     pickerNames: [],
   },
 
-  onLoad() {
+  async onLoad() {
     const last = wx.getStorageSync('ekb.vol') || '1';
     this.setData({ vol: last, pickerNames: this.namesOf(last) });
     // 清掉没人引用的旧图，避免本地空间被照片撑满
     IMG.prune(S.load().map(function (r) { return r.img; }));
+  },
+
+  async onShow() {
+    // 从官方授权小程序回跳后，onShow 会再触发一次。先等 app.js 把授权码换成会话，
+    // 再读登录态 —— 不等的话读到的是换票前的旧状态，登录成功后还会显示「需要登录」。
+    const app = getApp();
+    if (app && app.authReady) {
+      await app.authReady;
+    }
+    // 必须在 refreshLogin 之前记下来：refreshLogin 会把 needLogin 清掉，
+    // 之后再读就永远是 false，识别永远续不上。
+    const wasBlocked = this.data.needLogin && !!this.data.imgPath;
+    await this.refreshLogin();
+    // 带着图回来、且刚才卡在「需要登录」上：登录成功就直接把识别续上，别让用户再点一次
+    if (wasBlocked && this.data.loggedIn) {
+      this.reOcr();
+    }
+  },
+
+  async refreshLogin() {
+    const ok = await OCR.isLoggedIn();
+    // 未登录且没图时不打扰：只有真要识题才提示
+    this.setData({ loggedIn: ok, needLogin: ok ? false : this.data.needLogin });
   },
 
   namesOf(v) {
@@ -106,9 +134,7 @@ Page({
       const r = await OCR.recognize(small);
       this.applyOcr(r);
     } catch (err) {
-      this.setData({ busy: '' });
-      const msg = OCR.mapError(err);
-      if (msg) wx.showToast({ title: msg, icon: 'none' });
+      this.onOcrFail(err);
     }
   },
 
@@ -121,10 +147,37 @@ Page({
       const r = await OCR.recognize(p);
       this.applyOcr(r);
     } catch (err) {
-      this.setData({ busy: '' });
-      const msg = OCR.mapError(err);
-      if (msg) wx.showToast({ title: msg, icon: 'none' });
+      this.onOcrFail(err);
     }
+  },
+
+  /**
+   * 识别失败。未登录是特殊的一种：toast 一闪就没了，用户不知道该干什么，
+   * 所以把图留住、亮出「登录后识别」按钮，而不是让他以为图拍坏了。
+   */
+  onOcrFail(err) {
+    const code = (err && err.code) || '';
+    this.setData({ busy: '' });
+    if (code === 'login_required') {
+      this.setData({ needLogin: true, loggedIn: false });
+      return;
+    }
+    const msg = OCR.mapError(err);
+    if (msg) wx.showToast({ title: msg, icon: 'none' });
+  },
+
+  /** 用户点「登录后识别」。只能由按钮触发，不能在 onShow 里自动拉起授权 */
+  async onLogin() {
+    if (this.data.loggingIn) return;
+    this.setData({ loggingIn: true });
+    const { error } = await OCR.signIn('pages/intake/intake');
+    this.setData({ loggingIn: false });
+    // cancelled = 用户在微信跳转弹窗上点了取消，不算错，保留按钮让他重试
+    if (error && error.code !== 'cancelled') {
+      wx.showToast({ title: error.message || '登录没成功，再试一次', icon: 'none' });
+    }
+    // 成功只代表「已跳到授权页」。会话由 app.js onShow 的回调建立，
+    // 回到本页时 onShow 会刷新登录态并自动续上识别 —— 这里不做任何假设。
   },
 
   /** 识别完就自动走一遍匹配；命中原题则预选考点 */
@@ -323,6 +376,8 @@ Page({
       fams: [], famN: null, masteryIdx: -1, verdict: null, saved: false,
       imgPath: '', imgName: '', ocr: null, original: null,
       showOcrText: false, busy: '',
+      // 登录提示是跟着那张图来的，图清了提示也该收；loggedIn 是真实登录态，不动
+      needLogin: false,
     });
   },
 

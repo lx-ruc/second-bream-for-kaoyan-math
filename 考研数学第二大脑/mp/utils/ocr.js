@@ -90,6 +90,12 @@ function mapError(err) {
   if (code === 'no_model') return '没有可用的识别模型，稍后再试';
   if (code === 'image_too_large') return '图片太大了，重拍一张或换成截图';
   if (code === 'local_daily_limit') return '今天识别次数用完了，明天再来';
+  // 未登录。网关 2026-11-24 起强制登录态，SDK 把 401 归为 kind=unauthenticated，
+  // code 是服务端原样的 login_required —— 注意它**不是** auth_ 前缀，
+  // 曾被兜底规则翻成「识别失败，换张图」，把「要登录」伪装成「图不好」。
+  if (code === 'login_required' || code === 'unauthenticated' || (err && err.kind === 'unauthenticated')) {
+    return '需要先登录才能识别';
+  }
   if (String(code).indexOf('quota_') === 0) return '识别额度已用完，请联系开发者';
   if (String(code).indexOf('auth_') === 0) return '鉴权失败：小程序请求域名未加白名单';
   if (String(code).indexOf('gateway_') === 0 || String(code).indexOf('model_') === 0) return '模型服务暂时不可用，稍后重试';
@@ -110,6 +116,13 @@ async function recognize(filePath) {
   guardQuota();
   // 云客户端拿不到就直接抛，带 cloud_init，页面会提示「识别服务没连上」
   const cloud = CLOUD.getCloud();
+  // 没有会话就不发请求：网关会 401，而且白白发一张图上去。
+  // 在这里主动判一次，页面能直接引导去登录，而不是让用户以为图有问题。
+  if (!(await CLOUD.isLoggedIn())) {
+    const err = new Error('LOGIN_REQUIRED');
+    err.code = 'login_required';
+    throw err;
+  }
   const model = await pickModel();
   const b64 = await IMG.toBase64(filePath);
   if (b64.length > 3 * 1024 * 1024) {
@@ -158,6 +171,8 @@ module.exports = {
   recognize: recognize,
   pickModel: pickModel,
   mapError: mapError,
+  isLoggedIn: CLOUD.isLoggedIn,
+  signIn: CLOUD.signIn,
   clean: TXT.clean,
   delatex: TXT.delatex,
   parsePayload: TXT.parsePayload,

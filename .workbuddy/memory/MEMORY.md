@@ -39,16 +39,24 @@
 - 视觉可用模型：`glm-5.3-flash`（`glm-4.6v` 在该网关不可用）。
 - ~~按 Origin 放行、Web 端可免后端直连~~ **已于 2026-11-24 失效，见下节。**
 
-## ⚠ 云网关鉴权已变（2026-11-24 实测，未解决）
+## ⚠ 云网关鉴权已变（2026-11-24 实测）
 - 网关 `/.cloud/llm/*` 现在**强制登录态**，仅凭 `publishableKey` 裸调一律 `401 login_required`
   （curl 实测：纯文本、模型清单同样 401 → 整体策略变化，不是视觉模型单独限制）。
 - **别再相信「免密钥」「Web 可直连」「publishableKey 写前端也盗不走」**——那是钻了网关当时不校验的空子。
 - SDK 官方设计一直是必须登录：Web 走 `signInWithOAuth` + `handleWorkBuddyCallback`；
   小程序走 `signInWithWorkBuddyMiniProgram` + `handleWorkBuddyMiniProgramCallback`，并需配 `workBuddyOAuthClientId`。
-- **小程序端 `utils/cloud.js` / `utils/ocr.js` 从未实现登录流程**，之前能识题全靠那个空子。
-  → 接入登录前，拍照识题**两端都不可用**；粘贴题干 / 手动选考点 / 真题库 / 考点地图 / 考频不受影响。
-- 是否接入 OAuth 登录、要不要给匿名用户留降级路径：涉及产品形态，**待用户决定**。
-- 小程序端是否同样 401 未在本机验证（需登录态），按同网关同 key 推断大概率是。
+- **小程序端从未实现过登录**，之前能识题全靠那个空子。
+
+## 小程序登录已接入（2026-11-24，用户选「只修小程序端」）
+- `utils/cloud.js`：补 `workBuddyOAuthClientId`（平台下发，`cb_jq6Q…_wbapp_…`，原样传、不拼接）；新增 `isLoggedIn()` / `signIn()`。
+- `app.js`：`onShow(options)` 把 options **原样**交给 `handleWorkBuddyMiniProgramCallback`，挂 `authReady`；云初始化失败时给已 resolve 的 Promise，**App 层绝不抛**。
+- `pages/intake`：`onShow` 先 `await getApp().authReady` 再读登录态；未登录识题 → 不发请求、`needLogin=true` 亮「登录后识别」常驻按钮（不是 toast）；登录回跳后自动 `reOcr` 续上。
+- `utils/ocr.js`：`recognize` 前先判登录态；`mapError` 加 `login_required`（SDK 对 401 归 `kind:unauthenticated`，code 是服务端原样值，**不是 `auth_` 前缀**，之前会被兜底规则翻成「识别失败换张图」）。
+- **被测试抓到的真 bug**：`onShow` 里先 `refreshLogin()`（它会把 `needLogin` 清成 false）再判断 `needLogin`，导致登录成功后识别永远续不上。修法：判断前先把 `wasBlocked` 记下来。
+- 测试 `mp/scripts/test-login.js`（30 项，已串进 `npm run verify`）：mock `Module._load` 替换 SDK、mock `wx`，驱动**真实** `app.js` + `intake.js`。
+  写 harness 的坑：`img.js` 模块顶层就碰 `wx`，`global.wx` 必须先于任何业务 require；`loadApp` 后要记得调 `app.onShow({})`（真实冷启动一定有）。
+- **未验证**：真实授权往返只能在微信里跑（H5 预览做不了原生跳转）。需真机/开发者工具实测一次完整登录。
+- **Web 原型未接登录**（用户决定只修小程序），其识题暂不可用；`v2/src/ocr-web.js` 仍是裸调，注释已标注失效。
 
 ## 小程序定名（2026-11-24）
 - 产品名 **黎曼刷题辅助**，AppID `wx3b8baf398bf449d2`（未变）。
