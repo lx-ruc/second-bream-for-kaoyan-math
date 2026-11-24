@@ -1,0 +1,98 @@
+.summary {
+  background: #211f1c;
+  border-color: #211f1c;
+}
+
+.srow {
+  display: block;
+  font-size: 26rpx;
+  line-height: 1.9;
+  color: #e8e2d5;
+}
+
+.summary .b {
+  font-family: Georgia, serif;
+  font-size: 34rpx;
+  color: #fffdf8;
+}
+
+.thead,
+.trow {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+}
+
+.thead {
+  border-bottom: 2rpx solid #e6dfd1;
+}
+
+.th,
+.td {
+  font-size: 22rpx;
+  text-align: center;
+}
+
+.th {
+  color: #9c9587;
+  font-size: 20rpx;
+}
+
+.c1 { flex: 1; text-align: left; }
+.c2 { flex: 1; }
+.c3 { flex: 1.2; }
+.c4 { flex: 1; }
+.c5 { flex: 1; }
+
+.td {
+  color: #211f1c;
+  line-height: 1.6;
+}
+
+.trow + .trow {
+  border-top: 1rpx solid #f0ebe0;
+}
+
+.src {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+  border-bottom: 1rpx solid #f0ebe0;
+}
+
+.src-name {
+  flex: 1;
+  font-size: 25rpx;
+  color: #211f1c;
+}
+
+.src-n {
+  font-family: Georgia, serif;
+  font-size: 24rpx;
+  color: #6b6558;
+  margin-right: 14rpx;
+}
+
+.warnbox {
+  background: #211f1c;
+  border-color: #211f1c;
+}
+
+.warn-title {
+  display: block;
+  font-size: 24rpx;
+  letter-spacing: 2rpx;
+  color: #f0a596;
+  margin-bottom: 12rpx;
+}
+
+.warn-text {
+  display: block;
+  font-size: 25rpx;
+  line-height: 1.85;
+  color: #fffdf8;
+}
+
+.warnbox .note {
+  color: #9c9587;
+}

@@ -1,0 +1,120 @@
+.fld-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #f7f3ea;
+  border: 1rpx solid #e6dfd1;
+  border-radius: 12rpx;
+  padding: 18rpx 20rpx;
+  font-size: 27rpx;
+  color: #211f1c;
+  margin: 8rpx 0 18rpx;
+}
+
+.ph {
+  color: #b3ab9c;
+}
+
+.summary {
+  background: #211f1c;
+  border-color: #211f1c;
+}
+
+.summary .row {
+  display: block;
+  font-size: 26rpx;
+  line-height: 1.85;
+  color: #e8e2d5;
+}
+
+.summary .note {
+  color: #9c9587;
+}
+
+.day {
+  padding: 22rpx 24rpx;
+}
+
+.day-hd {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.day-no {
+  font-family: Georgia, serif;
+  font-size: 28rpx;
+  color: #a6342a;
+  margin-right: 16rpx;
+}
+
+.day-date {
+  font-size: 25rpx;
+  color: #6b6558;
+  flex: 1;
+}
+
+.day-line {
+  display: block;
+  font-size: 25rpx;
+  line-height: 1.75;
+  color: #4a453c;
+  margin-top: 6rpx;
+}
+
+.due-list {
+  background: #f7f3ea;
+  border-radius: 10rpx;
+  padding: 12rpx 16rpx;
+  margin: 10rpx 0;
+}
+
+.due-item {
+  display: block;
+  font-size: 23rpx;
+  line-height: 1.7;
+  color: #6b6558;
+}
+
+.day-mock {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.7;
+  color: #a6342a;
+  margin-top: 12rpx;
+  font-weight: 600;
+}
+
+.day-attr {
+  display: block;
+  font-size: 23rpx;
+  line-height: 1.7;
+  color: #2f6b52;
+  margin-top: 8rpx;
+}
+
+.day-old {
+  display: block;
+  font-size: 21rpx;
+  line-height: 1.7;
+  color: #9c9587;
+  margin-top: 10rpx;
+}
+
+.principle {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10rpx;
+}
+
+.pdot {
+  color: #a6342a;
+  font-size: 26rpx;
+  margin-right: 10rpx;
+}
+
+.ptext {
+  flex: 1;
+  font-size: 25rpx;
+  line-height: 1.75;
+  color: #4a453c;
+}

@@ -14,6 +14,50 @@
     <text class="note">tabBar 已满 5 项，这三项从这里进入，不占底部入口；知识卡与下方诊断统计分开存储，不互相污染。</text>
   </view>
 
+  <view class="card kbentry">
+    <text class="sec">更多工具 · 都从这里进入，不占底部入口</text>
+    <view class="kbbtns">
+      <view class="btn ghost kbbtn" bindtap="goPlan">冲刺计划</view>
+      <view class="btn ghost kbbtn" bindtap="goFormat">试卷结构</view>
+      <view class="btn ghost kbbtn" bindtap="goCalibrate">题源校准</view>
+    </view>
+  </view>
+
+  <view class="card statbox">
+    <view class="stat-toggle" bindtap="toggleStats">
+      <text class="sec">统计补充 · 大纲覆盖度 / 错因分布 / 连续答错</text>
+      <text class="stat-arrow">{{showStats ? '收起' : '展开'}}</text>
+    </view>
+
+    <block wx:if="{{showStats}}">
+      <view wx:if="{{coverage}}" class="stat-sec">
+        <text class="stat-h">大纲覆盖度（{{examName}}）</text>
+        <text class="stat-p">应考 {{coverage.targetCount}} 章，有笔记 {{coverage.coveredCount}} 章，覆盖 {{coverage.pct}}%。</text>
+        <text wx:if="{{coverage.gaps.length}}" class="stat-gaps">应考但零笔记：{{coverage.gapsText}}</text>
+        <text wx:else class="stat-p">当前卷全部章编码下都有笔记。</text>
+        <text class="stat-warn">{{coverage.note}}</text>
+      </view>
+
+      <view wx:if="{{errors}}" class="stat-sec">
+        <text class="stat-h">错因分布（五类，来自错题卡）</text>
+        <view wx:for="{{errors.rows}}" wx:key="name" class="err-row">
+          <text class="err-name">{{item.name}}</text>
+          <view class="bar err-bar"><view class="bar-fill" style="width:{{item.pct}}%"></view></view>
+          <text class="err-pct">{{item.n}} · {{item.pct}}%</text>
+        </view>
+        <text class="note">{{errors.note}}</text>
+      </view>
+
+      <view class="stat-sec">
+        <text class="stat-h">连续答错条目</text>
+        <text wx:if="{{!streakCards.length && !streakRecords.length}}" class="stat-p">暂无连续答错条目。</text>
+        <text wx:for="{{streakCards}}" wx:key="id" class="stat-item">卡片「{{item.name}}」答错归零（{{item.when}}）</text>
+        <text wx:for="{{streakRecords}}" wx:key="kp" class="stat-item">记录「{{item.name}}」连续 {{item.n}} 次「还是不会」</text>
+        <text class="note">新录入的 0 级不算答错；只有有复习记录且归零的才算。</text>
+      </view>
+    </block>
+  </view>
+
   <view wx:if="{{empty}}" class="empty">
     <text>还没有记录。\n记满 5 道，这张诊断才开始准。</text>
     <view class="btn" style="margin-top:32rpx" bindtap="goIntake">去记第一道</view>

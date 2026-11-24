@@ -1,0 +1,50 @@
+<view class="page">
+  <view class="head">
+    <text class="kicker">题源校准 · 只读报告</text>
+    <text class="h1">你自己的题源结构</text>
+    <text class="lede">题评与错题都存在自选择偏差。这份报告只描述你记录过的题，不是官方命题频率。</text>
+  </view>
+
+  <view wx:if="{{report}}" class="card summary">
+    <text class="srow">已评估题评卡 <text class="b">{{report.assessedCount}}</text> 张</text>
+    <text class="srow">做题记录 <text class="b">{{report.recordCount}}</text> 条（只作背景，不参与题评统计）</text>
+    <text class="srow">标注「真题」的笔记 <text class="b">{{report.realNoteCount}}</text> 条</text>
+  </view>
+
+  <view wx:if="{{report && report.rows.length}}" class="card">
+    <text class="sec">按考点（H/L/P 大类）</text>
+    <view class="thead">
+      <text class="th c1">编码</text>
+      <text class="th c2">评估题数</text>
+      <text class="th c3">平均收益</text>
+      <text class="th c4">值得做</text>
+      <text class="th c5">真题笔记</text>
+    </view>
+    <view wx:for="{{report.rows}}" wx:key="code" class="trow">
+      <text class="td c1">{{item.code}}</text>
+      <text class="td c2">{{item.assessed}}</text>
+      <text class="td c3">{{item.avgReward === null ? '未记录' : item.avgReward}}</text>
+      <text class="td c4">{{item.worthPct === null ? '未记录' : item.worthPct + '%'}}</text>
+      <text class="td c5">{{item.realNotes}}</text>
+    </view>
+    <text class="note">未记录＝卡片里没有存收益或结论，报告不会替你补数字。值得做比例的分母是填过结论的题评卡，不是全部题评卡。</text>
+  </view>
+
+  <view wx:elif="{{report}}" class="empty">还没有题评卡。用「记知识卡 → 题评」记录结论后，这里才会出现统计。</view>
+
+  <view wx:if="{{report && report.sources.length}}" class="card">
+    <text class="sec">题源来源分布（来自卡片 source 字段）</text>
+    <view wx:for="{{report.sources}}" wx:key="source" class="src">
+      <text class="src-name">{{item.source}}</text>
+      <text class="src-n">{{item.n}} 张</text>
+      <text wx:if="{{item.isReal}}" class="chip ok">真题</text>
+    </view>
+    <text class="note">{{report.note}}</text>
+  </view>
+
+  <view class="card warnbox">
+    <text class="warn-title">常驻口径 · skill 原文</text>
+    <text class="warn-text">{{warning}}</text>
+    <text class="note">本页没有回写权重的按钮，也没有任何写操作；要改权重请手工编辑 rubric 参数。</text>
+  </view>
+</view>

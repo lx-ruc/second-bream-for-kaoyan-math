@@ -44,7 +44,19 @@ const BODY_SECTIONS = {
 const HEADING_OVERRIDE = { '我的做法卡点': '我的做法 / 卡在哪一步' };
 // 派单要求的 frontmatter 字段；导出时按此顺序逐项写出，缺值写 null / 待补。
 const FM_KEYS = ['id', 'type', 'title', 'tags', 'error_type', 'source', 'era',
-  'difficulty', 'exam_type', 'created', 'last_review', 'level', 'next_review'];
+  'difficulty', 'exam_type', 'created', 'last_review', 'level', 'next_review',
+  'reward', 'value', 'verdict'];
+// 题评卡的结构化结论字段，来自 skill templates.md 的 assessment frontmatter
+// （reward 收益 / value 性价比 / verdict 值得做·可选·不值得做）。
+// 校准页只读这三个字段；没有就是 null，不推断、不回写权重。
+function metricNum(v) {
+  if (v === undefined || v === null || v === '') return null;
+  const n = Number(v);
+  return isFinite(n) ? n : null;
+}
+function metricText(v) {
+  return str(v).trim() || null;
+}
 
 const TAG_RE = /^[HLP]\d+(?:\.\d+)?$/i;
 const PLACEHOLDER = '待补';
@@ -173,6 +185,10 @@ function add(data, dayArg) {
     next_review: addDays(day, INTERVALS[0]),
     body: body,
     migration: migration,
+    // 题评卡的结构化结论（skill assessment frontmatter）；非题评卡留空。
+    reward: type === 'assessment' ? metricNum(data.reward) : null,
+    value: type === 'assessment' ? metricNum(data.value) : null,
+    verdict: type === 'assessment' ? metricText(data.verdict) : null,
     updated: day,
     incomplete: type === 'wrong' && !migration,
   };
@@ -200,6 +216,12 @@ function update(id, patch, dayArg) {
   if (patch.era !== undefined) next.era = ERAS.indexOf(patch.era) >= 0 ? patch.era : DEFAULT_ERA;
   if (patch.difficulty !== undefined) next.difficulty = diffValue(patch.difficulty);
   if (patch.exam_type !== undefined) next.exam_type = str(patch.exam_type).trim() || PLACEHOLDER;
+  // 题评卡结论字段：只有本次显式传入才覆盖，未填的编辑保持原值。
+  if (type === 'assessment') {
+    if (patch.reward !== undefined) next.reward = metricNum(patch.reward);
+    if (patch.value !== undefined) next.value = metricNum(patch.value);
+    if (patch.verdict !== undefined) next.verdict = metricText(patch.verdict);
+  }
 
   if (patch.body && typeof patch.body === 'object') {
     BODY_SECTIONS[type].forEach((k) => {
@@ -317,6 +339,9 @@ function toMarkdown(card) {
     'last_review: ' + yamlVal(card.last_review),
     'level: ' + yamlVal(parseInt(card.level, 10) || 0),
     'next_review: ' + yamlVal(card.next_review),
+    'reward: ' + yamlVal(card.reward === undefined ? null : card.reward),
+    'value: ' + yamlVal(card.value === undefined ? null : card.value),
+    'verdict: ' + yamlVal(card.verdict === undefined ? null : card.verdict),
     '---',
   ].join('\n');
   const lines = ['# ' + str(card.title), ''];

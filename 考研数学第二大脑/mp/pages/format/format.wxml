@@ -1,0 +1,56 @@
+<view class="page">
+  <view class="head">
+    <text class="kicker">试卷结构 · 双口径</text>
+    <text class="h1">两套口径都正确</text>
+    <text class="lede">按题源年代选用。改革前用于读 2020 及以前真题与旧讲义；改革后用于 2027 备考规划与限时全真模考。</text>
+  </view>
+
+  <view class="seg">
+    <view wx:for="{{eras}}" wx:key="k" class="item {{era === item.k ? 'on' : ''}}"
+          data-k="{{item.k}}" bindtap="pickEra">{{item.n}}</view>
+  </view>
+
+  <view class="card">
+    <text class="sec">{{view.label}}</text>
+    <text class="big">{{view.totalLine}}</text>
+    <view class="divider"></view>
+    <text class="row">{{view.choicesLine}}</text>
+    <text class="row">{{view.fillsLine}}</text>
+    <text class="row">{{view.solutionsLine}}</text>
+    <view class="divider"></view>
+    <text class="row strong">{{view.objectiveLine}}</text>
+  </view>
+
+  <view class="card">
+    <text class="sec">内容占比（{{view.label}}）</text>
+    <view class="ratio-head">
+      <text class="rh-col">卷种</text>
+      <text class="rh-col">高数 / 微积分</text>
+      <text class="rh-col">线代</text>
+      <text class="rh-col">概率</text>
+    </view>
+    <view wx:for="{{view.ratioRows}}" wx:key="vol" class="ratio-row">
+      <text class="rc-col">{{item.vol}}</text>
+      <text class="rc-col">{{item.H}}</text>
+      <text class="rc-col">{{item.L}}</text>
+      <text class="rc-col">{{item.P}}</text>
+    </view>
+    <text class="note">占比是官方条文级比例；题型内的逐科题数大纲不作规定，机构推算不算条文。</text>
+  </view>
+
+  <view class="card">
+    <text class="sec">这套结构用来做什么</text>
+    <text class="row">{{view.usage}}</text>
+  </view>
+
+  <view class="card warm">
+    <text class="sec">差异（改革前 → 改革后）</text>
+    <text class="row">{{diff}}</text>
+  </view>
+
+  <view class="card warnbox">
+    <text class="warn-title">常驻口径 · 别混用</text>
+    <text class="warn-text">{{disclaimer}}</text>
+    <text class="note">来源：{{source}}</text>
+  </view>
+</view>

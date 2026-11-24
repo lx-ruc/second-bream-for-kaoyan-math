@@ -5,6 +5,14 @@
  */
 const C = require('../../utils/cards.js');
 
+// 题评卡结论：skill templates.md 原文写「值得做 / 可选 / 不值得做」；
+// 小程序启发层用 worth / optional / skip。两种写法都接受，报告里都归一识别。
+const VERDICTS = [
+  { k: '值得做', n: '值得做' },
+  { k: '可选', n: '可选' },
+  { k: '不值得做', n: '不值得做' },
+];
+
 function sectionsOf(type, prev) {
   return C.BODY_SECTIONS[type].map(function (key) {
     let value = '';
@@ -29,6 +37,9 @@ function freshState() {
     examType: '',
     difficulty: 3,
     migration: '',
+    reward: '',
+    value: '',
+    verdict: '',
     sections: sectionsOf('wrong'),
     hint: '',
     savedId: '',
@@ -52,11 +63,15 @@ Page({
     examType: '',
     difficulty: 3,
     migration: '',
+    reward: '',
+    value: '',
+    verdict: '',
     sections: [],
     hint: '',
     savedId: '',
     exportPath: '',
     incomplete: false,
+    verdicts: VERDICTS,
     types: [],
     errorTypes: [],
     eras: [],
@@ -73,6 +88,7 @@ Page({
         { k: 'pre2021', n: '早年（2020 及以前，23 题结构）' },
       ],
       difficulties: [1, 2, 3, 4, 5],
+      verdicts: VERDICTS,
     }, freshState());
     const id = q && q.id;
     if (id) {
@@ -90,6 +106,9 @@ Page({
           examType: card.exam_type === C.PLACEHOLDER ? '' : card.exam_type,
           difficulty: card.difficulty,
           migration: card.migration || '',
+          reward: card.reward === null || card.reward === undefined ? '' : String(card.reward),
+          value: card.value === null || card.value === undefined ? '' : String(card.value),
+          verdict: card.verdict || '',
           sections: sectionsOf(card.type, null).map(function (s) {
             return { key: s.key, title: s.title, value: (card.body && card.body[s.key]) || '' };
           }),
@@ -136,6 +155,10 @@ Page({
     this.setData({ migration: e.detail.value });
   },
 
+  pickVerdict(e) {
+    this.setData({ verdict: e.currentTarget.dataset.k });
+  },
+
   form() {
     const d = this.data;
     const body = {};
@@ -151,6 +174,9 @@ Page({
       exam_type: d.examType,
       body: body,
       migration: d.migration,
+      reward: d.reward,
+      value: d.value,
+      verdict: d.verdict,
     };
   },
 

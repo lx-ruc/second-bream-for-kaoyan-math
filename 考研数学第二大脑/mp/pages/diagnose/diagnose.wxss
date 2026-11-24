@@ -3,6 +3,97 @@
   margin-bottom: 32rpx;
 }
 
+/* 统计补充折叠块：覆盖度 / 错因 / 连续答错 */
+.statbox {
+  padding: 24rpx;
+}
+
+.stat-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stat-toggle .sec {
+  margin: 0;
+}
+
+.stat-arrow {
+  font-size: 22rpx;
+  color: #a6342a;
+}
+
+.stat-sec {
+  margin-top: 22rpx;
+  padding-top: 20rpx;
+  border-top: 1rpx solid #eae4d7;
+}
+
+.stat-h {
+  display: block;
+  font-size: 27rpx;
+  font-weight: 600;
+  color: #211f1c;
+  margin-bottom: 10rpx;
+}
+
+.stat-p {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.75;
+  color: #4a453c;
+}
+
+.stat-gaps {
+  display: block;
+  font-size: 24rpx;
+  line-height: 1.75;
+  color: #a6342a;
+  margin-top: 8rpx;
+}
+
+.stat-warn {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.75;
+  color: #9c9587;
+  margin-top: 10rpx;
+}
+
+.err-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.err-name {
+  width: 150rpx;
+  font-size: 23rpx;
+  color: #4a453c;
+  flex: none;
+}
+
+.err-bar {
+  flex: 1;
+  margin: 0 16rpx;
+}
+
+.err-pct {
+  width: 110rpx;
+  text-align: right;
+  font-size: 22rpx;
+  color: #9c9587;
+  flex: none;
+}
+
+.stat-item {
+  display: block;
+  font-size: 23rpx;
+  line-height: 1.7;
+  color: #a6342a;
+  margin-bottom: 6rpx;
+}
+
 .kbbtns {
   display: flex;
 }

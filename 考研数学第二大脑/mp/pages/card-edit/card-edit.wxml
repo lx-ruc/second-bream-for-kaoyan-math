@@ -61,6 +61,29 @@
       <input class="fld-input" value="{{examType}}" data-f="examType" bindinput="onInput"
              placeholder="数一 / 数二 / 数三" placeholder-class="ph" />
     </view>
+
+    <block wx:if="{{type === 'assessment'}}">
+      <view class="divider"></view>
+      <text class="sec">题评结论 · 供「题源校准」只读报告使用</text>
+      <view class="fld">
+        <text class="fld-label">收益 R（0–100，来自 F1–F6 评估）</text>
+        <input class="fld-input" value="{{reward}}" data-f="reward" bindinput="onInput"
+               type="digit" placeholder="如 82.5；没评估过就留空" placeholder-class="ph" />
+      </view>
+      <view class="fld">
+        <text class="fld-label">性价比 R/C（分/分钟）</text>
+        <input class="fld-input" value="{{value}}" data-f="value" bindinput="onInput"
+               type="digit" placeholder="如 5.5；没评估过就留空" placeholder-class="ph" />
+      </view>
+      <view class="fld">
+        <text class="fld-label">结论</text>
+        <view class="chips">
+          <view wx:for="{{verdicts}}" wx:key="k" class="miniopt {{verdict === item.k ? 'on' : ''}}"
+                data-k="{{item.k}}" bindtap="pickVerdict">{{item.n}}</view>
+        </view>
+      </view>
+      <text class="note">这三项按 skill 题评卡 frontmatter 记录；留空就是未记录，报告不会替你编数字，也不会据此回写 rubric 权重。</text>
+    </block>
   </view>
 
   <view class="card">

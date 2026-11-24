@@ -1,0 +1,79 @@
+.big {
+  display: block;
+  font-family: Georgia, "Songti SC", serif;
+  font-size: 34rpx;
+  line-height: 1.6;
+  color: #211f1c;
+  margin-top: 6rpx;
+}
+
+.row {
+  display: block;
+  font-size: 26rpx;
+  line-height: 1.85;
+  color: #4a453c;
+}
+
+.row.strong {
+  color: #a6342a;
+  font-weight: 600;
+}
+
+.ratio-head,
+.ratio-row {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 0;
+}
+
+.ratio-head {
+  border-bottom: 2rpx solid #e6dfd1;
+}
+
+.rh-col,
+.rc-col {
+  flex: 1;
+  font-size: 24rpx;
+  text-align: center;
+}
+
+.rh-col {
+  color: #9c9587;
+  font-size: 21rpx;
+}
+
+.rc-col {
+  color: #211f1c;
+}
+
+.ratio-row + .ratio-row {
+  border-top: 1rpx solid #f0ebe0;
+}
+
+.card.warm {
+  background: #f7f1e6;
+}
+
+.warnbox {
+  background: #211f1c;
+  border-color: #211f1c;
+}
+
+.warn-title {
+  display: block;
+  font-size: 24rpx;
+  letter-spacing: 2rpx;
+  color: #f0a596;
+  margin-bottom: 12rpx;
+}
+
+.warn-text {
+  display: block;
+  font-size: 26rpx;
+  line-height: 1.85;
+  color: #fffdf8;
+}
+
+.warnbox .note {
+  color: #9c9587;
+}

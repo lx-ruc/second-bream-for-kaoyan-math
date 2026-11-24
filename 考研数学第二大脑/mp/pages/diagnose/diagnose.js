@@ -2,6 +2,7 @@ const E = require('../../utils/engine.js');
 const S = require('../../utils/store.js');
 const IMG = require('../../utils/img.js');
 const C = require('../../utils/cards.js');
+const T = require('../../utils/stats.js');
 
 function ago(ts) {
   const d = Math.floor((Date.now() - ts) / 86400000);
@@ -24,6 +25,12 @@ Page({
     stuck: [],
     recent: [],
     dueCount: 0,
+    showStats: false,
+    examName: '数一',
+    coverage: null,
+    errors: null,
+    streakCards: [],
+    streakRecords: [],
   },
 
   onShow() {
@@ -32,10 +39,26 @@ Page({
 
   refresh() {
     const recs = S.load();
-    // 知识卡是独立存储（ekb.cards.v1），不参与这里的诊断统计，只给今日复习入口计数。
+    // 知识卡是独立存储（ekb.cards.v1），不参与原有掌握度诊断聚合；
+    // 只给今日复习入口计数 + 独立的覆盖度/错因/连续答错区块使用（skill 工作流 5）。
+    const cards = C.load();
     const dueCount = C.dueList().length;
+    const examName = T.normalizeExam(wx.getStorageSync('ekb.syl.vol')
+      || wx.getStorageSync('ekb.vol') || '1');
+    const cov = T.coverage(cards, examName);
+    const errs = T.errorDistribution(cards);
+    const st = T.streaks(cards, recs);
+    const extra = {
+      examName: examName,
+      coverage: cov,
+      errors: errs,
+      streakCards: st.reset.slice(0, 5),
+      streakRecords: st.records.slice(0, 5),
+    };
     if (!recs.length) {
-      this.setData({ empty: true, total: 0, rows: [], stuck: [], recent: [], dueCount: dueCount });
+      this.setData(Object.assign({
+        empty: true, total: 0, rows: [], stuck: [], recent: [], dueCount: dueCount,
+      }, extra));
       return;
     }
     const d = E.diagnose(recs);
@@ -83,7 +106,16 @@ Page({
       stuck: d.stuck.slice(0, 4),
       recent: recent,
       dueCount: dueCount,
+      examName: extra.examName,
+      coverage: extra.coverage,
+      errors: extra.errors,
+      streakCards: extra.streakCards,
+      streakRecords: extra.streakRecords,
     });
+  },
+
+  toggleStats() {
+    this.setData({ showStats: !this.data.showStats });
   },
 
   del(e) {
@@ -129,5 +161,18 @@ Page({
 
   goReview() {
     wx.navigateTo({ url: '/pages/review/review' });
+  },
+
+  // 第四阶段三个新页：tabBar 仍 5 项，一律从这里 navigateTo 进入。
+  goPlan() {
+    wx.navigateTo({ url: '/pages/plan/plan' });
+  },
+
+  goFormat() {
+    wx.navigateTo({ url: '/pages/format/format' });
+  },
+
+  goCalibrate() {
+    wx.navigateTo({ url: '/pages/calibrate/calibrate' });
   },
 });

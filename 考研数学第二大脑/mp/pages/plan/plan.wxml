@@ -1,0 +1,49 @@
+<view class="page">
+  <view class="head">
+    <text class="kicker">冲刺计划 · 以事实排布</text>
+    <text class="h1">今天到考试，还有这些天</text>
+    <text class="lede">倒计时只是日期事实，不评价能力。计划按到期复习量与诊断出的薄弱章节排布，不把刷套卷数量当进度指标。</text>
+  </view>
+
+  <view class="card">
+    <text class="sec">考试日期（默认 2026-12-20，2027 考研数学初试）</text>
+    <input class="fld-input" value="{{examDate}}" bindinput="onDate" placeholder="YYYY-MM-DD" placeholder-class="ph" />
+    <text class="sec">计划天数（留空则按考试日期自动计算）</text>
+    <input class="fld-input" value="{{daysInput}}" bindinput="onDays" type="number" placeholder="如 7" placeholder-class="ph" />
+    <view class="btn" style="margin-top:24rpx" bindtap="generate">生成逐日计划</view>
+    <text wx:if="{{hint}}" class="note">{{hint}}</text>
+  </view>
+
+  <view wx:if="{{plan}}" class="card summary">
+    <text class="row">今天 {{plan.today}}，考试 {{plan.examDate}}，相距 {{plan.remaining}} 天；按 {{plan.days}} 天排布。</text>
+    <text class="row">到期复习共 {{plan.dueTotal}} 条，已分摊进逐日计划；主攻章节来自你自己的做题记录，不是「没笔记」推断。</text>
+    <text class="note">{{plan.note}}</text>
+  </view>
+
+  <block wx:if="{{plan}}">
+    <text class="sec">逐日安排</text>
+    <view wx:for="{{plan.rows}}" wx:key="date" class="card day">
+      <view class="day-hd">
+        <text class="day-no">D{{item.dayNo}}</text>
+        <text class="day-date">{{item.date}}</text>
+        <text wx:if="{{item.mock}}" class="chip hot">限时全真模考</text>
+      </view>
+      <text class="day-line">到期复习 {{item.dueCount}} 条 · 建议用时 {{item.dueMinutes}} 分钟</text>
+      <view wx:if="{{item.dueItems.length}}" class="due-list">
+        <text wx:for="{{item.dueItems}}" wx:for-item="d" wx:key="id" class="due-item">{{d.title}}（{{d.minutes}} 分钟）</text>
+      </view>
+      <text class="day-line">主攻：{{item.focus}}</text>
+      <text wx:if="{{item.mockText}}" class="day-mock">{{item.mockText}}</text>
+      <text wx:if="{{item.attribution}}" class="day-attr">{{item.attribution}}</text>
+      <text class="day-old">{{item.oldPaperNote}}</text>
+    </view>
+  </block>
+
+  <view class="card">
+    <text class="sec">计划原则 · 常驻，不随输入变化</text>
+    <view wx:for="{{principles}}" wx:key="*this" class="principle">
+      <text class="pdot">·</text><text class="ptext">{{item}}</text>
+    </view>
+    <text class="note">{{oldPaperNote}}</text>
+  </view>
+</view>
