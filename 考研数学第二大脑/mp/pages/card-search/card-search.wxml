@@ -1,0 +1,54 @@
+<view class="page">
+  <view class="head">
+    <text class="kicker">第二大脑 · 检索</text>
+    <text class="h1">把记过的卡找回来</text>
+    <text class="lede">按标签、错因、类型或正文全文筛选，条件可叠加。点开卡片只会追加新段落，不覆盖原有正文。</text>
+  </view>
+
+  <view class="card">
+    <view class="fld">
+      <text class="fld-label">标签（精确匹配，如 H2.3）</text>
+      <input class="fld-input" value="{{tag}}" data-f="tag" bindinput="onInput"
+             placeholder="H2.3 / L5 / P7" placeholder-class="ph" />
+    </view>
+
+    <view class="fld">
+      <text class="fld-label">错因</text>
+      <view class="chips">
+        <view wx:for="{{errorTypes}}" wx:key="*this" class="miniopt {{errorType === item ? 'on' : ''}}"
+              data-v="{{item}}" bindtap="pickError">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="fld">
+      <text class="fld-label">类型</text>
+      <view class="chips">
+        <view wx:for="{{types}}" wx:key="k" class="miniopt {{type === item.k ? 'on' : ''}}"
+              data-k="{{item.k}}" bindtap="pickType">{{item.n}}</view>
+      </view>
+    </view>
+
+    <view class="fld">
+      <text class="fld-label">全文（标题 / 来源 / 标签 / 正文 / 迁移规则）</text>
+      <input class="fld-input" value="{{text}}" data-f="text" bindinput="onInput"
+             placeholder="如 中值定理、构造辅助函数" placeholder-class="ph" />
+    </view>
+
+    <view class="btn" bindtap="onSearch">检索</view>
+  </view>
+
+  <text wx:if="{{searched}}" class="sec">命中 {{total}} 张</text>
+  <view wx:for="{{rows}}" wx:key="id" class="card tight s-row" data-id="{{item.id}}" bindtap="openCard">
+    <view class="s-head">
+      <text class="s-title">{{item.title}}</text>
+      <text class="chip">{{item.typeName}}</text>
+      <text wx:if="{{item.incomplete}}" class="chip hot">未完成</text>
+    </view>
+    <text class="s-meta">{{item.tagsText}} · {{item.errorText}} · {{item.id}}</text>
+    <text class="s-summary">{{item.summary}}</text>
+    <text class="s-open">查看 / 编辑 ›</text>
+  </view>
+
+  <view wx:if="{{searched && !total}}" class="empty">没有命中。换个条件，或先记一张卡。</view>
+  <view class="btn ghost" bindtap="goNew">记一张新卡</view>
+</view>

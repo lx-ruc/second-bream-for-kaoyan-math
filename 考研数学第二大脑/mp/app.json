@@ -4,7 +4,10 @@
     "pages/diagnose/diagnose",
     "pages/map/map",
     "pages/prior/prior",
-    "pages/syllabus/syllabus"
+    "pages/syllabus/syllabus",
+    "pages/card-edit/card-edit",
+    "pages/card-search/card-search",
+    "pages/review/review"
   ],
   "subPackages": [
     {

@@ -4,6 +4,16 @@
     <text class="h1">你现在该补哪里</text>
   </view>
 
+  <view class="card kbentry">
+    <text class="sec">知识卡 · 对齐 skill 的录入 / 检索 / 间隔复习</text>
+    <view class="kbbtns">
+      <view class="btn ghost kbbtn" bindtap="goCardEdit">记知识卡</view>
+      <view class="btn ghost kbbtn" bindtap="goCardSearch">检索</view>
+      <view class="btn ghost kbbtn" bindtap="goReview">今日复习{{dueCount ? '（' + dueCount + '）' : ''}}</view>
+    </view>
+    <text class="note">tabBar 已满 5 项，这三项从这里进入，不占底部入口；知识卡与下方诊断统计分开存储，不互相污染。</text>
+  </view>
+
   <view wx:if="{{empty}}" class="empty">
     <text>还没有记录。\n记满 5 道，这张诊断才开始准。</text>
     <view class="btn" style="margin-top:32rpx" bindtap="goIntake">去记第一道</view>

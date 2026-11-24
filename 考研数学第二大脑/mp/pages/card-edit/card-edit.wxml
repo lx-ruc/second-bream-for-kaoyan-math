@@ -1,0 +1,95 @@
+<view class="page">
+  <view class="head">
+    <text class="kicker">第二大脑 · 知识卡</text>
+    <text class="h1">{{isNew ? '记一张知识卡' : '查看 / 编辑知识卡'}}</text>
+    <text class="lede">字段对齐 skill 模板。缺失信息写「待补」，不替你编题面、答案或大纲编码。</text>
+  </view>
+
+  <view class="card">
+    <text class="sec">卡片类型</text>
+    <view class="seg">
+      <view wx:for="{{types}}" wx:key="k" class="item {{type === item.k ? 'on' : ''}}"
+            data-k="{{item.k}}" bindtap="pickType">{{item.n}}</view>
+    </view>
+
+    <view class="fld">
+      <text class="fld-label">标题</text>
+      <input class="fld-input" value="{{title}}" data-f="title" bindinput="onInput"
+             placeholder="一句话说清这张卡解决什么问题" placeholder-class="ph" />
+    </view>
+
+    <view class="fld">
+      <text class="fld-label">标签（1–3 个）</text>
+      <input class="fld-input" value="{{tagsText}}" data-f="tagsText" bindinput="onInput"
+             placeholder="如 H2.3、L5、P7，逗号或空格分隔" placeholder-class="ph" />
+      <text class="note">只校验 H/L/P+数字 的格式，不自动推断编码；两棵树不合并。</text>
+    </view>
+
+    <view wx:if="{{type === 'wrong'}}" class="fld">
+      <text class="fld-label">错因（五选一）</text>
+      <view class="chips">
+        <view wx:for="{{errorTypes}}" wx:key="*this" class="miniopt {{errorType === item ? 'on' : ''}}"
+              data-v="{{item}}" bindtap="pickError">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="fld">
+      <text class="fld-label">难度（1 基础概念 · 3 常规综合 · 5 压轴跨章节）</text>
+      <view class="chips">
+        <view wx:for="{{difficulties}}" wx:key="*this" class="miniopt {{difficulty === item ? 'on' : ''}}"
+              data-n="{{item}}" bindtap="pickDifficulty">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="fld">
+      <text class="fld-label">题源年代</text>
+      <view class="chips">
+        <view wx:for="{{eras}}" wx:key="k" class="miniopt {{era === item.k ? 'on' : ''}}"
+              data-k="{{item.k}}" bindtap="pickEra">{{item.n}}</view>
+      </view>
+      <text class="note">旧结构套卷不作全真模考计分，分数不与现行模考比较。</text>
+    </view>
+
+    <view class="fld">
+      <text class="fld-label">来源</text>
+      <input class="fld-input" value="{{source}}" data-f="source" bindinput="onInput"
+             placeholder="如 2024 数二真题 T17 / 某机构模拟卷" placeholder-class="ph" />
+    </view>
+
+    <view class="fld">
+      <text class="fld-label">卷种</text>
+      <input class="fld-input" value="{{examType}}" data-f="examType" bindinput="onInput"
+             placeholder="数一 / 数二 / 数三" placeholder-class="ph" />
+    </view>
+  </view>
+
+  <view class="card">
+    <text class="sec">正文 · 逐节填写</text>
+    <view wx:for="{{sections}}" wx:key="key" class="fld">
+      <text class="fld-label">{{item.title}}</text>
+      <textarea class="fld-area" value="{{item.value}}" data-k="{{item.key}}" bindinput="onSection"
+                placeholder="（待补）" placeholder-class="ph" auto-height></textarea>
+    </view>
+
+    <view wx:if="{{type === 'wrong'}}" class="fld">
+      <text class="fld-label">迁移规则（质量线，必填）</text>
+      <textarea class="fld-area" value="{{migration}}" bindinput="onMigration"
+                placeholder="下次遇到什么特征，先想到什么动作？写成可执行的判断句" placeholder-class="ph" auto-height></textarea>
+      <text class="warnline">没有迁移规则的错题卡视为未完成。可以强制保存，但会标注未完成。</text>
+    </view>
+    <text class="note">已有段落不会被覆盖：再次保存时，新内容作为新段落追加在对应小节末尾。</text>
+  </view>
+
+  <text wx:if="{{hint}}" class="warnline">{{hint}}</text>
+  <text wx:if="{{savedId}}" class="saved">已保存 {{savedId}} · 首次复习安排在明天</text>
+
+  <view wx:if="{{!isNew}}" class="btn ghost" bindtap="onExport">导出 Markdown 到沙盒</view>
+  <text class="note">导出限制：小程序只能写沙盒 USER_DATA_PATH/obsidian/&lt;id&gt;.md，不会自动写进你的 Obsidian 仓库，也不承诺 Obsidian 直接打开；格式与 skill 模板对齐，需自行从开发者工具或真机取出。</text>
+  <view wx:if="{{exportPath}}" class="pathbox">
+    <text class="mono">{{exportPath}}</text>
+    <text class="note">路径已复制。开发者工具可在文件系统面板查看，真机需通过调试导出。</text>
+  </view>
+
+  <view class="btn" bindtap="onSave">{{isNew ? '保存卡片' : '追加修改并保存'}}</view>
+  <view class="btn ghost" bindtap="onNew">再记一张</view>
+</view>

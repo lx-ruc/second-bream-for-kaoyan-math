@@ -1,3 +1,23 @@
+/* 知识卡三入口：tabBar 满 5 项，只能从这里 navigateTo */
+.kbentry {
+  margin-bottom: 32rpx;
+}
+
+.kbbtns {
+  display: flex;
+}
+
+.kbbtn {
+  flex: 1;
+  margin-right: 12rpx;
+  padding: 18rpx 8rpx;
+  font-size: 25rpx;
+}
+
+.kbbtn:last-child {
+  margin-right: 0;
+}
+
 .summary {
   background: #211f1c;
   border-radius: 20rpx;

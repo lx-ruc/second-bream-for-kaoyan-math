@@ -33,13 +33,18 @@
                                    （kpPrior.js = 92 考点排序数据，由 v2/build_mp_prior.py 生成；
                                    rubric.js = 启发式判据，由 v2/build_rubric.py 从 skill assessment-rubric.json 原样生成）
     utils/engine.js                判定引擎：热度、题干匹配、纠偏、诊断
-    utils/store.js                 本地记录存储（wx.storage）
+    utils/store.js                 本地记录存储（wx.storage，ekb.records.v1）
+    utils/cards.js                 五类知识卡存储/检索/间隔复习（ekb.cards.v1，与录题库分离）
     pages/intake                   记一道题
-    pages/diagnose                 诊断
+    pages/diagnose                 诊断（含知识卡/检索/复习三入口）
     pages/map                      考点地图
     pages/prior                    考频先验
+    pages/card-edit                知识卡录入/编辑/导出 Markdown
+    pages/card-search              知识卡检索（标签/错因/类型/全文）
+    pages/review                   今日到期复习（答对升级/答错归零）
     packageExam/                   真题详情分包（qbank 1.4MB 放不进主包 2MB 限额）
     scripts/build_data.py          语料 → 小程序数据模块（含 LaTeX → Unicode 转换）
+    scripts/test-cards.js          知识卡/检索/间隔复习回归（串进 npm run verify）
 ```
 
 > `考研数学第二大脑/{build.py,data/,dist/}` 是最早用 **70 条示例语料** 验证链路的版本，年份和题号是编的、没有逐条核对。只留作演进记录，不要拿它做任何判断。真实语料版本在 `v2/`。
@@ -114,7 +119,7 @@ npm run verify                  # 静态校验 + 数据完整性 + 五层回归�
 npm run e2e                     # 开发者工具自动化（见下，需 IDE 环境）
 ```
 
-`npm run verify` 会检查：JSON 合法性、页面与 tabBar 配置、WXML 标签配对、模板引用的字段是否存在于 `data`、事件绑定是否有对应函数、require 是否断链、WXSS 花括号、WXML 静态类名在 WXSS 里是否有定义；数据完整性（考点树结构、坐标唯一性、题干挂树、考频字段）；题干匹配与 OCR 清洗回归；以及用 mock wx 驱动真实页面 JS 走完录题→判定→存库→诊断的闭环（`scripts/test-flow.js`）。**它不等于能跑**——编译期语义和真机布局只有微信开发者工具能验。
+`npm run verify` 会检查：JSON 合法性、页面与 tabBar 配置、WXML 标签配对、模板引用的字段是否存在于 `data`、事件绑定是否有对应函数、require 是否断链、WXSS 花括号、WXML 静态类名在 WXSS 里是否有定义；数据完整性（考点树结构、坐标唯一性、题干挂树、考频字段）；题干匹配与 OCR 清洗回归；用 mock wx 驱动真实页面 JS 走完录题→判定→存库→诊断的闭环（`scripts/test-flow.js`）；启发层回归（`scripts/test-assess.js`）；知识卡/检索/间隔复习回归（`scripts/test-cards.js`）；登录闭环（`scripts/test-login.js`）。**它不等于能跑**——编译期语义和真机布局只有微信开发者工具能验。
 
 `npm run e2e`（`scripts/test-e2e.js`）分两段：Tool 域体检不需要登录，App 域页面冒烟**需要先扫码登录开发者工具**——touristappid 未登录时 App 域指令全部无响应（IDE 日志特征 errcode 41001），这是环境限制不是代码问题。脚本会自动点掉 IDE 启动时弹的「更新提示」原生弹窗（那个弹窗会堵死全部自动化指令）。
 
@@ -194,6 +199,7 @@ node test-again.js                  # 第 2 步折叠面板：展开 → 改字 
 - [x] Web 端拍照 / 上传截图识题（2026-11-09）：单文件双击即用，浏览器直辖云网关，无需后端；Playwright 在 `file://` 下全链路实测通过（上传真实真题图 → 识别置信 0.98 → 命中原题 67% → 用库内题干替换 → 判定 → 存记录，控制台零报错）
 - [x] 刷题价值判定（2026-11-08）：题干进来先分带——真题级/同考法/考法存疑/真题不考，阈值用题库全量标定；做题前纠偏，别把时间花在真题不考的考法上
 - [x] **F1–F6 启发层（事实层优先，2026-11-24）**：同一张 practice 卡下方并列展示 skill 的六判据 / 五维收益 R / 性价比 R·C⁻¹ / 每 10 分钟收益 / verdict，带 disclaimer 与「可推翻」标注。权重实测 mastery 0.25 / coverage 0.15 / fidelity 0.30 / transfer 0.15 / personal 0.15，阈值实测 70 / 45 / 0.5 / 0.6，来自 `mp/data/rubric.js`（`v2/build_rubric.py` 原样转录 `assessment-rubric.json`，幂等）。**判定权裁决**：事实层 `practiceValue` 四带（阈值 0.55/0.34/0.23 未动）仍是唯一结论；启发层与它冲突时只作参考，UI 写明「启发式判断与真题统计不一致时，以真题统计为准」。卷种错配边界由 `syllabus.js` 的 `exams` 派生（数三 P8 / 数二 H7 / 非数一 L7 实测均拦），两棵树仍不合并、不互校；无 vault 时 personal 取中性 0.5 并显式标注，层级无逐条字段取 0.6 并标注，不编造频次。`npm run verify` 新增第 5 层 `scripts/test-assess.js`（43 项全绿）。
+- [x] **五类知识卡 / 检索 / 间隔复习（对齐 skill，2026-11-24）**：`mp/utils/cards.js` 独立 KEY `ekb.cards.v1`，支持 wrong/concept/method/formula/assessment 五类卡，字段按 skill `templates.md` 的 frontmatter 落地；录入缺字段写「待补」不编造，错因五选一、难度 1–5、era 单选、标签形如 H2.3/L5/P7（只校验格式，不自动推断）。wrong 卡缺迁移规则会提示「没有迁移规则的错题卡视为未完成」，允许强制保存但标注未完成；编辑正文逐节追加新段落、不覆盖旧段落。检索支持标签/错因/类型/全文叠加；复习清单按错因聚类→章节→难度排序并优先「思路缺失/概念不清」，间隔 1/3/7/15/30/60 天，答对升级、答错归零当天重来；建议用时 3/5/8/12/15 分钟是产品估算，UI 标注「建议用时，自己调整」。题评卡不进复习位。**tabBar 已满 5 项**，三张新页从诊断页顶部入口 `wx.navigateTo` 进入，app.json 注册 8 页但 tabBar 仍 5 项。导出按模板 frontmatter 写到小程序沙盒 `USER_DATA_PATH/obsidian/<id>.md`（不写用户 Documents/Obsidian vault，不承诺 Obsidian 直接打开）。回归 `scripts/test-cards.js` 67 项全绿并串进 `npm run verify`。
 - [x] 真机调试跑通（2026-11-08，正式 AppID）：拍照识别 + 命中原题在真机验证成功
 - [x] 开发者工具编译验证（2026-11-07）：工程在真实 IDE 里编译通过、录题页与诊断页在模拟器完整渲染，白屏问题确认修复。真题详情页同日验证渲染正常。
 - [x] 回归三层：纯函数（OCR 清洗/找原题）+ 数据完整性（含 qbank↔题干坐标一一对应）+ 页面逻辑闭环（mock wx 驱动真实页面 JS）
@@ -202,6 +208,9 @@ node test-again.js                  # 第 2 步折叠面板：展开 → 改字 
 
 ## 已知限制
 
+- **知识卡的 level 口径与 skill 原脚本不同**：小程序按派单要求把 1–6 级对应 1/3/7/15/30/60 天，0 级为归零档（归零安排在当天重来）；skill 原脚本用 level 0–5 直接索引间隔表。导出 frontmatter 的 `level` 可能是 6，两处数值不可逐字对照；间隔天数本身一致。
+- **知识卡导出只能进沙盒**：`wx.getFileSystemManager` 写 `USER_DATA_PATH/obsidian/<id>.md`，格式与 skill 模板对齐，但小程序不能直接写用户的 Documents/Obsidian 仓库，也不能保证 Obsidian 直接打开，需自行从开发者工具或真机取出。
+- **知识卡与诊断统计是两套存储**：`ekb.cards.v1` 不写 `ekb.records.v1`，新卡片不会改变现有薄弱点/掌握度诊断；同理录题闭环也不会出现在复习清单里。
 - **小程序考频页的同分并列会「跳号」，不是 bug**：92 考点按 S 排序，当前实测 **12 组同分**（不是早期文档记的 8 组；以 `v2/data/prior.json` 为准），名次 1..90、72 个不同名次。切卷后本卷序号从 1 重排，三卷合并名次不变，所以本卷看到的名次会跳号——数据分不出高下时不许按名字硬拆名次。生成脚本与 `test-data.js` 都从数据动态派生并列组数，不硬编码。
 - **评分只用于排序，不是学习建议**：F/D/S 由 239 行考频表经人工映射到 92 考点、一对多按 1/n 等额分摊得出；`nrow<=2` 的考点难度分不稳定，页面展开详情会给小样本提示。数一缺「向量代数和空间解析几何」整章（源索引就没有），评分里也没有它。
 - **公式是 Unicode 近似，不是排版**：小程序没有 DOM，跑不了 KaTeX。`xᵐ`、`∫₀ˣ`、`lim_{n→∞}` 这类可用；矩阵、分段函数会失真（qbank 全量解析里矩阵类题尤其明显）。后续换 SVG 图或后端渲染。

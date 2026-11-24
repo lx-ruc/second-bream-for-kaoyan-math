@@ -1,0 +1,74 @@
+.note {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.75;
+  color: #9c9587;
+  margin-top: 10rpx;
+}
+
+.r-sum {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: 34rpx;
+  color: #a6342a;
+  margin-bottom: 10rpx;
+}
+
+.r-row {
+  margin-bottom: 16rpx;
+}
+
+.r-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.r-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #211f1c;
+  margin-right: 10rpx;
+}
+
+.r-meta {
+  display: block;
+  font-size: 21rpx;
+  color: #9c9587;
+  margin-top: 8rpx;
+}
+
+.r-min {
+  display: block;
+  font-size: 22rpx;
+  color: #6b6558;
+  margin-top: 8rpx;
+}
+
+.r-acts {
+  display: flex;
+  margin-top: 16rpx;
+}
+
+.r-btn {
+  font-size: 24rpx;
+  padding: 12rpx 20rpx;
+  border-radius: 10rpx;
+  margin-right: 12rpx;
+  border: 1rpx solid #d8d0c0;
+  color: #6b6558;
+}
+
+.r-btn.ok {
+  border-color: #2f6b52;
+  color: #2f6b52;
+}
+
+.r-btn.again {
+  border-color: #a6342a;
+  color: #a6342a;
+}
+
+.r-btn.detail {
+  color: #9c9587;
+}

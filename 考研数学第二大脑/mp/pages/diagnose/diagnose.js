@@ -1,6 +1,7 @@
 const E = require('../../utils/engine.js');
 const S = require('../../utils/store.js');
 const IMG = require('../../utils/img.js');
+const C = require('../../utils/cards.js');
 
 function ago(ts) {
   const d = Math.floor((Date.now() - ts) / 86400000);
@@ -22,6 +23,7 @@ Page({
     rows: [],
     stuck: [],
     recent: [],
+    dueCount: 0,
   },
 
   onShow() {
@@ -30,8 +32,10 @@ Page({
 
   refresh() {
     const recs = S.load();
+    // 知识卡是独立存储（ekb.cards.v1），不参与这里的诊断统计，只给今日复习入口计数。
+    const dueCount = C.dueList().length;
     if (!recs.length) {
-      this.setData({ empty: true, total: 0, rows: [], stuck: [], recent: [] });
+      this.setData({ empty: true, total: 0, rows: [], stuck: [], recent: [], dueCount: dueCount });
       return;
     }
     const d = E.diagnose(recs);
@@ -78,6 +82,7 @@ Page({
       }),
       stuck: d.stuck.slice(0, 4),
       recent: recent,
+      dueCount: dueCount,
     });
   },
 
@@ -111,5 +116,18 @@ Page({
     const kp = e.currentTarget.dataset.kp;
     wx.setStorageSync('ekb.focusKp', kp || '');
     wx.switchTab({ url: '/pages/map/map' });
+  },
+
+  // tabBar 已满 5 项，知识卡三页一律从这里 navigateTo 进入，不新增 tab。
+  goCardEdit() {
+    wx.navigateTo({ url: '/pages/card-edit/card-edit' });
+  },
+
+  goCardSearch() {
+    wx.navigateTo({ url: '/pages/card-search/card-search' });
+  },
+
+  goReview() {
+    wx.navigateTo({ url: '/pages/review/review' });
   },
 });

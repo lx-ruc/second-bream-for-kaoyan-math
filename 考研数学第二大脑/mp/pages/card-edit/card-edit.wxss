@@ -1,0 +1,91 @@
+.fld {
+  margin-bottom: 26rpx;
+}
+
+.fld-label {
+  display: block;
+  font-size: 23rpx;
+  color: #6b6558;
+  margin-bottom: 10rpx;
+}
+
+.fld-input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #f4f1ea;
+  border: 1rpx solid #e6dfd1;
+  border-radius: 12rpx;
+  padding: 18rpx 20rpx;
+  font-size: 27rpx;
+  color: #211f1c;
+}
+
+.fld-area {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 150rpx;
+  background: #f4f1ea;
+  border: 1rpx solid #e6dfd1;
+  border-radius: 12rpx;
+  padding: 18rpx 20rpx;
+  font-size: 26rpx;
+  line-height: 1.7;
+  color: #211f1c;
+}
+
+.ph {
+  color: #b3ab9c;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.miniopt {
+  font-size: 24rpx;
+  padding: 10rpx 18rpx;
+  margin: 0 12rpx 12rpx 0;
+  border-radius: 10rpx;
+  border: 1rpx solid #d8d0c0;
+  background: #fffdf8;
+  color: #6b6558;
+}
+
+.miniopt.on {
+  border-color: #a6342a;
+  background: #fdf6f3;
+  color: #a6342a;
+  font-weight: 600;
+}
+
+.note {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.75;
+  color: #9c9587;
+  margin-top: 10rpx;
+}
+
+.warnline {
+  display: block;
+  font-size: 22rpx;
+  line-height: 1.7;
+  color: #a6342a;
+  margin-top: 10rpx;
+}
+
+.saved {
+  display: block;
+  font-size: 23rpx;
+  color: #2f6b52;
+  margin: 12rpx 0 24rpx;
+}
+
+.pathbox {
+  background: #efe9dc;
+  border-radius: 12rpx;
+  padding: 18rpx 20rpx;
+  margin: 12rpx 0 24rpx;
+  word-break: break-all;
+}
