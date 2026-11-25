@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "练习中",
+  "usingComponents": {
+    "math-block": "/components/math-block/math-block"
+  }
+}

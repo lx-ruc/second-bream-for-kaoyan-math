@@ -1,0 +1,15 @@
+# 系统与编辑器
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# 依赖
+node_modules/
+
+# WorkBuddy 小程序脚手架标记（内部文件，不入库）
+.workbuddy/
+
+# 日志与临时文件
+*.log
+*.tmp

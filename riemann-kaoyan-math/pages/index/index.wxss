@@ -1,0 +1,386 @@
+.page {
+    box-sizing: border-box;
+    min-height: 100vh;
+    padding: 0 0 40rpx;
+}
+
+/* ---------- 题库头部 ---------- */
+.bank-head {
+    padding: 24rpx 32rpx 30rpx;
+    background: #ffffff;
+}
+
+.bank-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bank-title-row {
+    display: flex;
+    align-items: center;
+}
+
+.bank-title {
+    color: #1a1f36;
+    font-size: 38rpx;
+    font-weight: 700;
+    letter-spacing: 0.5rpx;
+}
+
+.bank-tag {
+    margin-left: 12rpx;
+    padding: 3rpx 10rpx;
+    border-radius: 6rpx;
+    background: #fdecec;
+    color: #d64545;
+    font-size: 19rpx;
+    font-weight: 500;
+}
+
+.bank-switch {
+    display: flex;
+    padding: 8rpx 16rpx;
+    align-items: center;
+    border-radius: 999rpx;
+    background: #f5f6fa;
+}
+
+.bank-switch-text {
+    color: #5c6478;
+    font-size: 23rpx;
+}
+
+.bank-switch-icon {
+    margin-left: 2rpx;
+    color: #98a1b5;
+    font-size: 26rpx;
+    line-height: 1;
+}
+
+.bank-sub {
+    display: flex;
+    margin-top: 18rpx;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bank-sub-text {
+    color: #8d97ad;
+    font-size: 22rpx;
+}
+
+.bank-day {
+    display: flex;
+    align-items: baseline;
+}
+
+.bank-day-label {
+    color: #98a1b5;
+    font-size: 20rpx;
+}
+
+.bank-day-num {
+    margin: 0 4rpx;
+    color: #2b4acb;
+    font-family: "DIN Alternate", sans-serif;
+    font-size: 30rpx;
+    font-weight: 700;
+}
+
+.bank-day-unit {
+    color: #98a1b5;
+    font-size: 19rpx;
+}
+
+.bank-bar {
+    height: 8rpx;
+    margin-top: 16rpx;
+    overflow: hidden;
+    border-radius: 999rpx;
+    background: #f0f2f7;
+}
+
+.bank-bar-fill {
+    height: 100%;
+    border-radius: 999rpx;
+    background: linear-gradient(90deg, #2b4acb, #6a8bff);
+    transition: width 0.3s ease;
+}
+
+/* ---------- 每日一练 ---------- */
+.daily-card {
+    display: flex;
+    margin: 20rpx 24rpx 0;
+    padding: 26rpx 28rpx;
+    align-items: center;
+    border-radius: 24rpx;
+    background: linear-gradient(135deg, #eef2ff 0%, #f6f8ff 100%);
+    justify-content: space-between;
+}
+
+.daily-left {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.daily-title-row {
+    display: flex;
+    align-items: center;
+}
+
+.daily-title {
+    color: #1a1f36;
+    font-size: 30rpx;
+    font-weight: 600;
+}
+
+.daily-badge {
+    margin-left: 12rpx;
+    padding: 2rpx 10rpx;
+    border-radius: 6rpx;
+    background: rgba(43, 74, 203, 0.1);
+    color: #2b4acb;
+    font-size: 19rpx;
+}
+
+.daily-meta {
+    display: flex;
+    margin-top: 12rpx;
+    align-items: center;
+}
+
+.daily-meta-item {
+    color: #6b7488;
+    font-size: 21rpx;
+}
+
+.daily-dot {
+    margin: 0 8rpx;
+    color: #b9c0d1;
+    font-size: 21rpx;
+}
+
+.daily-meta-score {
+    color: #2b4acb;
+    font-weight: 500;
+}
+
+.daily-tags {
+    display: flex;
+    margin-top: 12rpx;
+    flex-wrap: wrap;
+}
+
+.daily-tag {
+    margin-right: 10rpx;
+    padding: 3rpx 12rpx;
+    border-radius: 6rpx;
+    background: rgba(255, 255, 255, 0.9);
+    color: #8d97ad;
+    font-size: 19rpx;
+}
+
+.daily-btn {
+    display: flex;
+    width: 112rpx;
+    height: 60rpx;
+    flex-shrink: 0;
+    align-items: center;
+    border-radius: 999rpx;
+    background: #2b4acb;
+    justify-content: center;
+}
+
+.daily-btn-text {
+    color: #ffffff;
+    font-size: 25rpx;
+    font-weight: 500;
+}
+
+/* ---------- 工具行 ---------- */
+.tool-row {
+    display: flex;
+    margin: 20rpx 24rpx 0;
+    padding: 22rpx 0;
+    border-radius: 24rpx;
+    background: #ffffff;
+}
+
+.tool-item {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    flex-direction: column;
+}
+
+.tool-icon {
+    color: #2b4acb;
+    font-family: "DIN Alternate", Georgia, serif;
+    font-size: 34rpx;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.tool-icon-scan {
+    font-size: 30rpx;
+}
+
+.tool-text {
+    margin-top: 8rpx;
+    color: #5c6478;
+    font-size: 21rpx;
+}
+
+/* ---------- 目录 ---------- */
+.toc {
+    margin: 16rpx 24rpx 0;
+    overflow: hidden;
+    border-radius: 24rpx;
+    background: #ffffff;
+}
+
+.toc-group {
+    border-bottom: 10rpx solid #f4f6fa;
+}
+
+.toc-group:last-child {
+    border-bottom: none;
+}
+
+.group-head {
+    display: flex;
+    padding: 26rpx 28rpx 22rpx;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.group-title {
+    color: #1a1f36;
+    font-size: 28rpx;
+    font-weight: 600;
+}
+
+.group-right {
+    display: flex;
+    align-items: center;
+}
+
+.group-progress {
+    color: #98a1b5;
+    font-family: "DIN Alternate", sans-serif;
+    font-size: 22rpx;
+}
+
+.group-arrow {
+    margin-left: 8rpx;
+    color: #b9c0d1;
+    font-size: 26rpx;
+    line-height: 1;
+    transition: transform 0.2s ease;
+}
+
+.group-arrow-down {
+    transform: rotate(-90deg);
+}
+
+.chapter {
+    display: flex;
+    padding: 22rpx 28rpx;
+    align-items: center;
+    border-top: 2rpx solid #f5f7fb;
+    justify-content: space-between;
+}
+
+.chapter-hover {
+    background: #f8faff;
+}
+
+.chapter-main {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.chapter-name-row {
+    display: flex;
+    align-items: center;
+}
+
+.chapter-name {
+    color: #1a1f36;
+    font-size: 27rpx;
+    line-height: 1.4;
+}
+
+.chapter-tag {
+    margin-left: 10rpx;
+    padding: 1rpx 8rpx;
+    border-radius: 4rpx;
+    background: #fff6ea;
+    color: #c97d1e;
+    font-size: 17rpx;
+    flex-shrink: 0;
+}
+
+.chapter-rate {
+    margin-top: 8rpx;
+    color: #a8b0c2;
+    font-size: 20rpx;
+}
+
+.chapter-right {
+    display: flex;
+    margin-left: 16rpx;
+    align-items: center;
+}
+
+.chapter-progress {
+    color: #8d97ad;
+    font-family: "DIN Alternate", sans-serif;
+    font-size: 24rpx;
+}
+
+.chapter-progress-done {
+    color: #1aa06d;
+    font-weight: 600;
+}
+
+/* ---------- 尾部 ---------- */
+.foot-note {
+    margin-top: 28rpx;
+    text-align: center;
+}
+
+.foot-note-text {
+    color: #b9c0d1;
+    font-size: 20rpx;
+}
+
+/* ---------- 状态 ---------- */
+.state-card {
+    display: flex;
+    margin: 40rpx 24rpx 0;
+    padding: 70rpx 40rpx;
+    align-items: center;
+    border-radius: 24rpx;
+    background: #ffffff;
+    flex-direction: column;
+}
+
+.state-title {
+    color: #5c6478;
+    font-size: 26rpx;
+}
+
+.state-btn {
+    margin-top: 28rpx;
+    padding: 0 48rpx;
+    background: #2b4acb;
+    color: #ffffff;
+    font-size: 26rpx;
+    line-height: 72rpx;
+}

@@ -1,0 +1,203 @@
+<view class="page">
+    <!-- 无题 -->
+    <view class="state-card" wx:if="{{errorText}}">
+        <text class="state-title">{{errorText}}</text>
+        <button class="state-btn" bindtap="back">返回</button>
+    </view>
+
+    <block wx:elif="{{ready && question}}">
+        <!-- 顶栏 -->
+        <view class="navbar" style="padding-top: {{padTop}}px;">
+            <view class="navbar-row">
+                <view class="navbar-back" bindtap="back">
+                    <text class="navbar-back-icon">‹</text>
+                </view>
+                <view class="navbar-center">
+                    <text class="navbar-title">{{title}}</text>
+                    <text class="navbar-index">{{index + 1}}/{{total}}</text>
+                </view>
+                <view class="mode-switch">
+                    <view
+                        class="mode-item {{mode === 'practice' ? 'mode-item-on' : ''}}"
+                        data-mode="practice"
+                        bindtap="switchMode"
+                    >练题</view>
+                    <view
+                        class="mode-item {{mode === 'recite' ? 'mode-item-on' : ''}}"
+                        data-mode="recite"
+                        bindtap="switchMode"
+                    >背题</view>
+                </view>
+            </view>
+        </view>
+
+        <scroll-view class="body" scroll-y scroll-top="{{0}}">
+            <!-- 题干 -->
+            <view class="q-head">
+                <view class="q-head-left">
+                    <text class="q-type">{{question.typeText}}</text>
+                    <text class="q-no">{{index + 1}}.</text>
+                </view>
+                <view class="session-score {{sessionScore < 0 ? 'session-score-minus' : ''}} {{scoreFlash ? 'session-score-flash' : ''}}">
+                    <text class="session-score-label">本轮</text>
+                    <text class="session-score-value">{{sessionScoreText}}</text>
+                </view>
+            </view>
+            <view class="q-stem">
+                <math-block blocks="{{question.blocks}}"></math-block>
+            </view>
+
+            <!-- 选项 -->
+            <view class="options">
+                <view
+                    class="option option-{{item.state}}"
+                    wx:for="{{options}}"
+                    wx:key="key"
+                    data-key="{{item.key}}"
+                    bindtap="tapOption"
+                >
+                    <view class="option-letter">{{item.letter}}</view>
+                    <text class="option-text">{{item.text}}</text>
+                </view>
+            </view>
+
+            <!-- 背题模式提示 -->
+            <view class="recite-tip" wx:if="{{mode === 'recite'}}">
+                <text class="recite-tip-text">背题模式：答案已标出，适合快速过题记忆</text>
+            </view>
+
+            <!-- 答案对照 -->
+            <view class="answer-compare" wx:if="{{submitted}}">
+                <view class="compare-item">
+                    <text class="compare-label">正确答案</text>
+                    <text class="compare-value compare-right">{{rightAnswerText}}</text>
+                </view>
+                <view class="compare-divider"></view>
+                <view class="compare-item">
+                    <text class="compare-label">你的答案</text>
+                    <text class="compare-value {{isCorrect ? 'compare-right' : 'compare-wrong'}}">{{myAnswerText}}</text>
+                </view>
+                <view class="compare-divider"></view>
+                <view class="compare-item">
+                    <text class="compare-label">本题得分</text>
+                    <text class="compare-value {{curDeltaText === '—' ? '' : (isCorrect ? 'compare-right' : 'compare-wrong')}} {{scoreFlash ? 'compare-value-flash' : ''}}">{{curDeltaText}}</text>
+                </view>
+            </view>
+
+            <!-- 计分说明 -->
+            <view class="score-note" wx:if="{{submitted}}">
+                <text class="score-note-text">{{curTip}}</text>
+                <text class="score-note-full">满分 {{fullScore}} 分</text>
+            </view>
+
+            <!-- 解析 -->
+            <view class="analysis" wx:if="{{showAnalysis && (submitted || mode === 'recite')}}">
+                <view class="analysis-head">
+                    <text class="analysis-title">解析</text>
+                    <text class="analysis-toggle" bindtap="toggleAnalysis">收起</text>
+                </view>
+                <text class="analysis-text">{{question.analysis}}</text>
+            </view>
+            <view class="analysis-collapsed" wx:elif="{{submitted}}" bindtap="toggleAnalysis">
+                <text class="analysis-collapsed-text">展开解析 ›</text>
+            </view>
+
+            <!-- 真题相似度 -->
+            <view class="similar" wx:if="{{similarTop}}">
+                <view class="similar-head" bindtap="toggleSimilar">
+                    <view class="similar-head-left">
+                        <text class="similar-title">真题相似度</text>
+                        <text class="similar-level similar-level-{{similarTop.level}}">{{similarTop.levelText}}</text>
+                    </view>
+                    <view class="similar-head-right">
+                        <text class="similar-score">{{similarTop.score}}%</text>
+                        <text class="similar-arrow">{{showSimilar ? '收起' : '展开'}}</text>
+                    </view>
+                </view>
+
+                <text class="similar-summary">最接近 {{similarTop.year}} 年{{similarTop.paperName}}第 {{similarTop.no}} 题（{{similarTop.scoreWeight}} 分）</text>
+
+                <view class="similar-body" wx:if="{{showSimilar}}">
+                    <view class="similar-item" wx:for="{{similarList}}" wx:key="id">
+                        <view class="similar-item-head">
+                            <text class="similar-item-title">{{item.year}} {{item.paperName}} · 第 {{item.no}} 题</text>
+                            <text class="similar-item-score similar-score-{{item.level}}">{{item.score}}%</text>
+                        </view>
+                        <view class="similar-bar">
+                            <view class="similar-fill similar-fill-{{item.level}}" style="width: {{item.score}}%;"></view>
+                        </view>
+                        <text class="similar-stem">{{item.stem}}</text>
+                        <view class="similar-topics">
+                            <text class="similar-topic" wx:for="{{item.topics}}" wx:for-item="topic" wx:key="*this">{{topic}}</text>
+                        </view>
+                    </view>
+                    <text class="similar-note">按章节归属、考点关键词与题干特征比对，仅供复习参考</text>
+                </view>
+            </view>
+
+            <view class="body-bottom"></view>
+        </scroll-view>
+
+        <!-- 底部工具栏 -->
+        <view class="toolbar">
+            <view class="tool-btn" bindtap="toggleFav">
+                <text class="tool-btn-icon {{isFav ? 'tool-btn-icon-on' : ''}}">{{isFav ? '★' : '☆'}}</text>
+                <text class="tool-btn-text">收藏</text>
+            </view>
+            <view class="tool-btn" bindtap="openCard">
+                <text class="tool-btn-icon">▤</text>
+                <text class="tool-btn-text">答题卡</text>
+            </view>
+            <view class="tool-btn" bindtap="toggleAnalysis">
+                <text class="tool-btn-icon">≡</text>
+                <text class="tool-btn-text">解析</text>
+            </view>
+            <view class="tool-prev" wx:if="{{index > 0}}" bindtap="prev">
+                <text class="tool-prev-text">上一题</text>
+            </view>
+            <view class="tool-main" wx:if="{{mode === 'practice' && !submitted}}" bindtap="submitManual">
+                <text class="tool-main-text">提交</text>
+            </view>
+            <view class="tool-main" wx:else bindtap="next">
+                <text class="tool-main-text">{{isLast ? '完成' : '下一题'}}</text>
+            </view>
+        </view>
+
+        <!-- 答题卡 -->
+        <view class="sheet-mask" wx:if="{{showCard}}" bindtap="closeCard"></view>
+        <view class="sheet {{showCard ? 'sheet-show' : ''}}">
+            <view class="sheet-head">
+                <text class="sheet-title">答题卡</text>
+                <text class="sheet-close" bindtap="closeCard">关闭</text>
+            </view>
+            <view class="sheet-legend">
+                <view class="legend-item">
+                    <view class="legend-dot legend-right"></view>
+                    <text class="legend-text">答对 {{correctCount}}</text>
+                </view>
+                <view class="legend-item">
+                    <view class="legend-dot legend-wrong"></view>
+                    <text class="legend-text">答错 {{wrongCount}}</text>
+                </view>
+                <view class="legend-item">
+                    <view class="legend-dot legend-none"></view>
+                    <text class="legend-text">未答</text>
+                </view>
+            </view>
+            <scroll-view class="sheet-grid" scroll-y>
+                <view
+                    class="card-cell card-cell-{{item.status}} {{item.current ? 'card-cell-current' : ''}}"
+                    wx:for="{{cardItems}}"
+                    wx:key="index"
+                    data-index="{{item.index}}"
+                    bindtap="jumpTo"
+                >{{item.no}}</view>
+            </scroll-view>
+        </view>
+    </block>
+
+    <view class="state-card" wx:else>
+        <view class="spinner"></view>
+        <text class="state-title">正在准备题目</text>
+    </view>
+</view>

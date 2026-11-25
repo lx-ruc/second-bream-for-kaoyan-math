@@ -1,0 +1,72 @@
+<view class="page">
+    <!-- 顶栏 -->
+    <view class="header" style="padding-top: {{padTop + 12}}px;">
+        <view class="header-row">
+            <text class="header-title">我的收藏</text>
+            <text class="header-count">共 {{total}} 道</text>
+        </view>
+        <text class="header-sub">重点题标星后集中在这里，复习时优先看</text>
+    </view>
+
+    <!-- 加载 -->
+    <view class="state-card" wx:if="{{viewState === 'loading'}}">
+        <view class="spinner"></view>
+        <text class="state-title">正在读取收藏</text>
+    </view>
+
+    <!-- 异常 -->
+    <view class="state-card" wx:elif="{{viewState === 'error'}}">
+        <text class="state-title">读取本地数据失败</text>
+        <button class="state-btn" bindtap="loadList">重试</button>
+    </view>
+
+    <!-- 空态 -->
+    <view class="state-card" wx:elif="{{viewState === 'empty'}}">
+        <view class="empty-mark">
+            <text class="empty-mark-text">☆</text>
+        </view>
+        <text class="state-title">还没有收藏</text>
+        <text class="state-desc">刷题时点底部的星标，题目就会出现在这里。</text>
+        <button class="state-btn" bindtap="goPractice">去刷题</button>
+    </view>
+
+    <block wx:else>
+        <view class="list">
+            <view class="item" wx:for="{{list}}" wx:key="id">
+                <view class="item-head" data-id="{{item.id}}" bindtap="toggleExpand">
+                    <view class="item-meta">
+                        <text class="item-chip">{{item.subjectName}}</text>
+                        <text class="item-chapter">{{item.chapterName}}</text>
+                    </view>
+                    <text class="item-toggle">{{expandedId === item.id ? '收起' : '展开'}}</text>
+                </view>
+
+                <view class="item-stem">
+                    <math-block blocks="{{item.question.blocks}}" size="small"></math-block>
+                </view>
+
+                <view class="item-foot">
+                    <text class="item-answer">答案 {{item.answerLetters}}</text>
+                </view>
+
+                <view class="item-detail" wx:if="{{expandedId === item.id}}">
+                    <view class="detail-option {{opt.isAnswer ? 'detail-option-ans' : ''}}"
+                          wx:for="{{item.optionsView}}"
+                          wx:for-item="opt"
+                          wx:key="letter">
+                        <text class="detail-letter {{opt.isAnswer ? 'detail-letter-ans' : ''}}">{{opt.letter}}</text>
+                        <text class="detail-text">{{opt.text}}</text>
+                    </view>
+                    <text class="detail-analysis">{{item.question.analysis}}</text>
+                    <view class="detail-actions">
+                        <text class="detail-remove" data-id="{{item.id}}" bindtap="removeItem">取消收藏</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <view class="foot-actions">
+            <button class="foot-btn" bindtap="practiceAll">练习收藏的 {{total}} 道题</button>
+        </view>
+    </block>
+</view>

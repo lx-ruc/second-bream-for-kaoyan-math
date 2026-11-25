@@ -1,0 +1,47 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/practice/practice",
+    "pages/result/result",
+    "pages/scan/scan",
+    "pages/wrong/wrong",
+    "pages/favorite/favorite",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "navigationBarTitleText": "黎曼考研刷题",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f2f4f9",
+    "backgroundTextStyle": "light"
+  },
+  "tabBar": {
+    "color": "#8d97ad",
+    "selectedColor": "#2b4acb",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "刷题",
+        "iconPath": "assets/tabbar/home.png",
+        "selectedIconPath": "assets/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/wrong/wrong",
+        "text": "错题集",
+        "iconPath": "assets/tabbar/book.png",
+        "selectedIconPath": "assets/tabbar/book-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/tabbar/user.png",
+        "selectedIconPath": "assets/tabbar/user-active.png"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

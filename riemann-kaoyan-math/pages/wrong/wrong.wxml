@@ -1,0 +1,106 @@
+<view class="page">
+    <!-- 顶栏 -->
+    <view class="header" style="padding-top: {{padTop + 12}}px;">
+        <view class="header-row">
+            <text class="header-title">错题集</text>
+            <text class="header-rule">同题连答对 2 次自动移出</text>
+        </view>
+        <text class="header-sub">共 {{total}} 道错题，按章节整理</text>
+    </view>
+
+    <!-- 加载 -->
+    <view class="state-card" wx:if="{{viewState === 'loading'}}">
+        <view class="spinner"></view>
+        <text class="state-title">正在读取错题</text>
+    </view>
+
+    <!-- 异常 -->
+    <view class="state-card" wx:elif="{{viewState === 'error'}}">
+        <text class="state-title">读取本地数据失败</text>
+        <button class="state-btn" bindtap="loadGroups">重试</button>
+    </view>
+
+    <!-- 空态 -->
+    <view class="state-card" wx:elif="{{viewState === 'empty'}}">
+        <view class="empty-mark">
+            <text class="empty-mark-text">✓</text>
+        </view>
+        <text class="state-title">错题集是空的</text>
+        <text class="state-desc">做错的题会自动收进这里，答对两次就自动出库。</text>
+        <button class="state-btn" bindtap="goPractice">去刷题</button>
+    </view>
+
+    <!-- 分组列表 -->
+    <block wx:else>
+        <view class="all-card">
+            <view class="all-left">
+                <text class="all-title">全部错题</text>
+                <text class="all-count">共 {{total}} 道</text>
+            </view>
+            <view class="all-actions">
+                <view class="mini-btn" bindtap="redoAll">
+                    <text class="mini-btn-text">重练错题</text>
+                </view>
+            </view>
+        </view>
+
+        <view class="group-list">
+            <view class="group" wx:for="{{groups}}" wx:key="key" wx:for-item="group">
+                <view class="group-row">
+                    <view class="group-main">
+                        <text class="group-name">{{group.name}}</text>
+                        <view class="group-meta">
+                            <text class="group-chip">{{group.subjectName}}</text>
+                            <text class="group-count">共 {{group.count}} 道</text>
+                        </view>
+                    </view>
+                    <view class="group-actions">
+                        <view
+                            class="mini-btn mini-btn-ghost"
+                            data-key="{{group.key}}"
+                            bindtap="viewGroup"
+                        >
+                            <text class="mini-btn-ghost-text">查看错题</text>
+                        </view>
+                        <view
+                            class="mini-btn"
+                            data-key="{{group.key}}"
+                            bindtap="redoGroup"
+                        >
+                            <text class="mini-btn-text">重练</text>
+                        </view>
+                    </view>
+                </view>
+
+                <!-- 展开的题目列表 -->
+                <view class="detail" wx:if="{{expandedGroup === group.key}}">
+                    <view class="detail-item" wx:for="{{group.items}}" wx:key="id" wx:for-item="item">
+                        <view class="detail-stem">
+                            <math-block blocks="{{item.question.blocks}}" size="small"></math-block>
+                        </view>
+                        <view class="detail-options">
+                            <view
+                                class="detail-option {{opt.isAnswer ? 'detail-option-ans' : ''}}"
+                                wx:for="{{item.optionsView}}"
+                                wx:for-item="opt"
+                                wx:key="letter"
+                            >
+                                <text class="detail-option-letter {{opt.isAnswer ? 'detail-option-letter-ans' : ''}}">{{opt.letter}}</text>
+                                <text class="detail-option-text">{{opt.text}}</text>
+                            </view>
+                        </view>
+                        <text class="detail-analysis">{{item.question.analysis}}</text>
+                        <view class="detail-foot">
+                            <text class="detail-times">错 {{item.count}} 次</text>
+                            <text class="detail-remove" data-id="{{item.id}}" bindtap="removeItem">移出</text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <view class="foot-actions">
+            <text class="foot-clear" bindtap="clearAll">清空错题集</text>
+        </view>
+    </block>
+</view>

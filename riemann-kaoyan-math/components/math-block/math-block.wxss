@@ -1,0 +1,145 @@
+.mb {
+    display: block;
+}
+
+.mb-line {
+    display: flex;
+    margin: 6rpx 0;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.mb-text {
+    color: #1a1f36;
+    font-size: 32rpx;
+    line-height: 1.75;
+}
+
+.mb-lim-wrap {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.mb-lim {
+    display: flex;
+    margin-right: 10rpx;
+    align-items: flex-start;
+    flex-direction: column;
+}
+
+.mb-lim-word {
+    font-family: "Times New Roman", Georgia, serif;
+    font-size: 30rpx;
+    font-style: italic;
+    line-height: 1.15;
+}
+
+.mb-lim-sub {
+    color: #3d4762;
+    font-size: 21rpx;
+    line-height: 1.25;
+}
+
+.mb-lim-body {
+    color: #1a1f36;
+    font-family: "Times New Roman", Georgia, serif;
+    font-size: 34rpx;
+    font-style: italic;
+    line-height: 1.6;
+}
+
+.mb-frac {
+    display: inline-flex;
+    margin: 0 6rpx;
+    align-items: center;
+    flex-direction: column;
+    vertical-align: middle;
+}
+
+.mb-frac-num {
+    padding: 2rpx 10rpx 6rpx;
+    font-family: "Times New Roman", Georgia, serif;
+    font-size: 30rpx;
+    line-height: 1.35;
+}
+
+.mb-frac-bar {
+    width: 100%;
+    min-width: 40rpx;
+    height: 2rpx;
+    background: #1a1f36;
+}
+
+.mb-frac-den {
+    padding: 6rpx 10rpx 2rpx;
+    font-family: "Times New Roman", Georgia, serif;
+    font-size: 30rpx;
+    line-height: 1.35;
+}
+
+.mb-mx {
+    display: inline-flex;
+    margin: 8rpx 0;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.mb-bracket {
+    color: #1a1f36;
+    font-family: "Times New Roman", Georgia, serif;
+    font-size: 62rpx;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.mb-grid {
+    display: inline-flex;
+    padding: 4rpx 2rpx;
+    flex-direction: column;
+}
+
+.mb-row {
+    display: flex;
+}
+
+.mb-cell {
+    padding: 3rpx 16rpx;
+    font-family: "Times New Roman", Georgia, serif;
+    font-size: 30rpx;
+    text-align: center;
+    min-width: 52rpx;
+}
+
+/* 小号变体用于选项 / 解析 */
+.mb-small .mb-text {
+    font-size: 28rpx;
+    line-height: 1.65;
+}
+
+.mb-small .mb-lim-body {
+    font-size: 30rpx;
+}
+
+.mb-small .mb-lim-word {
+    font-size: 26rpx;
+}
+
+.mb-small .mb-lim-sub {
+    font-size: 19rpx;
+}
+
+.mb-small .mb-frac-num,
+.mb-small .mb-frac-den {
+    font-size: 26rpx;
+}
+
+.mb-small .mb-cell {
+    padding: 2rpx 12rpx;
+    font-size: 26rpx;
+    min-width: 44rpx;
+}
+
+.mb-small .mb-bracket {
+    font-size: 54rpx;
+}

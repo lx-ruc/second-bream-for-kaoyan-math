@@ -1,0 +1,105 @@
+<view class="page">
+    <!-- 成绩 -->
+    <view class="head" style="padding-top: {{padTop + 20}}px;">
+        <view class="head-top">
+            <view class="head-back" bindtap="backHome">
+                <text class="head-back-icon">‹</text>
+            </view>
+            <text class="head-title">答题报告</text>
+            <view class="head-placeholder"></view>
+        </view>
+
+        <text class="head-sub">{{title}}</text>
+
+        <view class="score-row">
+            <view class="score-main">
+                <text class="score-num">{{accuracy}}</text>
+                <text class="score-unit">%</text>
+            </view>
+            <text class="score-label">正确率</text>
+        </view>
+
+        <view class="stat-row">
+            <view class="stat">
+                <text class="stat-value">{{total}}</text>
+                <text class="stat-label">试题</text>
+            </view>
+            <view class="stat-line"></view>
+            <view class="stat">
+                <text class="stat-value stat-right">{{correct}}</text>
+                <text class="stat-label">答对</text>
+            </view>
+            <view class="stat-line"></view>
+            <view class="stat">
+                <text class="stat-value stat-wrong">{{wrong}}</text>
+                <text class="stat-label">答错</text>
+            </view>
+            <view class="stat-line"></view>
+            <view class="stat">
+                <text class="stat-value {{sessionScore < 0 ? 'stat-wrong' : 'stat-score'}}">{{sessionScoreText}}</text>
+                <text class="stat-label">本轮得分</text>
+            </view>
+        </view>
+    </view>
+
+    <!-- 评价 -->
+    <view class="card level-card">
+        <view class="level-head">
+            <text class="level-tag">{{level}}</text>
+            <text class="level-rate">{{accuracy}}% · 本次</text>
+        </view>
+        <text class="level-comment">{{comment}}</text>
+        <view class="rate-bar">
+            <view class="rate-fill" style="width: {{accuracy}}%;"></view>
+        </view>
+        <view class="rate-scale">
+            <text class="rate-scale-text">0%</text>
+            <text class="rate-scale-text">50%</text>
+            <text class="rate-scale-text">100%</text>
+        </view>
+    </view>
+
+    <!-- 得分与段位 -->
+    <view class="card score-card">
+        <view class="score-head">
+            <text class="score-title">累计得分</text>
+            <view class="rank-chip">
+                <text class="rank-chip-text">{{rankName}}</text>
+            </view>
+        </view>
+        <view class="score-main">
+            <text class="score-total">{{totalScore}}</text>
+            <text class="score-unit">分</text>
+            <text class="score-avg">本轮平均每题 {{avgScore}} 分</text>
+        </view>
+        <view class="rank-bar">
+            <view class="rank-fill" style="width: {{rankProgress}}%;"></view>
+        </view>
+        <text class="rank-tip">{{rankNext ? '还差 ' + rankRemain + ' 分升到「' + rankNext + '」' : '已达最高段位'}}</text>
+    </view>
+
+    <!-- 今日进度 -->
+    <view class="card today-card">
+        <view class="today-head">
+            <text class="today-title">今日已练</text>
+            <text class="today-num">{{todayDone}} / {{dailyGoal}} 题</text>
+        </view>
+        <view class="today-bar">
+            <view class="today-fill" style="width: {{goalPercent}}%;"></view>
+        </view>
+        <text class="today-tip">{{remain > 0 ? '再刷 ' + remain + ' 题就完成今日目标' : '今日目标已达成，可以收工了'}}</text>
+    </view>
+
+    <!-- 操作 -->
+    <view class="actions">
+        <button class="action-main" bindtap="again">再练一组</button>
+        <view class="action-row">
+            <view class="action-ghost" bindtap="goWrong">
+                <text class="action-ghost-text">错题集（{{wrongCount}}）</text>
+            </view>
+            <view class="action-ghost" bindtap="backHome">
+                <text class="action-ghost-text">返回题库</text>
+            </view>
+        </view>
+    </view>
+</view>

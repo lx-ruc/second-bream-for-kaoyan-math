@@ -1,0 +1,150 @@
+<view class="page">
+    <!-- 用户区 -->
+    <view class="hero" style="padding-top: {{padTop + 20}}px;">
+        <view class="user-row">
+            <view class="avatar">
+                <text class="avatar-text">∫</text>
+            </view>
+            <view class="user-info">
+                <text class="user-name">考研数学人</text>
+                <text class="user-desc">坚持第 {{streakDays}} 天 · 已刷 {{done}} / {{total}} 题</text>
+            </view>
+        </view>
+        <view class="stat-row">
+            <view class="stat">
+                <text class="stat-value">{{done}}</text>
+                <text class="stat-label">已做</text>
+            </view>
+            <view class="stat-line"></view>
+            <view class="stat">
+                <text class="stat-value">{{rate}}%</text>
+                <text class="stat-label">正确率</text>
+            </view>
+            <view class="stat-line"></view>
+            <view class="stat">
+                <text class="stat-value">{{wrongCount}}</text>
+                <text class="stat-label">错题</text>
+            </view>
+            <view class="stat-line"></view>
+            <view class="stat">
+                <text class="stat-value">{{favCount}}</text>
+                <text class="stat-label">收藏</text>
+            </view>
+        </view>
+    </view>
+
+    <!-- 今日进度 -->
+    <view class="today-card">
+        <view class="today-head">
+            <text class="today-title">今日目标</text>
+            <text class="today-num">{{todayDone}} / {{dailyGoal}} 题</text>
+        </view>
+        <view class="today-bar">
+            <view class="today-fill" style="width: {{goalPercent}}%;"></view>
+        </view>
+    </view>
+
+    <!-- 能力图谱 -->
+    <view class="radar-card">
+        <view class="radar-head">
+            <text class="radar-title">能力图谱</text>
+            <view class="radar-rule" bindtap="showRadarRules">
+                <text class="radar-rule-text">算法</text>
+            </view>
+        </view>
+
+        <view class="radar-wrap" wx:if="{{!radarFailed}}">
+            <canvas type="2d" id="radar-canvas" class="radar-canvas"></canvas>
+            <view class="radar-label" wx:for="{{radarLabels}}" wx:key="key" style="{{item.style}}">
+                <text class="radar-label-name">{{item.name}}</text>
+                <text class="radar-label-value {{item.text === '—' ? 'radar-label-empty' : ''}}">{{item.text}}</text>
+            </view>
+        </view>
+
+        <!-- canvas 不可用时退化为条形，保证信息仍可读 -->
+        <view class="radar-fallback" wx:else>
+            <view class="fb-row" wx:for="{{radar}}" wx:key="key">
+                <text class="fb-name">{{item.name}}</text>
+                <view class="fb-track">
+                    <view class="fb-fill" style="width: {{item.value}}%;"></view>
+                </view>
+                <text class="fb-value">{{item.empty ? '—' : item.value}}</text>
+            </view>
+        </view>
+
+        <view class="radar-foot">
+            <text class="radar-tip">{{radarTip}}</text>
+            <view class="radar-tags" wx:if="{{strongest}}">
+                <text class="radar-tag radar-tag-best">最稳 · {{strongest.name}} {{strongest.value}}</text>
+                <text class="radar-tag radar-tag-weak" wx:if="{{weakest}}">待补 · {{weakest.name}} {{weakest.value}}</text>
+            </view>
+        </view>
+    </view>
+
+    <!-- 近 7 天 -->
+    <view class="week-card">
+        <text class="week-title">近 7 天练习</text>
+        <view class="chart">
+            <view class="chart-col" wx:for="{{weekSeries}}" wx:key="key">
+                <view class="chart-wrap">
+                    <view class="chart-bar {{item.value > 0 ? 'chart-bar-on' : ''}}" style="height: {{item.value > 0 ? (item.percent < 10 ? 10 : item.percent) : 3}}%;"></view>
+                </view>
+                <text class="chart-value">{{item.value}}</text>
+                <text class="chart-label">{{item.label}}</text>
+            </view>
+        </view>
+    </view>
+
+    <!-- 功能列表 -->
+    <view class="menu">
+        <view class="menu-item" data-type="wrong" bindtap="handleTap" hover-class="menu-hover">
+            <text class="menu-text">我的错题集</text>
+            <view class="menu-right">
+                <text class="menu-desc">{{wrongCount}} 道</text>
+                <text class="menu-arrow">›</text>
+            </view>
+        </view>
+        <view class="menu-item" data-type="fav" bindtap="handleTap" hover-class="menu-hover">
+            <text class="menu-text">我的收藏</text>
+            <view class="menu-right">
+                <text class="menu-desc">{{favCount}} 道</text>
+                <text class="menu-arrow">›</text>
+            </view>
+        </view>
+        <view class="menu-item" data-type="scan" bindtap="handleTap" hover-class="menu-hover">
+            <text class="menu-text">我的扫描件</text>
+            <view class="menu-right">
+                <text class="menu-desc">{{scanCount ? scanCount + ' 张' : '拍照扫题'}}</text>
+                <text class="menu-arrow">›</text>
+            </view>
+        </view>
+        <view class="menu-item" data-type="goal" bindtap="handleTap" hover-class="menu-hover">
+            <text class="menu-text">每日刷题目标</text>
+            <view class="menu-right">
+                <text class="menu-desc">{{dailyGoal}} 题 / 天</text>
+                <text class="menu-arrow">›</text>
+            </view>
+        </view>
+    </view>
+
+    <view class="menu">
+        <view class="menu-item" data-type="reset" bindtap="handleTap" hover-class="menu-hover">
+            <text class="menu-text">清空做题记录</text>
+            <view class="menu-right">
+                <text class="menu-desc">可二刷三刷</text>
+                <text class="menu-arrow">›</text>
+            </view>
+        </view>
+        <view class="menu-item" data-type="about" bindtap="handleTap" hover-class="menu-hover">
+            <text class="menu-text">关于</text>
+            <view class="menu-right">
+                <text class="menu-desc">v1.0.0</text>
+                <text class="menu-arrow">›</text>
+            </view>
+        </view>
+    </view>
+
+    <view class="foot">
+        <text class="foot-text">数据保存在本机 · 换设备不同步</text>
+    </view>
+</view>

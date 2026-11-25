@@ -1,0 +1,119 @@
+<view class="page">
+    <!-- 顶部：题库卡片 -->
+    <view class="bank-head" style="padding-top: {{padTop + 12}}px;">
+        <view class="bank-top">
+            <view class="bank-title-row">
+                <text class="bank-title">{{bankName}}</text>
+                <text class="bank-tag">{{bankTag}}</text>
+            </view>
+            <view class="bank-switch" bindtap="switchBank">
+                <text class="bank-switch-text">切换题库</text>
+                <text class="bank-switch-icon">›</text>
+            </view>
+        </view>
+
+        <view class="bank-sub">
+            <text class="bank-sub-text">正确率（答对 {{rightAll}} / 已答 {{doneAll}} / 共 {{totalAll}}）</text>
+            <view class="bank-day" wx:if="{{countdown.days > 0}}">
+                <text class="bank-day-label">距考试</text>
+                <text class="bank-day-num">{{countdown.days}}</text>
+                <text class="bank-day-unit">天</text>
+            </view>
+        </view>
+        <view class="bank-bar">
+            <view class="bank-bar-fill" style="width: {{totalAll > 0 ? (doneAll * 100 / totalAll) : 0}}%;"></view>
+        </view>
+    </view>
+
+    <!-- 加载失败 -->
+    <view class="state-card" wx:if="{{errorText}}">
+        <text class="state-title">{{errorText}}</text>
+        <button class="state-btn" bindtap="loadToc">重新加载</button>
+    </view>
+
+    <block wx:else>
+        <!-- 每日一练 -->
+        <view class="daily-card" bindtap="startTodayPractice">
+            <view class="daily-left">
+                <view class="daily-title-row">
+                    <text class="daily-title">每日一练</text>
+                    <text class="daily-badge">10 题训练营</text>
+                </view>
+                <view class="daily-meta">
+                    <text class="daily-meta-item">累计坚持 {{streakDays}} 天</text>
+                    <text class="daily-dot">·</text>
+                    <text class="daily-meta-item">今日已练 {{todayDone}} 题</text>
+                    <text class="daily-dot">·</text>
+                    <text class="daily-meta-item daily-meta-score">今日 {{todayScoreText}} 分</text>
+                </view>
+                <view class="daily-tags">
+                    <text class="daily-tag">难度适中</text>
+                    <text class="daily-tag">预计 5 分钟</text>
+                    <text class="daily-tag">共 {{totalAll}} 题</text>
+                </view>
+            </view>
+            <view class="daily-btn">
+                <text class="daily-btn-text">开始</text>
+            </view>
+        </view>
+
+        <!-- 工具行 -->
+        <view class="tool-row">
+            <view class="tool-item" bindtap="startRandom">
+                <text class="tool-icon">∞</text>
+                <text class="tool-text">随机练习</text>
+            </view>
+            <view class="tool-item" bindtap="goWrong">
+                <text class="tool-icon">{{wrongCount}}</text>
+                <text class="tool-text">错题集</text>
+            </view>
+            <view class="tool-item" bindtap="goFavorite">
+                <text class="tool-icon">{{favCount}}</text>
+                <text class="tool-text">我的收藏</text>
+            </view>
+            <view class="tool-item" bindtap="goScan">
+                <text class="tool-icon tool-icon-scan">▣</text>
+                <text class="tool-text">扫描做题</text>
+            </view>
+        </view>
+
+        <!-- 目录 -->
+        <view class="toc">
+            <view class="toc-group" wx:for="{{toc}}" wx:key="key" wx:for-item="group">
+                <view class="group-head" data-key="{{group.key}}" bindtap="toggleGroup">
+                    <text class="group-title">{{group.title}}</text>
+                    <view class="group-right">
+                        <text class="group-progress">{{group.done}}/{{group.total}}</text>
+                        <text class="group-arrow {{collapsed[group.key] ? 'group-arrow-down' : ''}}">⌄</text>
+                    </view>
+                </view>
+
+                <view class="chapter-list" wx:if="{{!collapsed[group.key]}}">
+                    <view
+                        class="chapter"
+                        wx:for="{{group.chapters}}"
+                        wx:key="key"
+                        data-key="{{item.key}}"
+                        bindtap="openChapter"
+                        hover-class="chapter-hover"
+                    >
+                        <view class="chapter-main">
+                            <view class="chapter-name-row">
+                                <text class="chapter-name">{{item.name}}</text>
+                                <text class="chapter-tag">{{item.tag}}</text>
+                            </view>
+                            <text class="chapter-rate">正确率：{{item.rate}}%</text>
+                        </view>
+                        <view class="chapter-right">
+                            <text class="chapter-progress {{item.finished ? 'chapter-progress-done' : ''}}">{{item.done}}/{{item.total}}</text>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+
+        <view class="foot-note">
+            <text class="foot-note-text">题目覆盖数一数二数三公共考点，解析逐题精讲</text>
+        </view>
+    </block>
+</view>

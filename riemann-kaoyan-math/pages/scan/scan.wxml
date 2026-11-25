@@ -1,0 +1,105 @@
+<view class="page">
+    <!-- 顶栏 -->
+    <view class="navbar" style="padding-top: {{padTop}}px;">
+        <view class="navbar-row">
+            <view class="navbar-back" bindtap="backHome">
+                <text class="navbar-back-icon">‹</text>
+            </view>
+            <text class="navbar-title">扫描做题</text>
+            <view class="navbar-placeholder"></view>
+        </view>
+    </view>
+
+    <view class="intro">
+        <text class="intro-text">把纸上的打印题和手写解答拍下来，转成干净的电子版，随时在手机里复盘。</text>
+    </view>
+
+    <!-- 未选图：引导 -->
+    <view class="empty-card" wx:if="{{!hasImage}}">
+        <view class="empty-icon">
+            <text class="empty-icon-text">▣</text>
+        </view>
+        <text class="empty-title">拍一张题目照片</text>
+        <text class="empty-desc">支持打印题、手写笔记、卷面批注</text>
+        <view class="empty-actions">
+            <button class="btn-main" bindtap="chooseImage">拍照 / 从相册选择</button>
+        </view>
+        <view class="empty-tips">
+            <text class="empty-tip">· 尽量正对纸面拍摄，光线均匀</text>
+            <text class="empty-tip">· 拍完可切换「增强 / 黑白」自动去阴影</text>
+        </view>
+    </view>
+
+    <!-- 已选图：预览与处理 -->
+    <block wx:else>
+        <view class="preview-card">
+            <view class="preview-head">
+                <text class="preview-title">扫描预览</text>
+                <view class="preview-size">
+                    <text class="preview-size-text">{{bitmapW}} × {{bitmapH}}</text>
+                </view>
+            </view>
+
+            <view class="canvas-box" style="width: {{canvasW}}px; height: {{canvasH}}px;">
+                <canvas type="2d" id="scan-canvas" class="scan-canvas" style="width: {{canvasW}}px; height: {{canvasH}}px;"></canvas>
+                <view class="busy-mask" wx:if="{{busy}}">
+                    <view class="busy-spinner"></view>
+                    <text class="busy-text">{{busyText}}</text>
+                </view>
+            </view>
+
+            <view class="mode-row">
+                <view
+                    class="mode-item {{mode === item.key ? 'mode-item-on' : ''}}"
+                    wx:for="{{modes}}"
+                    wx:key="key"
+                    data-mode="{{item.key}}"
+                    bindtap="switchMode"
+                >
+                    <text class="mode-text">{{item.name}}</text>
+                </view>
+            </view>
+
+            <view class="preview-actions">
+                <view class="btn-ghost" bindtap="replaceImage">
+                    <text class="btn-ghost-text">重新选择</text>
+                </view>
+                <view class="btn-save {{busy ? 'btn-save-disabled' : ''}}" bindtap="saveScan">
+                    <text class="btn-save-text">保存到我的扫描</text>
+                </view>
+            </view>
+        </view>
+    </block>
+
+    <!-- 已保存列表 -->
+    <view class="list-head">
+        <text class="list-title">我的扫描</text>
+        <text class="list-count">{{scans.length ? scans.length + ' 张' : ''}}</text>
+    </view>
+
+    <view class="scan-grid" wx:if="{{scans.length}}">
+        <view class="scan-item" wx:for="{{scans}}" wx:key="id">
+            <view class="scan-thumb-box" data-path="{{item.path}}" bindtap="openPreview">
+                <image class="scan-thumb" src="{{item.path}}" mode="aspectFill" lazy-load="{{true}}" />
+                <view class="scan-mode-tag">
+                    <text class="scan-mode-text">{{item.mode === 'binary' ? '黑白' : (item.mode === 'original' ? '原图' : '增强')}}</text>
+                </view>
+            </view>
+            <text class="scan-time">{{item.timeText}}</text>
+            <text class="scan-delete" data-id="{{item.id}}" catchtap="deleteScan">删除</text>
+        </view>
+    </view>
+
+    <view class="list-empty" wx:else>
+        <text class="list-empty-text">还没有扫描件，拍第一张试试</text>
+    </view>
+
+    <!-- 大图预览 -->
+    <view class="viewer" wx:if="{{showPreview}}" bindtap="closePreview">
+        <image class="viewer-img" src="{{previewSrc}}" mode="aspectFit" catchtap="noop" />
+        <view class="viewer-bar" catchtap="noop">
+            <text class="viewer-close" bindtap="closePreview">关闭</text>
+            <text class="viewer-delete" bindtap="previewDelete">删除这张</text>
+        </view>
+    </view>
+</view>

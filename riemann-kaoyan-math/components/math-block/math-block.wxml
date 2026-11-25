@@ -1,0 +1,33 @@
+<view class="mb {{size === 'small' ? 'mb-small' : ''}}">
+    <view class="mb-line" wx:for="{{rows}}" wx:key="key">
+        <!-- 纯文本 -->
+        <text class="mb-text" wx:if="{{item.t === 'tx'}}">{{item.v}}</text>
+
+        <!-- 极限 -->
+        <view class="mb-lim-wrap" wx:elif="{{item.t === 'lim'}}">
+            <view class="mb-lim">
+                <text class="mb-lim-word">lim</text>
+                <text class="mb-lim-sub">{{item.sub}}</text>
+            </view>
+            <text class="mb-lim-body">{{item.v}}</text>
+        </view>
+
+        <!-- 分式 -->
+        <view class="mb-frac" wx:elif="{{item.t === 'fr'}}">
+            <text class="mb-frac-num">{{item.n}}</text>
+            <view class="mb-frac-bar"></view>
+            <text class="mb-frac-den">{{item.d}}</text>
+        </view>
+
+        <!-- 矩阵 / 行列式 -->
+        <view class="mb-mx" wx:elif="{{item.t === 'mx'}}">
+            <text class="mb-bracket">{{item.bar}}</text>
+            <view class="mb-grid">
+                <view class="mb-row" wx:for="{{item.grid}}" wx:for-item="row" wx:key="key">
+                    <text class="mb-cell" wx:for="{{row.cells}}" wx:for-item="cell" wx:key="key">{{cell.v}}</text>
+                </view>
+            </view>
+            <text class="mb-bracket">{{item.barRight}}</text>
+        </view>
+    </view>
+</view>

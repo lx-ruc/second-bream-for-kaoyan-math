@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "navigationBarTitleText": "错题本",
+  "usingComponents": {
+    "math-block": "/components/math-block/math-block"
+  }
+}
