@@ -175,4 +175,9 @@ Page({
   goCalibrate() {
     wx.navigateTo({ url: '/pages/calibrate/calibrate' });
   },
+
+  // 作答沉淀与分析：tabBar 已满 5 项，从诊断页 navigateTo 进入，不新增 tab。
+  goProgress() {
+    wx.navigateTo({ url: '/pages/progress/progress' });
+  },
 });

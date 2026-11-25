@@ -233,7 +233,10 @@ console.log('\n--- 6. 四页真实 JS 冒烟 ---');
     navs.indexOf('/pages/plan/plan') >= 0 && navs.indexOf('/pages/format/format') >= 0 &&
     navs.indexOf('/pages/calibrate/calibrate') >= 0);
   const app = JSON.parse(fs.readFileSync(path.join(ROOT, 'app.json'), 'utf8'));
-  ok('app.json pages 11 / tabBar 仍 5 项', app.pages.length === 11 && app.tabBar.list.length === 5);
+  // 新增 pages/progress/progress 后页面数 11 → 12；tabBar 仍保持 5 项不变。
+  ok('app.json pages 12 / tabBar 仍 5 项',
+    app.pages.length === 12 && app.tabBar.list.length === 5 &&
+    app.pages.indexOf('pages/progress/progress') >= 0);
 }
 
 console.log('\n结果: ' + pass + ' 通过, ' + fail + ' 失败');

@@ -1,0 +1,93 @@
+<view class="page">
+  <view class="head">
+    <text class="kicker">作答沉淀</text>
+    <text class="h1">你记过的每一道，都留在这里</text>
+    <text class="lede">只统计本机记录过的题。没记 ≠ 没掌握；本页不判断「该考点重要 / 该做」。</text>
+  </view>
+
+  <view class="seg">
+    <view class="item {{tab === 'flow' ? 'on' : ''}}" data-tab="flow" bindtap="onTab">流水</view>
+    <view class="item {{tab === 'wrong' ? 'on' : ''}}" data-tab="wrong" bindtap="onTab">错题本{{wrongCount ? '（' + wrongCount + '）' : ''}}</view>
+    <view class="item {{tab === 'ability' ? 'on' : ''}}" data-tab="ability" bindtap="onTab">六维能力</view>
+  </view>
+
+  <view wx:if="{{empty}}" class="empty">
+    <text>还没有作答记录。去「记一道题」沉淀第一道。</text>
+    <view class="btn" style="margin-top:32rpx" bindtap="goIntake">去记一道题</view>
+  </view>
+
+  <block wx:else>
+    <!-- 流水 + 四档得分 -->
+    <block wx:if="{{tab === 'flow'}}">
+      <view class="card scorebox">
+        <text class="sec">四档得分 · 加权累计，不是对错计数</text>
+        <view class="score-hd">
+          <text class="num score-num">{{score.total}}</text>
+          <text class="score-unit">分 / {{score.count}} 条记录</text>
+        </view>
+        <view class="lv-row" wx:for="{{score.levels}}" wx:key="key">
+          <text class="lv-name">{{item.label}}</text>
+          <text class="lv-pts">×{{item.points}}</text>
+          <text class="lv-n">{{item.n}} 条</text>
+        </view>
+        <text class="note">每题按当时掌握度计：1.0 / 0.6 / 0.2 / 0.0；同一题记多次就累加多次。无效掌握度不计入。</text>
+      </view>
+
+      <text class="sec">作答流水 · 按时间倒序</text>
+      <view wx:for="{{flow}}" wx:key="key" class="fitem">
+        <view class="f-hd">
+          <text class="chip {{item.mastery === 1 ? 'ok' : (item.mastery === 0 ? 'hot' : '')}}">{{item.levelLabel}}</text>
+          <text class="f-when">{{item.when}}</text>
+        </view>
+        <text class="f-stem">{{item.stem || '（无题干）'}}</text>
+        <view class="f-ft">
+          <text class="f-meta">{{item.kpName || item.kp}}{{item.vol ? ' · 数' + item.vol : ''}}{{item.fromPhoto ? ' · 拍照' : ''}}</text>
+        </view>
+        <text wx:if="{{item.famText}}" class="f-fam">思路族：{{item.famText}}</text>
+        <text wx:if="{{item.title}}" class="f-title">判定：{{item.title}}</text>
+      </view>
+    </block>
+
+    <!-- 错题本 -->
+    <block wx:if="{{tab === 'wrong'}}">
+      <view class="card">
+        <text class="sec">错题池 · 同一题连续 2 次「独立做出」自动移出</text>
+        <text class="note">拍照题没有题号：同一题用题干归一后的稳定 key 归并，不依赖 questionId。</text>
+      </view>
+      <view wx:if="{{!wrong.length}}" class="empty">当前错题池是空的。</view>
+      <view wx:for="{{wrong}}" wx:key="key" class="witem">
+        <view class="w-hd">
+          <text class="chip hot">{{item.levelLabel}}</text>
+          <text class="w-when">{{item.when}}</text>
+        </view>
+        <text class="f-stem">{{item.stem || '（无题干）'}}</text>
+        <text class="w-meta">{{item.kpName || item.kp}}{{item.vol ? ' · 数' + item.vol : ''}} · 记过 {{item.attempts}} 次 · 最低 {{item.min}} / 最高 {{item.max}}</text>
+      </view>
+    </block>
+
+    <!-- 六维能力 -->
+    <block wx:if="{{tab === 'ability'}}">
+      <view class="card">
+        <text class="sec">六维能力 · 只反映你记录过的题</text>
+        <view class="radar-wrap">
+          <canvas type="2d" id="radar-canvas" class="radar-canvas" />
+          <view wx:for="{{radarLabels}}" wx:key="key" class="radar-label" style="{{item.style}}">
+            <text class="radar-lname">{{item.name}}</text>
+            <text class="radar-lval">{{item.text}}</text>
+          </view>
+        </view>
+        <view wx:if="{{radarFailed}}" class="radar-fail">当前环境无法绘制雷达图，下面仍可看六维数值。</view>
+        <view wx:for="{{ability}}" wx:key="key" class="abil-row">
+          <text class="abil-name">{{item.name}}</text>
+          <view class="abil-bar"><view class="abil-fill" style="width:{{item.value}}%"></view></view>
+          <text class="abil-val">{{item.value}}</text>
+        </view>
+        <text class="note">{{abilityNote}}</text>
+        <text class="sec">各维口径与样本量</text>
+        <view wx:for="{{ability}}" wx:key="key" class="abil-desc">
+          <text class="abil-dname">{{item.name}}（{{item.base}} 个样本）：{{item.desc}}</text>
+        </view>
+      </view>
+    </block>
+  </block>
+</view>

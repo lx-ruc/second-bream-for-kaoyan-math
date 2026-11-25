@@ -23,6 +23,12 @@
     </view>
   </view>
 
+  <view class="card kbentry">
+    <text class="sec">作答沉淀 · 流水 / 错题本 / 六维能力</text>
+    <view class="btn ghost" bindtap="goProgress">看作答沉淀与分析</view>
+    <text class="note">只统计你记过的题；四档掌握度加权，不二值化对错，也不判断「该考点重要 / 该做」。</text>
+  </view>
+
   <view class="card statbox">
     <view class="stat-toggle" bindtap="toggleStats">
       <text class="sec">统计补充 · 大纲覆盖度 / 错因分布 / 连续答错</text>

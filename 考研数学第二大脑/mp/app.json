@@ -10,7 +10,8 @@
     "pages/review/review",
     "pages/format/format",
     "pages/plan/plan",
-    "pages/calibrate/calibrate"
+    "pages/calibrate/calibrate",
+    "pages/progress/progress"
   ],
   "subPackages": [
     {
